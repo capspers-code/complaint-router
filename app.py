@@ -3,6 +3,7 @@ import joblib
 import numpy as np
 import streamlit as st
 import content
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="centered")
 
@@ -100,8 +101,6 @@ def to_english(text):
 st.title("📮 Automated Complaint Routing")
 st.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")
 
-st.markdown(content.FONT_LINK + content.CSS, unsafe_allow_html=True)
-
 TAB_DEMO, TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL = st.tabs([
     "ลองใช้โมเดล",
     "CFPB คืออะไร",
@@ -111,17 +110,16 @@ TAB_DEMO, TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL = st.tabs([
 ])
 
 with TAB_CFPB:
-    st.markdown(content.CFPB, unsafe_allow_html=True)
+    components.html(content.doc(content.CFPB), height=content.HEIGHT['CFPB'], scrolling=True)
 
 with TAB_PROC:
-    st.markdown(content.PROCESS, unsafe_allow_html=True)
+    components.html(content.doc(content.PROCESS), height=content.HEIGHT['PROCESS'], scrolling=True)
 
 with TAB_DATA:
-    st.markdown(content.DATA, unsafe_allow_html=True)
+    components.html(content.doc(content.DATA), height=content.HEIGHT['DATA'], scrolling=True)
 
 with TAB_MODEL:
-    st.markdown(content.MODEL, unsafe_allow_html=True)
-    st.markdown(content.FOOTER, unsafe_allow_html=True)
+    components.html(content.doc(content.MODEL), height=content.HEIGHT['MODEL'], scrolling=True)
 
 with TAB_DEMO:
     c1, c2, c3 = st.columns(3)
