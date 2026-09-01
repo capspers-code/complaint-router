@@ -18,7 +18,7 @@
   "accuracy": 0.87725,
   "macro_f1": 0.7296941509693464,
   "baseline_macro_f1": 0.07803018752858668,
-  "confidence_threshold": 0.4,
+  "confidence_threshold": 0.6,
   "tfidf_params": {
     "ngram_range": [
       1,
