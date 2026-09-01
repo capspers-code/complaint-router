@@ -189,17 +189,86 @@ TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB, TAB_DEMO = st.tabs([
     "ลองใช้โมเดล",
 ])
 
+
+# ── ปุ่มไปแท็บถัดไป (ปุ่ม 3D กดแล้วสลับแท็บจริง) ────────────────────
+_NEXT_BTN = """
+<style>
+ *{box-sizing:border-box}
+ body{margin:0;background:transparent;
+      font-family:"Sarabun",-apple-system,"Segoe UI",sans-serif}
+ .bar{display:flex;justify-content:flex-end;padding:6px 2px 0}
+ .nxt{
+   position:relative; top:0;
+   display:inline-flex; align-items:center; gap:10px;
+   padding:12px 24px 13px;
+   font-family:inherit; font-size:15.5px; font-weight:700; color:#EAF1FA;
+   background:linear-gradient(180deg,#33506F 0%,#1D2A3A 100%);
+   border:1px solid #6EA8FF; border-radius:11px;
+   cursor:pointer;
+   text-shadow:0 1px 0 rgba(0,0,0,.55);
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.22),
+              inset 0 -2px 0 rgba(0,0,0,.35),
+              0 5px 0 -1px #16202C,
+              0 8px 16px rgba(0,0,0,.55),
+              0 0 18px rgba(110,168,255,.16);
+   transition:top .08s ease, box-shadow .08s ease, background .12s ease;
+ }
+ .nxt:hover{
+   background:linear-gradient(180deg,#3D5F84 0%,#22303F 100%);
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.28),
+              inset 0 -2px 0 rgba(0,0,0,.35),
+              0 5px 0 -1px #16202C,
+              0 10px 20px rgba(0,0,0,.6),
+              0 0 24px rgba(110,168,255,.28);
+ }
+ .nxt:active{
+   top:4px;
+   box-shadow:inset 0 2px 5px rgba(0,0,0,.55),
+              0 1px 0 -1px #16202C,
+              0 2px 6px rgba(0,0,0,.5);
+ }
+ .arw{font-size:18px;line-height:1;transform:translateY(-1px)}
+</style>
+<div class="bar">
+  <button class="nxt" onclick="goNext()">__LABEL__<span class="arw">&#10142;</span></button>
+</div>
+<script>
+function goNext(){
+  try{
+    var t = window.parent.document.querySelectorAll('[role="tab"]');
+    if(t[__IDX__]){
+      t[__IDX__].click();
+      window.parent.scrollTo({top:0, behavior:'smooth'});
+    }
+  }catch(e){}
+}
+</script>
+"""
+
+
+def next_tab_button(index, label):
+    """ปุ่มพาไปแท็บลำดับที่ index (นับจาก 0)"""
+    components.html(
+        _NEXT_BTN.replace("__LABEL__", label).replace("__IDX__", str(index)),
+        height=78,
+    )
+
+
 with TAB_CFPB:
     components.html(content.doc(content.CFPB), height=content.HEIGHT['CFPB'], scrolling=True)
+    next_tab_button(1, "กระบวนการ")
 
 with TAB_PROC:
     components.html(content.doc(content.PROCESS), height=content.HEIGHT['PROCESS'], scrolling=True)
+    next_tab_button(2, "ที่มาของข้อมูล")
 
 with TAB_DATA:
     components.html(content.doc(content.DATA), height=content.HEIGHT['DATA'], scrolling=True)
+    next_tab_button(3, "โมเดลของเรา")
 
 with TAB_MODEL:
     components.html(content.doc(content.MODEL), height=content.HEIGHT['MODEL'], scrolling=True)
+    next_tab_button(4, "Colab Notebook")
 
 @st.cache_data(show_spinner=False)
 def load_notebook_html():
@@ -216,6 +285,7 @@ with TAB_NB:
     if st.toggle("แสดงโน้ตบุ๊กในหน้านี้", value=False):
         with st.spinner("กำลังโหลดโน้ตบุ๊ก ..."):
             components.html(load_notebook_html(), height=1500, scrolling=True)
+    next_tab_button(5, "ลองใช้โมเดล")
 
 with TAB_DEMO:
     _pad_l, _mid, _pad_r = st.columns([1, 3, 1])
