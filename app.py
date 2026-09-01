@@ -97,6 +97,70 @@ def to_english(text):
     return None, " | ".join(errs), None
 
 
+# ── สไตล์แท็บให้ดูเป็นแท็บแฟ้มจริง มีมิติ ──────────────────────────
+st.html("""
+<style>
+/* รองรับทั้ง DOM เก่า (baseweb) และใหม่ (react-aria) ของ Streamlit */
+.stTabs [data-baseweb="tab-list"],
+.stTabs [role="tablist"]{
+  gap:5px !important;
+  align-items:flex-end !important;
+  padding:0 2px !important;
+  border-bottom:2px solid #33465C !important;
+  margin-bottom:6px !important;
+  overflow-x:auto;
+}
+.stTabs [data-baseweb="tab-highlight"],
+.stTabs [data-baseweb="tab-border"]{ display:none !important; }
+
+.stTabs button[data-baseweb="tab"],
+.stTabs [data-testid="stTab"]{
+  position:relative !important;
+  top:4px;
+  margin-bottom:-2px !important;
+  padding:9px 20px 10px !important;
+  border:1px solid #33465C !important;
+  border-bottom:none !important;
+  border-radius:11px 11px 0 0 !important;
+  background:linear-gradient(180deg,#1E2836 0%,#141B24 100%) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07), 0 -2px 6px rgba(0,0,0,.45) !important;
+  transition:top .13s ease, background .13s ease, box-shadow .13s ease;
+  white-space:nowrap;
+}
+.stTabs button[data-baseweb="tab"]::after,
+.stTabs [data-testid="stTab"]::after{ display:none !important; }
+
+.stTabs button[data-baseweb="tab"] p,
+.stTabs [data-testid="stTab"] p{
+  font-size:15px !important; font-weight:600 !important;
+  color:#9AA8BA !important; margin:0 !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.55);
+}
+
+.stTabs button[data-baseweb="tab"]:hover,
+.stTabs [data-testid="stTab"]:hover{
+  top:1px;
+  background:linear-gradient(180deg,#273547 0%,#18212C 100%) !important;
+}
+.stTabs button[data-baseweb="tab"]:hover p,
+.stTabs [data-testid="stTab"]:hover p{ color:#D6E0EC !important; }
+
+.stTabs button[data-baseweb="tab"][aria-selected="true"],
+.stTabs [data-testid="stTab"][aria-selected="true"]{
+  top:0;
+  border-color:#6EA8FF !important;
+  background:linear-gradient(180deg,#2B3D55 0%,#0E1117 92%) !important;
+  box-shadow:inset 0 2px 0 #6EA8FF,
+             inset 0 1px 0 rgba(255,255,255,.10),
+             0 -4px 12px rgba(110,168,255,.22) !important;
+}
+.stTabs button[data-baseweb="tab"][aria-selected="true"] p,
+.stTabs [data-testid="stTab"][aria-selected="true"] p{
+  color:#FFFFFF !important; font-weight:700 !important;
+}
+</style>
+""")
+
 # ══════════════════════════════════════════════════════════════════
 st.markdown(
     "<div style='font-size:22px;font-weight:800;letter-spacing:.10em;"
