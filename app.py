@@ -99,8 +99,8 @@ def to_english(text):
 
 # ══════════════════════════════════════════════════════════════════
 st.markdown(
-    "<div style='font-size:12px;font-weight:700;letter-spacing:.16em;"
-    "text-transform:uppercase;color:#FF6B6B;margin-bottom:-6px'>"
+    "<div style='font-size:22px;font-weight:800;letter-spacing:.10em;"
+    "text-transform:uppercase;color:#6EA8FF;margin-bottom:-2px'>"
     "Consumer Financial Protection Bureau</div>",
     unsafe_allow_html=True,
 )
