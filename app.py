@@ -190,30 +190,33 @@ TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB, TAB_DEMO = st.tabs([
 ])
 
 
-# ── ปุ่มไปแท็บถัดไป (ปุ่ม 3D กดแล้วสลับแท็บจริง) ────────────────────
-_NEXT_BTN = """
+# ── แถบปุ่มข้ามแท็บ (ปุ่ม 3D กดแล้วสลับแท็บจริง) ────────────────────
+_NAV = """
 <style>
  *{box-sizing:border-box}
  body{margin:0;background:transparent;
       font-family:"Sarabun",-apple-system,"Segoe UI",sans-serif}
- .bar{display:flex;justify-content:flex-end;padding:6px 2px 0}
- .nxt{
+ .bar{display:flex;justify-content:space-between;align-items:center;
+      gap:12px;padding:6px 2px 0}
+ .btn{
    position:relative; top:0;
    display:inline-flex; align-items:center; gap:10px;
    padding:12px 24px 13px;
    font-family:inherit; font-size:15.5px; font-weight:700; color:#EAF1FA;
-   background:linear-gradient(180deg,#33506F 0%,#1D2A3A 100%);
-   border:1px solid #6EA8FF; border-radius:11px;
-   cursor:pointer;
+   border-radius:11px; cursor:pointer;
    text-shadow:0 1px 0 rgba(0,0,0,.55);
+   transition:top .08s ease, box-shadow .08s ease, background .12s ease;
+ }
+ .next{
+   background:linear-gradient(180deg,#33506F 0%,#1D2A3A 100%);
+   border:1px solid #6EA8FF;
    box-shadow:inset 0 1px 0 rgba(255,255,255,.22),
               inset 0 -2px 0 rgba(0,0,0,.35),
               0 5px 0 -1px #16202C,
               0 8px 16px rgba(0,0,0,.55),
               0 0 18px rgba(110,168,255,.16);
-   transition:top .08s ease, box-shadow .08s ease, background .12s ease;
  }
- .nxt:hover{
+ .next:hover{
    background:linear-gradient(180deg,#3D5F84 0%,#22303F 100%);
    box-shadow:inset 0 1px 0 rgba(255,255,255,.28),
               inset 0 -2px 0 rgba(0,0,0,.35),
@@ -221,54 +224,71 @@ _NEXT_BTN = """
               0 10px 20px rgba(0,0,0,.6),
               0 0 24px rgba(110,168,255,.28);
  }
- .nxt:active{
+ .prev{
+   color:#C6D2E0;
+   background:linear-gradient(180deg,#2A3646 0%,#171F29 100%);
+   border:1px solid #46596F;
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.15),
+              inset 0 -2px 0 rgba(0,0,0,.35),
+              0 5px 0 -1px #12181F,
+              0 8px 16px rgba(0,0,0,.5);
+ }
+ .prev:hover{
+   color:#EAF1FA;
+   background:linear-gradient(180deg,#35455A 0%,#1C2531 100%);
+   box-shadow:inset 0 1px 0 rgba(255,255,255,.2),
+              inset 0 -2px 0 rgba(0,0,0,.35),
+              0 5px 0 -1px #12181F,
+              0 10px 20px rgba(0,0,0,.55);
+ }
+ .btn:active{
    top:4px;
    box-shadow:inset 0 2px 5px rgba(0,0,0,.55),
               0 1px 0 -1px #16202C,
-              0 2px 6px rgba(0,0,0,.5);
+              0 2px 6px rgba(0,0,0,.5) !important;
  }
  .arw{font-size:18px;line-height:1;transform:translateY(-1px)}
+ .sp{flex:1}
 </style>
-<div class="bar">
-  <button class="nxt" onclick="goNext()">__LABEL__<span class="arw">&#10142;</span></button>
-</div>
+<div class="bar">__LEFT____RIGHT__</div>
 <script>
-function goNext(){
+function jump(i){
   try{
     var t = window.parent.document.querySelectorAll('[role="tab"]');
-    if(t[__IDX__]){
-      t[__IDX__].click();
-      window.parent.scrollTo({top:0, behavior:'smooth'});
-    }
+    if(t[i]){ t[i].click(); window.parent.scrollTo({top:0, behavior:'smooth'}); }
   }catch(e){}
 }
 </script>
 """
 
+_PREV_HTML = ('<button class="btn prev" onclick="jump({i})">'
+              '<span class="arw">&#10229;</span>{label}</button>')
+_NEXT_HTML = ('<button class="btn next" onclick="jump({i})">'
+              '{label}<span class="arw">&#10142;</span></button>')
 
-def next_tab_button(index, label):
-    """ปุ่มพาไปแท็บลำดับที่ index (นับจาก 0)"""
-    components.html(
-        _NEXT_BTN.replace("__LABEL__", label).replace("__IDX__", str(index)),
-        height=78,
-    )
+
+def tab_nav(prev=None, next=None):
+    """prev / next = (index, label) หรือ None"""
+    left = _PREV_HTML.format(i=prev[0], label=prev[1]) if prev else '<span class="sp"></span>'
+    right = _NEXT_HTML.format(i=next[0], label=next[1]) if next else '<span></span>'
+    components.html(_NAV.replace("__LEFT__", left).replace("__RIGHT__", right), height=78)
 
 
 with TAB_CFPB:
     components.html(content.doc(content.CFPB), height=content.HEIGHT['CFPB'], scrolling=True)
-    next_tab_button(1, "กระบวนการ")
+    tab_nav(next=(1, "กระบวนการ"))
 
 with TAB_PROC:
     components.html(content.doc(content.PROCESS), height=content.HEIGHT['PROCESS'], scrolling=True)
-    next_tab_button(2, "ที่มาของข้อมูล")
+    tab_nav(prev=(0, "CFPB คืออะไร"), next=(2, "ที่มาของข้อมูล"))
 
 with TAB_DATA:
     components.html(content.doc(content.DATA), height=content.HEIGHT['DATA'], scrolling=True)
-    next_tab_button(3, "โมเดลของเรา")
+    tab_nav(prev=(1, "กระบวนการ"), next=(3, "โมเดลของเรา"))
 
 with TAB_MODEL:
     components.html(content.doc(content.MODEL), height=content.HEIGHT['MODEL'], scrolling=True)
-    next_tab_button(4, "Colab Notebook")
+    tab_nav(prev=(2, "ที่มาของข้อมูล"), next=(4, "Colab Notebook"))
 
 @st.cache_data(show_spinner=False)
 def load_notebook_html():
@@ -285,7 +305,7 @@ with TAB_NB:
     if st.toggle("แสดงโน้ตบุ๊กในหน้านี้", value=False):
         with st.spinner("กำลังโหลดโน้ตบุ๊ก ..."):
             components.html(load_notebook_html(), height=1500, scrolling=True)
-    next_tab_button(5, "ลองใช้โมเดล")
+    tab_nav(prev=(3, "โมเดลของเรา"), next=(5, "ลองใช้โมเดล"))
 
 with TAB_DEMO:
     _pad_l, _mid, _pad_r = st.columns([1, 3, 1])
@@ -380,3 +400,5 @@ with TAB_DEMO:
 
         with st.expander("รายละเอียดโมเดล"):
             st.json(meta)
+
+        tab_nav(prev=(4, "Colab Notebook"))
