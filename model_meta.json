@@ -1,0 +1,34 @@
+{
+  "model": "TF-IDF + LogisticRegression",
+  "target": "Product",
+  "classes": [
+    "Checking / savings account",
+    "Credit card / Prepaid card",
+    "Credit reporting",
+    "Debt collection",
+    "Debt or credit management",
+    "Money transfer / crypto",
+    "Mortgage",
+    "Payday / title / personal loan",
+    "Student loan",
+    "Vehicle loan / lease"
+  ],
+  "n_train": 48000,
+  "n_test": 12000,
+  "accuracy": 0.87725,
+  "macro_f1": 0.7296941509693464,
+  "baseline_macro_f1": 0.07803018752858668,
+  "confidence_threshold": 0.4,
+  "tfidf_params": {
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 3,
+    "max_df": 0.85,
+    "sublinear_tf": true,
+    "stop_words": "english",
+    "max_features": 150000
+  },
+  "random_state": 42
+}
