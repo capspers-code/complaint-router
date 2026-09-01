@@ -116,13 +116,13 @@ _h_r.markdown(
     unsafe_allow_html=True,
 )
 
-TAB_DEMO, TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB = st.tabs([
-    "ลองใช้โมเดล",
+TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB, TAB_DEMO = st.tabs([
     "CFPB คืออะไร",
     "กระบวนการ",
     "ที่มาของข้อมูล",
     "โมเดลของเรา",
-    "Notebook เต็ม",
+    "Colab Notebook",
+    "ลองใช้โมเดล",
 ])
 
 with TAB_CFPB:
