@@ -42,17 +42,57 @@ def is_thai(s):
     return len(RE_THAI.findall(s)) / max(len(s), 1) > 0.15
 
 
-@st.cache_data(show_spinner=False)
+def _chunks(text, size=460):
+    """ตัดข้อความเป็นท่อนตามช่องว่าง (MyMemory จำกัดความยาวต่อครั้ง)"""
+    words, cur, out = text.split(), "", []
+    for w in words:
+        if len(cur) + len(w) + 1 > size:
+            out.append(cur.strip())
+            cur = w
+        else:
+            cur += " " + w
+    if cur.strip():
+        out.append(cur.strip())
+    return out or [text[:size]]
+
+
 def to_english(text):
-    """แปลไทย -> อังกฤษ คืนค่า (ข้อความอังกฤษ, ข้อความ error ถ้ามี)"""
+    """แปลไทย -> อังกฤษ ลองหลายตัวแปลตามลำดับ คืนค่า (ข้อความ, error, ชื่อตัวแปล)"""
+    import time
+    errs = []
+    text = text.strip()
+
+    # ── ตัวที่ 1: Google (ลอง 2 ครั้ง) ─────────────────────────────
     try:
         from deep_translator import GoogleTranslator
-        out = GoogleTranslator(source="th", target="en").translate(text[:4500])
-        if not out or not out.strip():
-            return None, "ตัวแปลคืนค่าว่าง"
-        return out, None
+        for attempt in range(2):
+            try:
+                out = GoogleTranslator(source="auto", target="en").translate(text[:4500])
+                if out and out.strip():
+                    return out, None, "Google"
+                errs.append("Google: คืนค่าว่าง")
+            except Exception as e:
+                errs.append(f"Google: {type(e).__name__}")
+            time.sleep(1.2)
     except Exception as e:
-        return None, f"{type(e).__name__}: {e}"
+        errs.append(f"Google import: {type(e).__name__}")
+
+    # ── ตัวที่ 2: MyMemory (ฟรี ไม่ต้องใช้คีย์ ต้องตัดเป็นท่อน) ──────
+    try:
+        from deep_translator import MyMemoryTranslator
+        tr = MyMemoryTranslator(source="th-TH", target="en-US")
+        parts = []
+        for ch in _chunks(text):
+            r = tr.translate(ch)
+            if r and r.strip():
+                parts.append(r.strip())
+        if parts:
+            return " ".join(parts), None, "MyMemory"
+        errs.append("MyMemory: คืนค่าว่าง")
+    except Exception as e:
+        errs.append(f"MyMemory: {type(e).__name__}")
+
+    return None, " | ".join(errs), None
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -111,14 +151,17 @@ if st.button("จำแนกหมวด", type="primary", use_container_width=
         st.warning("กรุณาใส่ข้อความอย่างน้อย 30 ตัวอักษร")
         st.stop()
 
-    text_en, err = txt, None
+    text_en, engine = txt, None
     if is_thai(txt):
         with st.spinner("กำลังแปลภาษาไทยเป็นอังกฤษ ..."):
-            text_en, err = to_english(txt)
+            text_en, err, engine = to_english(txt)
         if err:
-            st.error("แปลภาษาไม่สำเร็จ — กรุณาวางข้อความภาษาอังกฤษแทน\n\nรายละเอียด: " + err)
+            st.error(
+                "แปลภาษาไม่สำเร็จจากทุกตัวแปล — กดปุ่มอีกครั้ง หรือวางข้อความภาษาอังกฤษแทน"
+                "\n\nรายละเอียด: " + err
+            )
             st.stop()
-        with st.expander("ข้อความหลังแปลเป็นอังกฤษ (สิ่งที่โมเดลเห็นจริง)"):
+        with st.expander("ข้อความหลังแปลเป็นอังกฤษ (สิ่งที่โมเดลเห็นจริง) · ตัวแปล: " + str(engine)):
             st.write(text_en)
 
     cleaned = clean_text(text_en)
