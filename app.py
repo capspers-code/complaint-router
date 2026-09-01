@@ -110,13 +110,16 @@ _h_r.markdown(
     unsafe_allow_html=True,
 )
 
-TAB_DEMO, TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL = st.tabs([
+TAB_DEMO, TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB = st.tabs([
     "ลองใช้โมเดล",
     "CFPB คืออะไร",
     "กระบวนการ",
     "ที่มาของข้อมูล",
     "โมเดลของเรา",
+    "Notebook เต็ม",
 ])
+
+NB_URL = "/app/static/notebook.html"
 
 with TAB_CFPB:
     components.html(content.doc(content.CFPB), height=content.HEIGHT['CFPB'], scrolling=True)
@@ -129,6 +132,14 @@ with TAB_DATA:
 
 with TAB_MODEL:
     components.html(content.doc(content.MODEL), height=content.HEIGHT['MODEL'], scrolling=True)
+
+with TAB_NB:
+    st.markdown(
+        "โน้ตบุ๊ก CRISP-DM ฉบับเต็มที่รันจริงบน Google Colab — โค้ด ผลลัพธ์ "
+        "ตาราง และกราฟทุกภาพ ตามที่รันออกมาจริง "
+        f"([เปิดในแท็บใหม่]({NB_URL}))"
+    )
+    components.iframe(NB_URL, height=1500, scrolling=True)
 
 with TAB_DEMO:
     _pad_l, _mid, _pad_r = st.columns([1, 3, 1])
