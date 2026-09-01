@@ -290,8 +290,8 @@ with TAB_MODEL:
     components.html(content.doc(content.MODEL), height=content.HEIGHT['MODEL'], scrolling=True)
     tab_nav(prev=(2, "ที่มาของข้อมูล"), next=(4, "Colab Notebook"))
 
-@st.cache_data(show_spinner=False)
 def load_notebook_html():
+    """อ่านสดทุกครั้ง — ห้าม cache ไม่งั้นได้ไฟล์เก่าหลัง deploy ใหม่"""
     with open("static/notebook.html", encoding="utf-8") as f:
         return f.read()
 
