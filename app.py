@@ -99,7 +99,16 @@ def to_english(text):
 
 # ══════════════════════════════════════════════════════════════════
 st.title("📮 Automated Complaint Routing")
-st.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")
+
+_h_l, _h_r = st.columns([3, 2])
+_h_l.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")
+_h_r.markdown(
+    "<div style='text-align:right;font-size:13.5px;line-height:1.75;"
+    "color:rgba(250,250,250,.62)'>"
+    "วงศ์วริศ ศิรหิรัญชานนท์ &nbsp;<b>69140005</b><br>"
+    "ศุภิสรา ชีวนันทพร &nbsp;<b>69140001</b></div>",
+    unsafe_allow_html=True,
+)
 
 TAB_DEMO, TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL = st.tabs([
     "ลองใช้โมเดล",
