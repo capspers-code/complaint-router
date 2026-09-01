@@ -98,6 +98,12 @@ def to_english(text):
 
 
 # ══════════════════════════════════════════════════════════════════
+st.markdown(
+    "<div style='font-size:12px;font-weight:700;letter-spacing:.16em;"
+    "text-transform:uppercase;color:#FF6B6B;margin-bottom:-6px'>"
+    "Consumer Financial Protection Bureau</div>",
+    unsafe_allow_html=True,
+)
 st.title("📮 Automated Complaint Routing")
 
 _h_l, _h_r = st.columns([3, 2])
