@@ -13660,8 +13660,16 @@ though I had enough money in savings.
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="8.3-%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B9%84%E0%B8%9F%E0%B8%A5%E0%B9%8C%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A-deploy-%E0%B8%9A%E0%B8%99-Hugging-Face-Spaces">8.3 สร้างไฟล์สำหรับ deploy บน Hugging Face Spaces<a class="anchor-link" href="#8.3-%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B9%84%E0%B8%9F%E0%B8%A5%E0%B9%8C%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A-deploy-%E0%B8%9A%E0%B8%99-Hugging-Face-Spaces">¶</a></h2><p>เซลล์ข้างล่างสร้างไฟล์ครบชุดที่พร้อมอัปโหลดขึ้น Hugging Face Spaces (ฟรี)
-ได้ URL จริงที่กดโชว์หน้าห้องได้</p>
+<h2 id="8.3-%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B9%84%E0%B8%9F%E0%B8%A5%E0%B9%8C%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A-deploy-%E0%B8%9A%E0%B8%99-Streamlit-Community-Cloud">8.3 สร้างไฟล์สำหรับ deploy บน Streamlit Community Cloud<a class="anchor-link" href="#8.3-%E0%B8%AA%E0%B8%A3%E0%B9%89%E0%B8%B2%E0%B8%87%E0%B9%84%E0%B8%9F%E0%B8%A5%E0%B9%8C%E0%B8%AA%E0%B8%B3%E0%B8%AB%E0%B8%A3%E0%B8%B1%E0%B8%9A-deploy-%E0%B8%9A%E0%B8%99-Streamlit-Community-Cloud">¶</a></h2><p>เซลล์ข้างล่างสร้างไฟล์ครบชุดที่พร้อมอัปขึ้น GitHub แล้ว deploy ด้วย
+<strong>Streamlit Community Cloud</strong> (ฟรี) ได้ URL จริงที่กดโชว์หน้าห้องได้</p>
+<blockquote>
+<p><strong>หมายเหตุ</strong> — เว็บที่ deploy จริงมีสองชั้น
+<strong>ชั้นโมเดล</strong> คือไฟล์ที่เซลล์นี้สร้าง (<code>app.py</code> · <code>model.joblib</code> · <code>model_meta.json</code> ·
+<code>requirements.txt</code> · <code>.streamlit/config.toml</code>) รันได้ด้วยตัวเองครบถ้วน
+<strong>ชั้นนำเสนอ</strong> คือแท็บอินโฟกราฟิกและแท็บโน้ตบุ๊ก ซึ่งเป็นไฟล์ประกอบการนำเสนอ
+(<code>content.py</code> · <code>static/notebook.html</code>) เก็บไว้ใน GitHub repo ไม่ได้สร้างจากโน้ตบุ๊ก
+เพราะไม่ใช่ผลลัพธ์ของกระบวนการ CRISP-DM</p>
+</blockquote>
 </div>
 </div>
 </div>
@@ -13673,7 +13681,8 @@ though I had enough money in savings.
 <div class="jp-InputPrompt jp-InputArea-prompt">In [42]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="n">APP</span> <span class="o">=</span> <span class="p">[</span>
+<div class="highlight hl-python"><pre><span></span><span class="c1"># ── 1) ไฟล์แอป Streamlit (เวอร์ชันเดโมโมเดลล้วน รันได้ด้วยตัวเอง) ──</span>
+<span class="n">APP</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'import json, re'</span><span class="p">,</span>
     <span class="s1">'import joblib'</span><span class="p">,</span>
     <span class="s1">'import numpy as np'</span><span class="p">,</span>
@@ -13770,10 +13779,24 @@ though I had enough money in savings.
     <span class="s1">''</span><span class="p">,</span>
     <span class="s1">'    return None, " | ".join(errs), None'</span><span class="p">,</span>
     <span class="s1">''</span><span class="p">,</span>
-    <span class="s1">''</span><span class="p">,</span>
     <span class="s1">'# ══════════════════════════════════════════════════════════════════'</span><span class="p">,</span>
+    <span class="s1">'st.markdown('</span><span class="p">,</span>
+    <span class="s1">'    "&lt;div style=</span><span class="se">\'</span><span class="s1">font-size:22px;font-weight:800;letter-spacing:.10em;"'</span><span class="p">,</span>
+    <span class="s1">'    "text-transform:uppercase;color:#6EA8FF;margin-bottom:-2px</span><span class="se">\'</span><span class="s1">&gt;"'</span><span class="p">,</span>
+    <span class="s1">'    "Consumer Financial Protection Bureau&lt;/div&gt;",'</span><span class="p">,</span>
+    <span class="s1">'    unsafe_allow_html=True,'</span><span class="p">,</span>
+    <span class="s1">')'</span><span class="p">,</span>
     <span class="s1">'st.title("📮 Automated Complaint Routing")'</span><span class="p">,</span>
-    <span class="s1">'st.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")'</span><span class="p">,</span>
+    <span class="s1">''</span><span class="p">,</span>
+    <span class="s1">'_h_l, _h_r = st.columns([3, 2])'</span><span class="p">,</span>
+    <span class="s1">'_h_l.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")'</span><span class="p">,</span>
+    <span class="s1">'_h_r.markdown('</span><span class="p">,</span>
+    <span class="s1">'    "&lt;div style=</span><span class="se">\'</span><span class="s1">text-align:right;font-size:13.5px;line-height:1.75;"'</span><span class="p">,</span>
+    <span class="s1">'    "color:rgba(250,250,250,.62)</span><span class="se">\'</span><span class="s1">&gt;"'</span><span class="p">,</span>
+    <span class="s1">'    "วงศ์วริศ ศิรหิรัญชานนท์ &amp;nbsp;&lt;b&gt;69140005&lt;/b&gt;&lt;br&gt;"'</span><span class="p">,</span>
+    <span class="s1">'    "ศุภิสรา ชีวนันทพร &amp;nbsp;&lt;b&gt;69140001&lt;/b&gt;&lt;/div&gt;",'</span><span class="p">,</span>
+    <span class="s1">'    unsafe_allow_html=True,'</span><span class="p">,</span>
+    <span class="s1">')'</span><span class="p">,</span>
     <span class="s1">''</span><span class="p">,</span>
     <span class="s1">'c1, c2, c3 = st.columns(3)'</span><span class="p">,</span>
     <span class="s1">'c1.metric("Macro F1", round(meta["macro_f1"], 3))'</span><span class="p">,</span>
@@ -13872,16 +13895,6 @@ though I had enough money in savings.
         <span class="s2">"joblib"</span><span class="p">,</span> <span class="s2">"numpy"</span><span class="p">,</span> <span class="s2">"scipy"</span><span class="p">,</span> <span class="s2">"deep-translator"</span><span class="p">]</span>
 
 <span class="n">README</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">"---"</span><span class="p">,</span>
-    <span class="s2">"title: Automated Complaint Routing"</span><span class="p">,</span>
-    <span class="s2">"emoji: 📮"</span><span class="p">,</span>
-    <span class="s2">"colorFrom: blue"</span><span class="p">,</span>
-    <span class="s2">"colorTo: red"</span><span class="p">,</span>
-    <span class="s2">"sdk: streamlit"</span><span class="p">,</span>
-    <span class="s2">"app_file: app.py"</span><span class="p">,</span>
-    <span class="s2">"pinned: false"</span><span class="p">,</span>
-    <span class="s2">"---"</span><span class="p">,</span>
-    <span class="s2">""</span><span class="p">,</span>
     <span class="s2">"# Automated Complaint Routing"</span><span class="p">,</span>
     <span class="s2">""</span><span class="p">,</span>
     <span class="s2">"QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความที่ผู้บริโภคเขียนเอง"</span><span class="p">,</span>
@@ -13891,20 +13904,41 @@ though I had enough money in savings.
     <span class="s2">"- Macro F1: "</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">mf1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"  |  Accuracy: "</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
     <span class="s2">"- Baseline Macro F1: "</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">base_f1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
     <span class="s2">""</span><span class="p">,</span>
+    <span class="s2">"## วิธี deploy"</span><span class="p">,</span>
+    <span class="s2">""</span><span class="p">,</span>
+    <span class="s2">"1. อัปโหลดไฟล์ทั้งหมดในโฟลเดอร์นี้ขึ้น GitHub repo แบบ Public"</span><span class="p">,</span>
+    <span class="s2">"2. เข้า share.streamlit.io &gt; Create app &gt; Deploy a public app from GitHub"</span><span class="p">,</span>
+    <span class="s2">"3. Main file path = app.py แล้วกด Deploy"</span><span class="p">,</span>
+    <span class="s2">""</span><span class="p">,</span>
     <span class="s2">"โมเดลนี้ทำหน้าที่ **แนะนำ** หมวด ไม่ใช่ตัดสินใจแทนมนุษย์"</span><span class="p">,</span>
     <span class="s2">"เมื่อความมั่นใจต่ำกว่าเกณฑ์ ระบบจะส่งเรื่องเข้าคิวให้เจ้าหน้าที่ตรวจสอบ"</span><span class="p">,</span>
 <span class="p">]</span>
 
+<span class="c1"># ── 2) ตั้งค่าธีมให้ทุกคนเห็นสีเดียวกัน ──────────────────────────</span>
+<span class="n">CONFIG</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"[theme]"</span><span class="p">,</span>
+    <span class="s1">'base = "dark"'</span><span class="p">,</span>
+    <span class="s1">'primaryColor = "#FF4B4B"'</span><span class="p">,</span>
+    <span class="s1">'backgroundColor = "#0E1117"'</span><span class="p">,</span>
+    <span class="s1">'secondaryBackgroundColor = "#262730"'</span><span class="p">,</span>
+    <span class="s1">'textColor = "#FAFAFA"'</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">"deploy/.streamlit"</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 <span class="k">for</span> <span class="n">fn</span><span class="p">,</span> <span class="n">lines</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"deploy/app.py"</span><span class="p">,</span> <span class="n">APP</span><span class="p">),</span>
                   <span class="p">(</span><span class="s2">"deploy/requirements.txt"</span><span class="p">,</span> <span class="n">REQS</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s2">"deploy/README.md"</span><span class="p">,</span> <span class="n">README</span><span class="p">)]:</span>
+                  <span class="p">(</span><span class="s2">"deploy/README.md"</span><span class="p">,</span> <span class="n">README</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">"deploy/.streamlit/config.toml"</span><span class="p">,</span> <span class="n">CONFIG</span><span class="p">)]:</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"สร้าง </span><span class="si">{</span><span class="n">fn</span><span class="si">}</span><span class="s2">  (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="si">}</span><span class="s2"> บรรทัด)"</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">ไฟล์ในโฟลเดอร์ deploy/"</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s2">"deploy"</span><span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">f</span><span class="si">:</span><span class="s2">24s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="s1">'deploy/'</span><span class="o">+</span><span class="n">f</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">fs</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="s2">"deploy"</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">p</span><span class="si">:</span><span class="s2">32s</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="si">:</span><span class="s2">7.2f</span><span class="si">}</span><span class="s2"> MB"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -13917,16 +13951,18 @@ though I had enough money in savings.
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>สร้าง deploy/app.py  (191 บรรทัด)
+<pre>สร้าง deploy/app.py  (205 บรรทัด)
 สร้าง deploy/requirements.txt  (6 บรรทัด)
-สร้าง deploy/README.md  (21 บรรทัด)
+สร้าง deploy/README.md  (17 บรรทัด)
+สร้าง deploy/.streamlit/config.toml  (6 บรรทัด)
 
 ไฟล์ในโฟลเดอร์ deploy/
-  README.md                   0.00 MB
-  app.py                      0.01 MB
-  model.joblib                7.28 MB
-  model_meta.json             0.00 MB
-  requirements.txt            0.00 MB
+  deploy/README.md                       0.00 MB
+  deploy/app.py                          0.01 MB
+  deploy/model.joblib                    7.28 MB
+  deploy/model_meta.json                 0.00 MB
+  deploy/requirements.txt                0.00 MB
+  deploy/.streamlit/config.toml          0.00 MB
 </pre>
 </div>
 </div>
@@ -13967,9 +14003,9 @@ though I had enough money in savings.
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="2856f217-4b4e-4371-8d96-6e1d9fe98739" tabindex="0">
+<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="72db5d63-e504-46df-972c-4517d9035633" tabindex="0">
 <script type="text/javascript">
-var element = document.getElementById('2856f217-4b4e-4371-8d96-6e1d9fe98739');
+var element = document.getElementById('72db5d63-e504-46df-972c-4517d9035633');
 
     async function download(id, filename, size) {
       if (!google.colab.kernel.accessAllowed) {
@@ -14016,9 +14052,9 @@ var element = document.getElementById('2856f217-4b4e-4371-8d96-6e1d9fe98739');
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="2026fa53-15b5-4210-9ece-c4ee683483a4" tabindex="0">
+<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="25a92857-8957-40cb-9723-990947e6c862" tabindex="0">
 <script type="text/javascript">
-var element = document.getElementById('2026fa53-15b5-4210-9ece-c4ee683483a4');
+var element = document.getElementById('25a92857-8957-40cb-9723-990947e6c862');
 download("download_34cf48c7-8543-4b46-a2e1-8ca868684f0f", "complaint_router_deploy.zip", 7285898)
 </script>
 </div>
@@ -14041,8 +14077,9 @@ Space ประเภท Streamlit / Gradio / Docker ต้องสมัคร
 <h3 id="%E0%B8%82%E0%B8%B1%E0%B9%89%E0%B8%99%E0%B8%95%E0%B8%AD%E0%B8%99">ขั้นตอน<a class="anchor-link" href="#%E0%B8%82%E0%B8%B1%E0%B9%89%E0%B8%99%E0%B8%95%E0%B8%AD%E0%B8%99">¶</a></h3><p><strong>1. อัปโหลดขึ้น GitHub</strong></p>
 <ul>
 <li>สร้าง repository ใหม่แบบ <strong>Public</strong></li>
-<li>อัปโหลดไฟล์ทั้ง 5 จากโฟลเดอร์ <code>deploy</code> ไว้ที่ชั้นบนสุดของ repo
+<li>อัปโหลดทุกไฟล์ในโฟลเดอร์ <code>deploy</code> ไว้ที่ชั้นบนสุดของ repo
 (<code>app.py</code> · <code>model.joblib</code> · <code>model_meta.json</code> · <code>requirements.txt</code> · <code>README.md</code>)</li>
+<li>อย่าลืมโฟลเดอร์ย่อย <code>.streamlit/config.toml</code> ด้วย ไม่งั้นคนที่เปิดลิงก์จะเห็นธีมไม่เหมือนกัน</li>
 </ul>
 <p><strong>2. Deploy</strong></p>
 <ul>
@@ -14466,10 +14503,31 @@ Baseline Macro F1 : 0.0780
 </tr>
 <tr>
 <td>10</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>2026-09-02</td>
+<td>หัวโน้ตบุ๊กใส่ชื่อผู้จัดทำไว้ในคอลัมน์หัวข้อ ช่องค่ากลับว่าง</td>
+<td>ย้ายชื่อและรหัสไปคอลัมน์ค่าให้ถูกตำแหน่ง</td>
+<td>ตารางหัวเรื่องอ่านได้ตรงตามที่ตั้งใจ</td>
+</tr>
+<tr>
+<td>11</td>
+<td>2026-09-02</td>
+<td>L-1 เขียนว่า "ใช้เฉพาะข้อความภาษาอังกฤษ" ขัดกับ L-7 ที่บอกว่ารองรับไทย</td>
+<td>แก้เป็น "<strong>ตัวโมเดล</strong>รับเฉพาะอังกฤษ" พร้อมโยงไป L-7</td>
+<td>แยกข้อจำกัดของโมเดลออกจากข้อจำกัดของระบบชัดเจน</td>
+</tr>
+<tr>
+<td>12</td>
+<td>2026-09-02</td>
+<td>§8.3 ยังเขียนว่า deploy บน Hugging Face Spaces ทั้งที่ย้ายไป Streamlit Community Cloud แล้ว</td>
+<td>เขียน §8.3 ใหม่ทั้งหัวข้อและเซลล์สร้างไฟล์ เพิ่ม <code>.streamlit/config.toml</code></td>
+<td>เอกสารตรงกับระบบที่ deploy จริง</td>
+</tr>
+<tr>
+<td>13</td>
+<td>2026-09-02</td>
+<td>เว็บแสดงโน้ตบุ๊กเวอร์ชันเก่าแม้ไฟล์อัปเดตแล้ว</td>
+<td>ถอด <code>@st.cache_data</code> ที่ครอบฟังก์ชันอ่านไฟล์ออก</td>
+<td>หน้าเว็บแสดงเนื้อหาล่าสุดเสมอหลัง deploy</td>
 </tr>
 </tbody>
 </table>
