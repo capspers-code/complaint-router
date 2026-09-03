@@ -164,7 +164,7 @@ st.html("""
 # ══════════════════════════════════════════════════════════════════
 # ── แถบบนสุด: โลโก้ + ชื่อผู้จัดทำ + สังกัด ──────────────────────────
 DPU_LOGO = "https://www.dpu.ac.th/frontend-images/logo/dpu-logo-color.svg"
-NEON = "#4ADE80"
+NEON = "#3A8763"
 
 _top_l, _top_r = st.columns([3, 2])
 _top_r.markdown(
