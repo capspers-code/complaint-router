@@ -164,22 +164,20 @@ st.html("""
 # ══════════════════════════════════════════════════════════════════
 # ── แถบบนสุด: โลโก้ + ชื่อผู้จัดทำ + สังกัด ──────────────────────────
 DPU_LOGO = "https://www.dpu.ac.th/frontend-images/logo/dpu-logo-color.svg"
-NEON = "#39FF14"
+NEON = "#4ADE80"
 
 _top_l, _top_r = st.columns([3, 2])
 _top_r.markdown(
     "<div style='text-align:right;line-height:1.7'>"
     "<img src='" + DPU_LOGO + "' alt='DPU' "
     "style='height:56px;margin-bottom:10px;display:inline-block'><br>"
-    "<span style='font-size:16px;font-weight:700;color:" + NEON + ";"
-    "text-shadow:0 0 6px rgba(57,255,20,.65),0 0 18px rgba(57,255,20,.35)'>"
+    "<span style='font-size:16px;font-weight:700;color:" + NEON + "'>"
     "วงศ์วริศ ศิรหิรัญชานนท์ &nbsp;69140005</span><br>"
-    "<span style='font-size:16px;font-weight:700;color:" + NEON + ";"
-    "text-shadow:0 0 6px rgba(57,255,20,.65),0 0 18px rgba(57,255,20,.35)'>"
+    "<span style='font-size:16px;font-weight:700;color:" + NEON + "'>"
     "ศุภิสรา ชีวนันทพร &nbsp;69140001</span><br>"
     "<span style='font-size:12.5px;font-weight:700;letter-spacing:.22em;"
     "color:rgba(250,250,250,.55);display:inline-block;margin-top:6px'>"
-    "CITE DPU</span></div>",
+    "CITE</span></div>",
     unsafe_allow_html=True,
 )
 
