@@ -162,6 +162,27 @@ st.html("""
 """)
 
 # ══════════════════════════════════════════════════════════════════
+# ── แถบบนสุด: โลโก้ + ชื่อผู้จัดทำ + สังกัด ──────────────────────────
+DPU_LOGO = "https://www.dpu.ac.th/frontend-images/logo/dpu-logo-color.svg"
+NEON = "#39FF14"
+
+_top_l, _top_r = st.columns([3, 2])
+_top_r.markdown(
+    "<div style='text-align:right;line-height:1.7'>"
+    "<img src='" + DPU_LOGO + "' alt='DPU' "
+    "style='height:56px;margin-bottom:10px;display:inline-block'><br>"
+    "<span style='font-size:16px;font-weight:700;color:" + NEON + ";"
+    "text-shadow:0 0 6px rgba(57,255,20,.65),0 0 18px rgba(57,255,20,.35)'>"
+    "วงศ์วริศ ศิรหิรัญชานนท์ &nbsp;69140005</span><br>"
+    "<span style='font-size:16px;font-weight:700;color:" + NEON + ";"
+    "text-shadow:0 0 6px rgba(57,255,20,.65),0 0 18px rgba(57,255,20,.35)'>"
+    "ศุภิสรา ชีวนันทพร &nbsp;69140001</span><br>"
+    "<span style='font-size:12.5px;font-weight:700;letter-spacing:.22em;"
+    "color:rgba(250,250,250,.55);display:inline-block;margin-top:6px'>"
+    "CITE DPU</span></div>",
+    unsafe_allow_html=True,
+)
+
 st.markdown(
     "<div style='font-size:22px;font-weight:800;letter-spacing:.10em;"
     "text-transform:uppercase;color:#6EA8FF;margin-bottom:-2px'>"
@@ -169,16 +190,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.title("📮 Automated Complaint Routing")
-
-_h_l, _h_r = st.columns([3, 2])
-_h_l.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")
-_h_r.markdown(
-    "<div style='text-align:right;font-size:13.5px;line-height:1.75;"
-    "color:rgba(250,250,250,.62)'>"
-    "วงศ์วริศ ศิรหิรัญชานนท์ &nbsp;<b>69140005</b><br>"
-    "ศุภิสรา ชีวนันทพร &nbsp;<b>69140001</b></div>",
-    unsafe_allow_html=True,
-)
+st.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")
 
 TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB, TAB_DEMO = st.tabs([
     "CFPB คืออะไร",
