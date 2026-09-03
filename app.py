@@ -290,21 +290,52 @@ with TAB_MODEL:
     components.html(content.doc(content.MODEL), height=content.HEIGHT['MODEL'], scrolling=True)
     tab_nav(prev=(2, "ที่มาของข้อมูล"), next=(4, "Colab Notebook"))
 
-def load_notebook_html():
+def load_notebook_html(fname):
     """อ่านสดทุกครั้ง — ห้าม cache ไม่งั้นได้ไฟล์เก่าหลัง deploy ใหม่"""
-    with open("static/notebook.html", encoding="utf-8") as f:
+    with open("static/" + fname, encoding="utf-8") as f:
         return f.read()
+
+
+NOTEBOOKS = [
+    {
+        "key": "screening",
+        "file": "screening.html",
+        "name": "QE830_Dataset_Screening_Tool.ipynb",
+        "desc": ("**Dataset Screening Tool** ตรวจก่อนลงมือว่าชุดข้อมูลมีสัญญาณจริงไหม — "
+                 "lookup-table · leakage · chi-square · baseline vs model · "
+                 "single-feature dominance → GO/NO-GO"),
+    },
+    {
+        "key": "main",
+        "file": "notebook.html",
+        "name": "QE830_Project1_CFPB_Complaint_Routing.ipynb",
+        "desc": ("**CRISP-DM ฉบับเต็ม** งานหลัก §0–§10 กรอง 17.5 ล้าน → 150,000 · "
+                 "EDA 13 กราฟ · เทรน 5 โมเดล · เลือกโมเดล · สร้างไฟล์ deploy"),
+    },
+]
 
 
 with TAB_NB:
     st.markdown(
-        "โน้ตบุ๊ก CRISP-DM ฉบับเต็มที่รันจริงบน Google Colab — โค้ด ผลลัพธ์ "
-        "ตาราง และกราฟทุกภาพ ตามที่รันออกมาจริง (ไฟล์ประมาณ 1.3 MB "
-        "จึงต้องกดเปิดเอง เพื่อไม่ให้แท็บอื่นโหลดช้า)"
+        "โน้ตบุ๊กที่รันจริงบน Google Colab — โค้ด ผลลัพธ์ ตาราง และกราฟทุกภาพ "
+        "ตามที่รันออกมาจริง ไม่ได้พิมพ์ผลลัพธ์ใส่เอง "
+        "(ไฟล์ค่อนข้างใหญ่ จึงต้องกดเปิดเอง เพื่อไม่ให้แท็บอื่นโหลดช้า)"
     )
-    if st.toggle("แสดงโน้ตบุ๊กในหน้านี้", value=False):
-        with st.spinner("กำลังโหลดโน้ตบุ๊ก ..."):
-            components.html(load_notebook_html(), height=1500, scrolling=True)
+
+    for _nb in NOTEBOOKS:
+        st.divider()
+        _c_sw, _c_txt = st.columns([1, 6])
+        with _c_sw:
+            _show = st.toggle("แสดง", key="sw_" + _nb["key"], value=False)
+        with _c_txt:
+            st.markdown("**`" + _nb["name"] + "`**")
+            st.caption(_nb["desc"])
+        if _show:
+            with st.spinner("กำลังโหลดโน้ตบุ๊ก ..."):
+                components.html(load_notebook_html(_nb["file"]),
+                                height=1500, scrolling=True)
+
+    st.divider()
     tab_nav(prev=(3, "โมเดลของเรา"), next=(5, "ลองใช้โมเดล"))
 
 with TAB_DEMO:
