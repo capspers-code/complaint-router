@@ -21,8 +21,12 @@ _AUTOHEIGHT_JS = """<script>
 (function(){
   var last = 0;
   function report(){
-    var h = Math.ceil(Math.max(
-      document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0));
+    // วัดจากกล่องเนื้อหาจริง ไม่ใช่ scrollHeight ของทั้งหน้า
+    // เพราะพอขยาย iframe ไปแล้ว scrollHeight จะไม่มีวันหดกลับ
+    // (ฟอนต์โหลดช้าบนมือถือ -> วัดครั้งแรกได้ค่าสูงเกิน -> เหลือช่องว่างดำยาวใต้เนื้อหา)
+    var w = document.querySelector('.wrap');
+    var h = w ? Math.ceil(w.offsetTop + w.offsetHeight + 24)
+              : Math.ceil(document.documentElement.scrollHeight);
     if (h && Math.abs(h - last) > 2) {
       last = h;
       try {
@@ -36,10 +40,13 @@ _AUTOHEIGHT_JS = """<script>
   window.addEventListener("load", report);
   window.addEventListener("resize", report);
   document.addEventListener("DOMContentLoaded", report);
-  if (window.ResizeObserver && document.documentElement) {
-    new ResizeObserver(report).observe(document.documentElement);
+  if (window.ResizeObserver) {
+    var target = document.querySelector('.wrap') || document.documentElement;
+    if (target) new ResizeObserver(report).observe(target);
   }
-  [80, 300, 900, 2000].forEach(function(t){ setTimeout(report, t); });
+  [80, 300, 900, 2000, 4000].forEach(function(t){ setTimeout(report, t); });
+  // ฟอนต์ไทยโหลดเสร็จทีหลัง ความสูงบรรทัดเปลี่ยน ต้องวัดใหม่
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(report); }
 })();
 </script>"""
 
