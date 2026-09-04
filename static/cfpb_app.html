@@ -245,6 +245,10 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
 .st{white-space:nowrap;font-weight:600;font-size:11.5px}
 .st.good{color:#0a7c0a}.st.warn{color:#8a5300}.st.crit{color:#a32d16}
 /* tooltip */
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:999;
+  background:#101820;color:#fff;font-size:13px;padding:10px 16px;border-radius:5px;
+  opacity:0;transition:opacity .2s;pointer-events:none;max-width:80vw;text-align:center;
+  box-shadow:0 6px 22px rgba(0,0,0,.3)}
 #tip{position:fixed;z-index:999;background:#101820;color:#fff;font-size:12px;
   padding:6px 10px;border-radius:4px;pointer-events:none;opacity:0;transition:opacity .12s;
   white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.22)}
@@ -262,6 +266,7 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
 </head>
 <body>
 <div id="tip"></div>
+<div id="toast"></div>
 
 <div class="demobar">
   <span class="tag">MOCKUP</span>
@@ -275,6 +280,7 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
   <div class="dots" id="dots"></div>
   <span class="stepname" id="stepname"></span>
   <div class="spacer"></div>
+  <button class="btn" id="fs" title="ขยายเต็มจอ (Esc เพื่อออก)">⛶ Full screen</button>
   <button class="btn" id="play">▶ Auto-play</button>
   <button class="btn ghost" id="reset">↺ Reset</button>
 </div>
@@ -828,6 +834,25 @@ function stop(){ playing=false; clearTimeout(timer);
 document.getElementById("next").onclick=()=>{ stop(); advance(); };
 document.getElementById("prev").onclick=()=>{ stop(); back(); };
 document.getElementById("reset").onclick=()=>{ stop(); cur=0; render(); };
+const _fsBtn=document.getElementById("fs"), _toast=document.getElementById("toast");
+function toast(msg,ms){ _toast.textContent=msg; _toast.style.opacity=1;
+  clearTimeout(_toast._t); _toast._t=setTimeout(()=>_toast.style.opacity=0, ms||4200); }
+function inFS(){ return document.fullscreenElement || document.webkitFullscreenElement; }
+_fsBtn.onclick=async function(){
+  try{
+    if(inFS()){ await (document.exitFullscreen||document.webkitExitFullscreen).call(document); }
+    else{
+      const el=document.documentElement;
+      await (el.requestFullscreen||el.webkitRequestFullscreen).call(el);
+    }
+  }catch(e){
+    toast("เบราว์เซอร์ไม่อนุญาตให้ขยายเต็มจอจากในกรอบนี้ — กด F11 หรือใช้ปุ่ม \u2018เปิดแบบเต็มจอ\u2019 ในแอป");
+  }
+};
+document.addEventListener("fullscreenchange",()=>{
+  _fsBtn.textContent = inFS() ? "⛶ Exit full screen" : "⛶ Full screen";
+  _fsBtn.classList.toggle("playing", !!inFS());
+});
 document.getElementById("play").onclick=function(){
   if(playing){ stop(); return; }
   playing=true; this.textContent="⏸ Pause"; this.classList.add("playing");
