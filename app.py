@@ -320,7 +320,9 @@ NOTEBOOKS = [
         "file": "notebook.html",
         "name": "QE830_Project1_CFPB_Complaint_Routing.ipynb",
         "desc": ("**CRISP-DM ฉบับเต็ม** งานหลัก §0–§10 กรอง 17.5 ล้าน → 150,000 · "
-                 "EDA 13 กราฟ · เทรน 5 โมเดล · เลือกโมเดล · สร้างไฟล์ deploy"),
+                 "EDA 13 กราฟ · เทรน 5 โมเดล · เลือกโมเดล · สร้างไฟล์ deploy · "
+                 "**+ §9.3 งานต่อยอด 5 ข้อ ลงมือทำจริงแล้ว** (Issue-model · GridSearchCV · "
+                 "fairness audit · urgency flag · โค้ด BERT พร้อมรัน)"),
     },
 ]
 
