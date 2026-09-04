@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.5.2"
+APP_VERSION = "v1.6.0"
 APP_BUILD   = "2026-09-04"
 
 
@@ -342,6 +342,8 @@ st.html("""
   [data-testid="stMetricLabel"]{ font-size:12.5px !important; }
 }
 @media (max-width: 640px){
+  /* เผื่อที่ให้แถบปุ่มลอยด้านล่าง */
+  [data-testid="stMainBlockContainer"], .block-container{ padding-bottom:104px !important; }
   .stTabs button[data-baseweb="tab"],
   .stTabs [data-testid="stTab"]{ padding:6px 10px 7px !important; }
   .stTabs button[data-baseweb="tab"] p,
@@ -480,9 +482,8 @@ _NAV = """
  /* จอแคบ: ปุ่มสองอันรวมกันกว้างเกินจอ ถ้าเรียงแนวนอนจะล้นออกนอก iframe แล้วโดนตัดหาย
     จึงเรียงลงล่างแทน และให้แต่ละปุ่มเต็มความกว้าง */
  @media (max-width: 640px){
-   .bar{flex-direction:column; align-items:stretch; gap:9px; padding:2px 2px 0}
-   .btn{width:100%; justify-content:center; padding:11px 14px 12px; font-size:14.5px}
-   .sp{display:none}
+   /* บนมือถือใช้แถบลอยติดขอบล่างจอแทน (สร้างในหน้าแม่) จึงซ่อนอันนี้ */
+   .bar{display:none}
  }
 </style>
 <div class="bar">__LEFT____RIGHT__</div>
@@ -611,6 +612,61 @@ components.html("""
   });
 
   setInterval(apply, 400);
+
+  // ── แถบเลื่อนแท็บแบบลอยติดขอบล่าง (เฉพาะจอแคบ) ──
+  // สร้างจากรายการแท็บของหน้าแม่โดยตรง ไม่ต้องพึ่ง iframe จึงไม่หายและอยู่ติดจอเสมอ
+  var W = window.parent;
+  function styleBtn(el, primary){
+    el.style.cssText =
+      "flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:7px;" +
+      "padding:12px 10px;border-radius:10px;font:700 14px/1.15 'Sarabun',system-ui,sans-serif;" +
+      "cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" +
+      (primary
+        ? "background:linear-gradient(180deg,#33506F 0%,#1D2A3A 100%);color:#EAF1FA;border:1px solid #6EA8FF;"
+        : "background:linear-gradient(180deg,#2A3646 0%,#171F29 100%);color:#C6D2E0;border:1px solid #46596F;");
+  }
+  function buildStickyNav(){
+    var bar = doc.getElementById("qe830-stickynav");
+    if (W.innerWidth > 640){ if (bar) bar.remove(); return; }
+    var tabs = [].slice.call(doc.querySelectorAll('[role="tab"]'));
+    if (tabs.length < 2) { if (bar) bar.remove(); return; }
+    var cur = -1;
+    for (var i = 0; i < tabs.length; i++){
+      if (tabs[i].getAttribute("aria-selected") === "true") { cur = i; break; }
+    }
+    if (cur < 0) return;
+    var sig = cur + "/" + tabs.length;
+    if (bar && bar.dataset.sig === sig) return;      // ไม่ต้องสร้างใหม่ถ้าแท็บเดิม
+    if (!bar){
+      bar = doc.createElement("div");
+      bar.id = "qe830-stickynav";
+      bar.style.cssText =
+        "position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:8px;" +
+        "padding:9px 10px calc(9px + env(safe-area-inset-bottom,0px));" +
+        "background:rgba(14,17,23,.94);backdrop-filter:blur(8px);" +
+        "border-top:1px solid #33465C;box-shadow:0 -6px 18px rgba(0,0,0,.45)";
+      doc.body.appendChild(bar);
+    }
+    bar.dataset.sig = sig;
+    bar.innerHTML = "";
+    function mk(idx, label, isNext){
+      var el = doc.createElement("button");
+      el.type = "button";
+      styleBtn(el, isNext);
+      el.textContent = (isNext ? label + "  \u279e" : "\u27f5  " + label);
+      el.addEventListener("click", function(){
+        var t = doc.querySelectorAll('[role="tab"]');
+        if (t[idx]) { t[idx].click(); W.scrollTo({top: 0, behavior: "smooth"}); }
+      });
+      bar.appendChild(el);
+    }
+    if (cur > 0) mk(cur - 1, tabs[cur - 1].innerText.trim(), false);
+    if (cur < tabs.length - 1) mk(cur + 1, tabs[cur + 1].innerText.trim(), true);
+    if (!bar.childNodes.length) bar.remove();
+  }
+  buildStickyNav();
+  setInterval(buildStickyNav, 500);
+  W.addEventListener("resize", buildStickyNav);
 })();
 </script>
 """, height=0)
