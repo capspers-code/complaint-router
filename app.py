@@ -1,4 +1,5 @@
 import json, re
+import time as _time
 import joblib
 import numpy as np
 import streamlit as st
@@ -6,6 +7,11 @@ import content
 import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
+
+# ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
+APP_VERSION = "v1.5.0"
+APP_BUILD   = "2026-09-04"
+
 
 
 @st.cache_resource
@@ -195,7 +201,8 @@ def render_cfpb_app():
     )
     st.caption(
         "หน้าจอทั้งหมดเป็นแบบจำลองเพื่อการนำเสนอ ไม่ใช่ระบบจริงของ CFPB · "
-        "ไม่มีการเก็บหรือส่งข้อมูลจริง · ชื่อบริษัทและเลขเคสสมมติขึ้น"
+        "ไม่มีการเก็บหรือส่งข้อมูลจริง · ชื่อบริษัทและเลขเคสสมมติขึ้น · "
+        "เวอร์ชัน " + APP_VERSION + " (" + APP_BUILD + ")"
     )
     st.markdown(
         '<a href="?app=1&full=1" target="_self" '
@@ -328,7 +335,9 @@ st.html("""
   h2{ font-size:22px !important; }
   h3{ font-size:19px !important; }
   .block-container, [data-testid="stMainBlockContainer"]{
-    padding-left:12px !important; padding-right:12px !important; padding-top:12px !important; }
+    padding-left:12px !important; padding-right:12px !important;
+    /* ต้องเว้นให้พ้นแถบหัวลอยของ Streamlit ไม่งั้นปุ่มบนสุดจะกดไม่ได้ */
+    padding-top:3.4rem !important; }
   [data-testid="stMetricValue"]{ font-size:22px !important; }
   [data-testid="stMetricLabel"]{ font-size:12.5px !important; }
 }
@@ -354,6 +363,26 @@ DPU_LOGO = "https://www.dpu.ac.th/frontend-images/logo/dpu-logo-color.svg"
 NEON = "#3A8763"
 
 _top_l, _top_r = st.columns([3, 2])
+
+# ปุ่มล้างแคช = ลิงก์ที่มีเลขเวลาต่อท้าย กดแล้วเบราว์เซอร์โหลดหน้าใหม่ทั้งหมด
+# (ใช้ลิงก์แทน JS เพราะบนมือถือสคริปต์ใน iframe สั่ง reload หน้าแม่ไม่ได้เสมอไป)
+if st.query_params.get("cb"):
+    st.cache_data.clear()
+    st.cache_resource.clear()
+
+with _top_l:
+    _v1, _v2 = st.columns([1, 2])
+    with _v1:
+        st.markdown(
+            '<a href="?cb=' + str(int(_time.time())) + '" target="_self" '
+            'title="โหลดแอปใหม่ทั้งหมดและล้างแคช — ใช้เมื่อมือถือยังเห็นหน้าตาเวอร์ชันเก่า" '
+            'style="display:block;text-align:center;background:#1E2836;color:#EAF1FA;'
+            'border:1px solid #33465C;border-radius:8px;padding:9px 12px;'
+            'text-decoration:none;font-weight:700;font-size:14px">↻ ล้างแคช</a>',
+            unsafe_allow_html=True,
+        )
+    with _v2:
+        st.caption("เวอร์ชัน **" + APP_VERSION + "** · build " + APP_BUILD)
 _top_r.markdown(
     "<div class='qe-head' style='text-align:right;line-height:1.7'>"
     "<img src='" + DPU_LOGO + "' alt='DPU' "
@@ -522,7 +551,47 @@ components.html("""
     }
   }
 
+  // ── ชั้นทับเต็มจอสำหรับปุ่ม "ดูเต็มจอ" ของรูป (ทางเดียวที่ใช้ได้บน iOS) ──
+  function openLightbox(payload){
+    closeLightbox();
+    var ov = doc.createElement("div");
+    ov.id = "qe830-lightbox";
+    ov.style.cssText = "position:fixed;inset:0;z-index:2147483647;background:#0E1117;" +
+                       "display:flex;flex-direction:column";
+    var bar = doc.createElement("div");
+    bar.style.cssText = "flex:0 0 auto;display:flex;justify-content:flex-end;align-items:center;" +
+                        "padding:8px 10px;background:#0E1117";
+    var x = doc.createElement("button");
+    x.textContent = "\u2715  \u0e1b\u0e34\u0e14";
+    x.style.cssText = "background:#1E2836;color:#EAF1FA;border:1px solid #33465C;border-radius:8px;" +
+                      "font:700 15px/1 system-ui,sans-serif;padding:11px 18px;cursor:pointer";
+    x.addEventListener("click", closeLightbox);
+    bar.appendChild(x);
+    var fr = doc.createElement("iframe");
+    fr.setAttribute("title", "figure");
+    fr.style.cssText = "flex:1 1 auto;width:100%;border:0;background:#0E1117";
+    fr.srcdoc = "<!doctype html><html lang='th'><head>" + payload.head +
+      "<style>html,body{margin:0;background:#0E1117}" +
+      ".wrap{padding:10px 12px 26px}" +
+      "figure{border:0!important;box-shadow:none!important;padding:0!important}" +
+      "figure .fsbtn{display:none!important}" +
+      "figure svg{min-width:0!important;width:100%!important;height:auto!important}" +
+      "</style></head><body><div class='wrap'>" + payload.body + "</div></body></html>";
+    ov.appendChild(bar); ov.appendChild(fr);
+    doc.body.appendChild(ov);
+    doc.documentElement.style.overflow = "hidden";
+    doc.addEventListener("keydown", escClose);
+  }
+  function closeLightbox(){
+    var old = doc.getElementById("qe830-lightbox");
+    if (old) old.remove();
+    doc.documentElement.style.overflow = "";
+    doc.removeEventListener("keydown", escClose);
+  }
+  function escClose(ev){ if (ev.key === "Escape") closeLightbox(); }
+
   window.parent.addEventListener("message", function(e){
+    if (e.data && e.data.qe830Lightbox) { openLightbox(e.data.qe830Lightbox); return; }
     var h = e.data && e.data.qe830Height;
     if (!h || !e.source) return;
     var found = false;
