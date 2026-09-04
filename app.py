@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.6.0"
+APP_VERSION = "v1.6.1"
 APP_BUILD   = "2026-09-04"
 
 
@@ -344,6 +344,11 @@ st.html("""
 @media (max-width: 640px){
   /* เผื่อที่ให้แถบปุ่มลอยด้านล่าง */
   [data-testid="stMainBlockContainer"], .block-container{ padding-bottom:104px !important; }
+  /* วิดเจ็ตลอยมุมขวาล่างของ Streamlit บังปุ่มบนมือถือ — ซ่อนเฉพาะจอแคบ */
+  [data-testid="manage-app-button"],
+  [data-testid="stStatusWidget"],
+  [class*="viewerBadge"],
+  .stAppDeployButton{ display:none !important; }
   .stTabs button[data-baseweb="tab"],
   .stTabs [data-testid="stTab"]{ padding:6px 10px 7px !important; }
   .stTabs button[data-baseweb="tab"] p,
@@ -642,7 +647,8 @@ components.html("""
       bar.id = "qe830-stickynav";
       bar.style.cssText =
         "position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;gap:8px;" +
-        "padding:9px 10px calc(9px + env(safe-area-inset-bottom,0px));" +
+        // เว้นขวา 72px ให้พ้นวิดเจ็ตลอยของส่วนขยายเบราว์เซอร์ที่ทับมุมขวาล่าง
+        "padding:9px 72px calc(9px + env(safe-area-inset-bottom,0px)) 10px;" +
         "background:rgba(14,17,23,.94);backdrop-filter:blur(8px);" +
         "border-top:1px solid #33465C;box-shadow:0 -6px 18px rgba(0,0,0,.45)";
       doc.body.appendChild(bar);
