@@ -146,13 +146,15 @@ FULLSCREEN_CSS = """
   [data-testid="stIFrame"] {height:100vh !important;}
   [data-testid="stIFrame"] iframe, iframe[title="st.iframe"],
   .stIFrame iframe {height:100vh !important; width:100% !important; border:0 !important;}
-  #exitfs {position:fixed; right:12px; bottom:12px; z-index:99999;
-    background:rgba(16,24,32,.86); color:#fff; font:600 12.5px system-ui,sans-serif;
-    padding:7px 14px; border-radius:6px; text-decoration:none;
-    box-shadow:0 4px 16px rgba(0,0,0,.3)}
-  #exitfs:hover {background:#101820}
+  /* ปุ่มออกจากเต็มจอ — ใช้ widget ของ Streamlit เพราะ HTML ดิบถูก sanitize ทิ้ง */
+  [data-testid="stLinkButton"] {position:fixed !important; left:12px; bottom:12px;
+    z-index:99999; width:auto !important;}
+  [data-testid="stLinkButton"] a {background:rgba(16,24,32,.86) !important;
+    color:#fff !important; border:0 !important; font-size:12.5px !important;
+    padding:6px 13px !important; box-shadow:0 4px 16px rgba(0,0,0,.3) !important;
+    min-height:0 !important;}
+  [data-testid="stLinkButton"] a:hover {background:#101820 !important;}
 </style>
-<a id="exitfs" href="?app=1" target="_self">← ออกจากโหมดเต็มจอ</a>
 """
 
 
@@ -168,6 +170,7 @@ def render_cfpb_app():
 
     if fullscreen:
         st.markdown(FULLSCREEN_CSS, unsafe_allow_html=True)
+        st.link_button("← ออกจากโหมดเต็มจอ", "?app=1")
         _txt = st.session_state.get("app_text", DEFAULT_APP_TEXT)
         _en = _txt
         if is_thai(_txt):
