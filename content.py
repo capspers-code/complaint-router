@@ -15,12 +15,36 @@ _FS_JS = '<script>\n(function(){\n  var head = document.head.innerHTML;\n\n  fun
 _HEAD = '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;800&family=Libre+Franklin:wght@500;700&family=IBM+Plex+Mono:wght@400;600&display=swap">'
 
 
+
+# ── บอกความสูงจริงกลับไปให้หน้าแม่ เพื่อไม่ให้เนื้อหาโดนตัดบนจอแคบ ──
+_AUTOHEIGHT_JS = """<script>
+(function(){
+  var last = 0;
+  function report(){
+    var h = Math.ceil(Math.max(
+      document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0));
+    if (h && Math.abs(h - last) > 2) {
+      last = h;
+      try { parent.postMessage({qe830Height: h}, "*"); } catch (e) {}
+    }
+  }
+  window.addEventListener("load", report);
+  window.addEventListener("resize", report);
+  document.addEventListener("DOMContentLoaded", report);
+  if (window.ResizeObserver && document.documentElement) {
+    new ResizeObserver(report).observe(document.documentElement);
+  }
+  [80, 300, 900, 2000].forEach(function(t){ setTimeout(report, t); });
+})();
+</script>"""
+
+
 def doc(fragment):
     """ประกอบเป็นหน้า HTML เต็มสำหรับใส่ใน components.html"""
     return ("<!doctype html><html lang='th' data-theme='dark'><head>" + _HEAD
             + "<style>" + _CSS + _EXTRA_CSS + "</style></head>"
             + "<body><div class='wrap'>" + fragment + "</div>"
-            + _FS_JS + "</body></html>")
+            + _FS_JS + _AUTOHEIGHT_JS + "</body></html>")
 
 
 CFPB = '<!-- ============ 0 PRIMER ============ -->\n<section>\n  <div class="shead"><span class="snum">01</span><h2>CFPB คืออะไร</h2><span class="h2en">What is the CFPB</span></div>\n  <p class="lede"><b>Consumer Financial Protection Bureau</b> — สำนักงานคุ้มครองผู้บริโภคทางการเงิน เป็นหน่วยงานอิสระของรัฐบาลกลางสหรัฐฯ ตั้งขึ้นเพื่อทำหน้าที่เดียว คือคุ้มครองประชาชนจากการถูกเอาเปรียบโดยสถาบันการเงิน</p>\n\n  <div class="origin">\n    <div>\n      <span class="yr">2008</span>\n      <b>วิกฤตแฮมเบอร์เกอร์</b>\n      <p>ธนาคารขายสินเชื่อบ้านให้คนที่ผ่อนไม่ไหว โดยซ่อนเงื่อนไขดอกเบี้ยลอยตัวไว้ในสัญญา เมื่อดอกเบี้ยขึ้น คนอเมริกันหลายล้านครัวเรือนถูกยึดบ้าน</p>\n    </div>\n    <div>\n      <span class="yr">2010</span>\n      <b>กฎหมาย Dodd-Frank</b>\n      <p>สภาคองเกรสออกกฎหมายปฏิรูปการเงินครั้งใหญ่ ระบุให้ตั้งหน่วยงานใหม่ขึ้นมาเฉพาะเพื่อดูแลฝั่งผู้บริโภค แยกออกจากหน่วยงานที่ดูแลความมั่นคงของธนาคาร</p>\n    </div>\n    <div>\n      <span class="yr">2011</span>\n      <b>CFPB เปิดทำการ</b>\n      <p>เริ่มรับเรื่องร้องเรียนจากประชาชนโดยตรง และเปิดเผยข้อมูลสู่สาธารณะตั้งแต่ปี 2013 เป็นต้นมา</p>\n    </div>\n  </div>\n\n  <div class="sub">ผลงานสะสมตั้งแต่ก่อตั้ง</div>\n  <div class="stats">\n    <div><span class="n">$21B+</span><span class="k">เงินที่บังคับให้บริษัทคืนหรือชดเชยให้ผู้บริโภค</span></div>\n    <div><span class="n">205M+</span><span class="k">จำนวนคน/บัญชี ที่ได้รับการเยียวยา</span></div>\n    <div><span class="n">6.8M+</span><span class="k">เรื่องร้องเรียนที่รับมาทั้งหมด</span></div>\n    <div><span class="n">$6.1B</span><span class="k">ค่าธรรมเนียมเบิกเกินบัญชีที่ประหยัดได้ต่อปี</span></div>\n  </div>\n\n  <div class="sub">CFPB มีอำนาจทำอะไรได้บ้าง</div>\n  <div class="powers">\n    <div class="power"><span class="no">01</span><div><b>ออกกฎ</b><span>เขียนระเบียบบังคับใช้กฎหมายการเงินระดับรัฐบาลกลาง เช่น บังคับให้เปิดเผยดอกเบี้ยจริงก่อนเซ็นสัญญา</span></div></div>\n    <div class="power"><span class="no">02</span><div><b>เข้าตรวจ</b><span>ส่งเจ้าหน้าที่เข้าไปตรวจสอบธนาคารและบริษัทการเงินขนาดใหญ่ถึงที่ทำการ</span></div></div>\n    <div class="power"><span class="no">03</span><div><b>ปรับและฟ้อง</b><span>สั่งปรับได้จริง เช่น Wells Fargo เคยถูกสั่งจ่าย 3.7 พันล้านดอลลาร์จากการเปิดบัญชีปลอมในชื่อลูกค้า</span></div></div>\n    <div class="power"><span class="no">04</span><div><b>รับเรื่องร้องเรียน</b><span>เป็นคนกลางบังคับให้บริษัทต้องตอบประชาชนภายในกำหนด แล้วเปิดเผยผลสู่สาธารณะ ← ส่วนนี้คือที่มาของข้อมูลเรา</span></div></div>\n  </div>\n\n  <div class="sub">ดูแลสินค้าการเงินอะไรบ้าง</div>\n  <div class="chips">\n    <span class="chip"><b>เครดิตบูโร</b> รายงานเครดิต</span>\n    <span class="chip"><b>ทวงหนี้</b> บริษัทตามหนี้</span>\n    <span class="chip"><b>บัตรเครดิต</b></span>\n    <span class="chip"><b>สินเชื่อบ้าน</b></span>\n    <span class="chip"><b>บัญชีเงินฝาก</b></span>\n    <span class="chip"><b>สินเชื่อรถ</b></span>\n    <span class="chip"><b>กู้ยืมเรียน</b></span>\n    <span class="chip"><b>เงินกู้นอกระบบ</b> payday loan</span>\n    <span class="chip"><b>โอนเงิน</b> รวมคริปโต</span>\n    <span class="chip"><b>บัตรเติมเงิน</b></span>\n  </div>\n\n  <div class="sub">เทียบกับหน่วยงานไทย</div>\n  <div style="overflow-x:auto">\n  <table class="compare">\n    <thead><tr><th>หน้าที่</th><th>CFPB (สหรัฐฯ)</th><th>เทียบไทยประมาณ</th></tr></thead>\n    <tbody>\n      <tr><td>กำกับธนาคาร</td><td>ออกกฎฝั่งผู้บริโภคโดยเฉพาะ</td><td>ธนาคารแห่งประเทศไทย (ฝ่ายคุ้มครองผู้ใช้บริการ)</td></tr>\n      <tr><td>รับเรื่องร้องเรียน</td><td>ศูนย์กลางเดียว บังคับบริษัทตอบใน 15 วัน</td><td>สคบ. + ศูนย์คุ้มครองผู้ใช้บริการทางการเงิน (ศคง. 1213)</td></tr>\n      <tr><td>คุมบริษัททวงหนี้</td><td>อยู่ในอำนาจโดยตรง</td><td>กรมการปกครอง (พ.ร.บ.ทวงถามหนี้)</td></tr>\n      <tr><td>เปิดข้อมูลสาธารณะ</td><td>เปิดทุกเรื่อง ดาวน์โหลดฟรี ไม่ต้องสมัคร</td><td>ไม่มีหน่วยงานไทยเปิดข้อมูลระดับนี้</td></tr>\n    </tbody>\n  </table>\n  </div>\n\n  <div class="note alert">\n    <b>ข้อมูลชุดนี้กำลังจะหาไม่ได้อีกแล้ว</b>\n    <p>วันที่ <b>14 สิงหาคม 2026</b> CFPB ประกาศ <b>หยุดเผยแพร่ข้อความร้องเรียนของผู้บริโภค</b> (narratives) ในฐานข้อมูลสาธารณะ กลับคำตัดสินใจเดิมที่ทำมาตั้งแต่ปี 2013 — จากนี้จะเหลือเปิดเผยแค่ข้อมูลเชิงหมวดหมู่และจำนวน ไม่มีข้อความดิบให้อ่านอีก</p>\n    <p>ไฟล์ที่เราโหลดมามีข้อความครบถึงกลางปี 2026 จึงกลายเป็น <b>snapshot ที่ทำซ้ำไม่ได้</b> — ข้อดีคือทำให้งานนี้มีคุณค่าเชิงวิชาการ ข้อเสียคือต้องเขียนใน CRISP-DM ขั้น Deployment ว่าโมเดลนี้ retrain ด้วยข้อมูลสาธารณะใหม่ไม่ได้แล้ว ต้องพึ่งข้อมูลภายในองค์กรแทน</p>\n  </div>\n</section>'

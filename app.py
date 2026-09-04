@@ -260,8 +260,15 @@ st.html("""
   padding:0 2px !important;
   border-bottom:2px solid #33465C !important;
   margin-bottom:6px !important;
-  overflow-x:auto;
+  /* ห่อบรรทัดแทนการตัดขอบ — แท็บที่ 7 จะไม่หลุดขอบขวาอีก */
+  flex-wrap:wrap !important;
+  overflow-x:visible !important;
+  overflow-y:visible !important;
+  row-gap:6px !important;
 }
+/* ซ่อนปุ่มลูกศรเลื่อนแท็บของ Streamlit เพราะไม่ต้องเลื่อนแล้ว */
+.stTabs [data-testid="stTabsScrollButton"],
+.stTabs [data-baseweb="tab-list"] > button[aria-label*="scroll" i]{ display:none !important; }
 .stTabs [data-baseweb="tab-highlight"],
 .stTabs [data-baseweb="tab-border"]{ display:none !important; }
 
@@ -310,6 +317,34 @@ st.html("""
 .stTabs [data-testid="stTab"][aria-selected="true"] p{
   color:#FFFFFF !important; font-weight:700 !important;
 }
+
+/* ═══════════ มือถือ / จอแคบ ═══════════ */
+@media (max-width: 900px){
+  .stTabs button[data-baseweb="tab"],
+  .stTabs [data-testid="stTab"]{ padding:7px 13px 8px !important; border-radius:9px 9px 0 0 !important; }
+  .stTabs button[data-baseweb="tab"] p,
+  .stTabs [data-testid="stTab"] p{ font-size:13.5px !important; }
+  h1{ font-size:30px !important; line-height:1.18 !important; }
+  h2{ font-size:22px !important; }
+  h3{ font-size:19px !important; }
+  .block-container, [data-testid="stMainBlockContainer"]{
+    padding-left:12px !important; padding-right:12px !important; padding-top:12px !important; }
+  [data-testid="stMetricValue"]{ font-size:22px !important; }
+  [data-testid="stMetricLabel"]{ font-size:12.5px !important; }
+}
+@media (max-width: 640px){
+  .stTabs button[data-baseweb="tab"],
+  .stTabs [data-testid="stTab"]{ padding:6px 10px 7px !important; }
+  .stTabs button[data-baseweb="tab"] p,
+  .stTabs [data-testid="stTab"] p{ font-size:12.5px !important; }
+  h1{ font-size:24px !important; }
+  /* หัวกระดาษ: โลโก้ + ชื่อ ให้เล็กลงและชิดซ้ายเมื่อคอลัมน์ถูกวางซ้อน */
+  [data-testid="stImage"] img{ max-width:100% !important; }
+  .qe-head{ text-align:left !important; }
+  .qe-head img{ height:40px !important; }
+  .qe-head span{ font-size:13.5px !important; }
+  [data-testid="stLinkButton"] a, .stButton button{ width:100% !important; }
+}
 </style>
 """)
 
@@ -320,7 +355,7 @@ NEON = "#3A8763"
 
 _top_l, _top_r = st.columns([3, 2])
 _top_r.markdown(
-    "<div style='text-align:right;line-height:1.7'>"
+    "<div class='qe-head' style='text-align:right;line-height:1.7'>"
     "<img src='" + DPU_LOGO + "' alt='DPU' "
     "style='height:56px;margin-bottom:10px;display:inline-block'><br>"
     "<span style='font-size:16px;font-weight:700;color:" + NEON + "'>"
@@ -436,6 +471,32 @@ def tab_nav(prev=None, next=None):
     right = _NEXT_HTML.format(i=next[0], label=next[1]) if next else '<span></span>'
     components.html(_NAV.replace("__LEFT__", left).replace("__RIGHT__", right), height=78)
 
+
+
+# ── ปรับความสูง iframe ให้เท่าเนื้อหาจริง (สำคัญมากบนมือถือ ที่เนื้อหายืดยาวกว่าเดิม) ──
+components.html("""
+<script>
+(function(){
+  var doc = window.parent && window.parent.document;
+  if (!doc || doc.__qe830Resizer) return;
+  doc.__qe830Resizer = true;
+  window.parent.addEventListener("message", function(e){
+    var h = e.data && e.data.qe830Height;
+    if (!h) return;
+    var frames = doc.querySelectorAll("iframe");
+    for (var i = 0; i < frames.length; i++) {
+      if (frames[i].contentWindow === e.source) {
+        frames[i].style.height = h + "px";
+        frames[i].setAttribute("height", h);
+        var box = frames[i].closest('[data-testid="stIFrame"]') || frames[i].parentElement;
+        if (box) box.style.height = h + "px";
+        break;
+      }
+    }
+  });
+})();
+</script>
+""", height=0)
 
 with TAB_CFPB:
     components.html(content.doc(content.CFPB), height=content.HEIGHT['CFPB'], scrolling=True)
