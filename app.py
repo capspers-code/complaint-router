@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.6.1"
+APP_VERSION = "v1.6.2"
 APP_BUILD   = "2026-09-04"
 
 
@@ -596,6 +596,40 @@ components.html("""
     doc.documentElement.style.overflow = "hidden";
     doc.addEventListener("keydown", escClose);
   }
+  // ── ชั้นทับเต็มจอสำหรับโน้ตบุ๊ก (โหลดไฟล์จาก /app/static/ ตรง ๆ ไม่ต้องยัด HTML ก้อนใหญ่) ──
+  function openNbFull(p){
+    closeLightbox();
+    var ov = doc.createElement("div");
+    ov.id = "qe830-lightbox";
+    ov.style.cssText = "position:fixed;inset:0;z-index:2147483647;background:#fff;" +
+                       "display:flex;flex-direction:column";
+    var bar = doc.createElement("div");
+    bar.style.cssText = "flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;" +
+                        "gap:10px;padding:8px 10px;background:#0E1117;border-bottom:1px solid #33465C";
+    var ttl = doc.createElement("div");
+    ttl.textContent = p.title || "";
+    ttl.style.cssText = "color:#C6D2E0;font:700 13px/1.2 'Sarabun',system-ui,sans-serif;" +
+                        "overflow:hidden;text-overflow:ellipsis;white-space:nowrap";
+    var x = doc.createElement("button");
+    x.textContent = "✕  ปิด";
+    x.style.cssText = "flex:0 0 auto;background:#1E2836;color:#EAF1FA;border:1px solid #33465C;" +
+                      "border-radius:8px;font:700 15px/1 system-ui,sans-serif;padding:11px 18px;cursor:pointer";
+    x.addEventListener("click", closeLightbox);
+    var fr = doc.createElement("iframe");
+    fr.setAttribute("title", p.title || "notebook");
+    fr.src = p.src;
+    fr.style.cssText = "flex:1 1 auto;width:100%;border:0;background:#fff";
+    // ให้กด Esc ปิดได้แม้โฟกัสอยู่ในโน้ตบุ๊ก (ไฟล์อยู่โดเมนเดียวกันจึงเข้าถึงได้)
+    fr.addEventListener("load", function(){
+      try { fr.contentDocument.addEventListener("keydown", escClose); } catch (e) {}
+    });
+    bar.appendChild(ttl); bar.appendChild(x);
+    ov.appendChild(bar); ov.appendChild(fr);
+    doc.body.appendChild(ov);
+    doc.documentElement.style.overflow = "hidden";
+    doc.addEventListener("keydown", escClose);
+  }
+
   function closeLightbox(){
     var old = doc.getElementById("qe830-lightbox");
     if (old) old.remove();
@@ -606,6 +640,7 @@ components.html("""
 
   window.parent.addEventListener("message", function(e){
     if (e.data && e.data.qe830Lightbox) { openLightbox(e.data.qe830Lightbox); return; }
+    if (e.data && e.data.qe830Nb) { openNbFull(e.data.qe830Nb); return; }
     var h = e.data && e.data.qe830Height;
     if (!h || !e.source) return;
     var found = false;
@@ -699,6 +734,56 @@ def load_notebook_html(fname):
         return f.read()
 
 
+# ปุ่มขยายเต็มจอของโน้ตบุ๊ก — ต้องเป็น components.html เพราะ st.markdown ตัด <script> ทิ้ง
+_NB_FS_BTN = """
+<style>
+  html,body{margin:0;background:transparent}
+  .bar{display:flex;justify-content:flex-end;padding:0 2px}
+  button{
+    display:flex;align-items:center;gap:7px;cursor:pointer;
+    background:linear-gradient(180deg,#2A3646 0%,#171F29 100%);
+    color:#EAF1FA;border:1px solid #6EA8FF;border-radius:9px;
+    font:700 14px/1 'Sarabun',system-ui,-apple-system,sans-serif;padding:11px 17px;
+  }
+  button:hover{border-color:#9CC4FF;background:linear-gradient(180deg,#33506F 0%,#1D2A3A 100%)}
+  button:active{transform:translateY(1px)}
+</style>
+<div class="bar"><button id="fsb" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H3v6M15 3h6v6M21 15v6h-6M3 15v6h6"/></svg> ขยายเต็มจอ</button></div>
+<script>
+(function(){
+  var SRC = "__SRC__", TITLE = "__TITLE__";
+  document.getElementById("fsb").addEventListener("click", function(){
+    try { parent.postMessage({qe830Nb:{src:SRC, title:TITLE}}, "*"); }
+    catch (e) { window.open(SRC, "_blank"); }
+  });
+  // ตอนแท็บยังซ่อนอยู่ offsetHeight = 0 จึงต้องวัดซ้ำเรื่อย ๆ จนกว่าแท็บจะถูกเปิด
+  var last = 0;
+  function report(){
+    var b = document.querySelector(".bar");
+    if (!b) return;
+    var h = Math.ceil(b.offsetHeight + 8);
+    if (h < 24 || h === last) return;
+    last = h;
+    try{ parent.postMessage({isStreamlitMessage:true, type:"streamlit:setFrameHeight", height:h}, "*"); }catch(e){}
+    try{ parent.postMessage({qe830Height:h}, "*"); }catch(e){}
+  }
+  [60,300,900].forEach(function(t){ setTimeout(report, t); });
+  setInterval(report, 400);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(report);
+})();
+</script>
+"""
+
+
+def nb_fullscreen_button(nb):
+    """ปุ่มเปิดโน้ตบุ๊กเต็มหน้าจอ (ชั้นทับของหน้าแม่ ไม่ใช่ Fullscreen API จึงใช้ได้บน iOS)"""
+    src = "app/static/" + nb["file"]
+    components.html(
+        _NB_FS_BTN.replace("__SRC__", src).replace("__TITLE__", nb["name"]),
+        height=56,
+    )
+
+
 NOTEBOOKS = [
     {
         "key": "screening",
@@ -735,6 +820,7 @@ with TAB_NB:
         with _c_txt:
             st.markdown("**`" + _nb["name"] + "`**")
             st.caption(_nb["desc"])
+        nb_fullscreen_button(_nb)
         if _show:
             with st.spinner("กำลังโหลดโน้ตบุ๊ก ..."):
                 components.html(load_notebook_html(_nb["file"]),
