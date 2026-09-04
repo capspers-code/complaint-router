@@ -25,7 +25,12 @@ _AUTOHEIGHT_JS = """<script>
       document.documentElement.scrollHeight, document.body ? document.body.scrollHeight : 0));
     if (h && Math.abs(h - last) > 2) {
       last = h;
-      try { parent.postMessage({qe830Height: h}, "*"); } catch (e) {}
+      try {
+        // โปรโตคอลของ Streamlit เอง — ให้มันปรับทั้ง iframe และกล่องแม่ให้ถูกต้อง
+        parent.postMessage({isStreamlitMessage: true,
+                            type: "streamlit:setFrameHeight", height: h}, "*");
+        parent.postMessage({qe830Height: h}, "*");   // สำรอง
+      } catch (e) {}
     }
   }
   window.addEventListener("load", report);

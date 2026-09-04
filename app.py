@@ -474,26 +474,66 @@ def tab_nav(prev=None, next=None):
 
 
 # ── ปรับความสูง iframe ให้เท่าเนื้อหาจริง (สำคัญมากบนมือถือ ที่เนื้อหายืดยาวกว่าเดิม) ──
+st.html("""
+<style>
+/* Streamlit ตั้ง iframe เป็น display:inline ทำให้กล่องแม่ไม่สูงตาม iframe จริง
+   พอเนื้อหายืดยาวบนมือถือ ปุ่ม "ถัดไป" เลยไปทับเนื้อหา — บังคับเป็น block แล้วให้กล่องสูงอัตโนมัติ */
+[data-testid="stElementContainer"] > iframe{ display:block !important; }
+/* กล่องเป็น flex item ที่ถูกตรึงด้วย flex-basis เป็น px ตายตัว (เช่น 0 0 1830px)
+   ต้องปลดตรงนี้ก่อน ความสูงถึงจะยืดตามเนื้อหาจริงได้ */
+[data-testid="stElementContainer"]:has(> iframe){
+  flex:0 0 auto !important; height:auto !important; min-height:0 !important;
+}
+</style>
+""")
+
 components.html("""
 <script>
 (function(){
   var doc = window.parent && window.parent.document;
   if (!doc || doc.__qe830Resizer) return;
   doc.__qe830Resizer = true;
-  window.parent.addEventListener("message", function(e){
-    var h = e.data && e.data.qe830Height;
-    if (!h) return;
+
+  var wanted = [];               // [{win, h}] ความสูงที่ประกาศไว้ของแต่ละ iframe
+
+  function apply(){
     var frames = doc.querySelectorAll("iframe");
     for (var i = 0; i < frames.length; i++) {
-      if (frames[i].contentWindow === e.source) {
-        frames[i].style.height = h + "px";
-        frames[i].setAttribute("height", h);
-        var box = frames[i].closest('[data-testid="stIFrame"]') || frames[i].parentElement;
-        if (box) box.style.height = h + "px";
-        break;
+      for (var j = 0; j < wanted.length; j++) {
+        if (frames[i].contentWindow === wanted[j].win) {
+          var h = wanted[j].h;
+          if (parseInt(frames[i].style.height, 10) !== h) {
+            frames[i].style.height = h + "px";
+            frames[i].setAttribute("height", h);
+          }
+          // React ล้าง inline style ทิ้งเป็นระยะ จึงต้องยัดกลับทุกครั้ง
+          var box = frames[i].parentElement;
+          for (var k = 0; k < 2 && box; k++) {
+            if (box.getAttribute && box.getAttribute("data-testid") === "stElementContainer") {
+              box.style.setProperty("flex", "0 0 auto", "important");
+              box.style.setProperty("height", "auto", "important");
+              break;
+            }
+            box = box.parentElement;
+          }
+          break;
+        }
       }
     }
+  }
+
+  window.parent.addEventListener("message", function(e){
+    var h = e.data && e.data.qe830Height;
+    if (!h || !e.source) return;
+    var found = false;
+    for (var j = 0; j < wanted.length; j++) {
+      if (wanted[j].win === e.source) { wanted[j].h = h; found = true; break; }
+    }
+    if (!found) wanted.push({win: e.source, h: h});
+    apply();
   });
+
+  setInterval(apply, 400);
 })();
 </script>
 """, height=0)
