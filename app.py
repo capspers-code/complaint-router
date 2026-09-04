@@ -97,6 +97,106 @@ def to_english(text):
     return None, " | ".join(errs), None
 
 
+
+
+# ══════════════════════════════════════════════════════════════════
+#  CFPB Application — mockup หน้าจอระบบจริง (เปิดผ่าน ?app=1)
+#  หน้านี้ใช้ "โมเดลจริง" จาก model.joblib ไม่ใช่ตัวจำลองใน JS
+# ══════════════════════════════════════════════════════════════════
+APP_HTML_FILE = "static/cfpb_app.html"
+
+URGENT_PATTERNS = {
+    "legal threat":  re.compile(r"threat|lawsuit|legal action|\bsue\b|\bsued\b|attorney|lawyer", re.I),
+    "police report": re.compile(r"police|law enforcement|criminal complaint", re.I),
+    "repossession":  re.compile(r"repossess|garnish|foreclos|\blien\b|seiz(e|ed|ure)", re.I),
+    "eviction":      re.compile(r"evict", re.I),
+    "harassment":    re.compile(r"harass|every day|constantly|repeatedly|multiple times a day", re.I),
+}
+
+
+def urgency_flags(text):
+    return [k for k, rx in URGENT_PATTERNS.items() if rx.search(text or "")]
+
+
+DEFAULT_APP_TEXT = (
+    "I am writing about inaccurate information on my credit report. A tradeline appears on "
+    "my credit file that does not belong to me. It was opened fraudulently after my identity "
+    "was stolen, and I filed a police report about the identity theft. I have disputed this "
+    "item with the credit bureau three separate times since XX/XX/2026 and sent them my FTC "
+    "identity theft affidavit and the police report number XXXXXXXX. Each time the credit "
+    "bureau completes its reinvestigation it reports back that the item was verified as "
+    "accurate, but it never explains what method of verification was used or which records "
+    "were reviewed, which I believe violates the Fair Credit Reporting Act. This inaccurate "
+    "credit reporting has lowered my credit score and I was denied a mortgage because of it. "
+    "The company has also threatened to take legal action against me. I am asking that this "
+    "fraudulent account be deleted from my consumer report and that the credit bureau send "
+    "me a corrected credit report in writing."
+)
+
+
+def render_cfpb_app():
+    """หน้า CFPB Application แบบเต็มจอ — mockup + โมเดลจริง"""
+    try:
+        with open(APP_HTML_FILE, encoding="utf-8") as f:
+            html = f.read()
+    except FileNotFoundError:
+        st.error("ไม่พบไฟล์ " + APP_HTML_FILE)
+        st.stop()
+
+    st.markdown(
+        "### 📮 CFPB Application — mockup ระบบจริง\n"
+        "แบบจำลองหน้าจอ **ผู้ร้องเรียน → CFPB → ธนาคาร → ผู้ร้องเรียน → หน้าผู้บริหาร** "
+        "โดยขั้นจำแนกหมวดเรียก **โมเดลจริง** (`model.joblib`) ไม่ใช่ตัวจำลอง"
+    )
+    st.caption(
+        "หน้าจอทั้งหมดเป็นแบบจำลองเพื่อการนำเสนอ ไม่ใช่ระบบจริงของ CFPB · "
+        "ไม่มีการเก็บหรือส่งข้อมูลจริง · ชื่อบริษัทและเลขเคสสมมติขึ้น"
+    )
+
+    with st.expander("✍️ แก้ข้อความร้องเรียนที่จะส่งเข้าระบบ (พิมพ์ไทยได้ ระบบแปลให้)", expanded=False):
+        txt = st.text_area("ข้อความร้องเรียน", DEFAULT_APP_TEXT, height=190,
+                           label_visibility="collapsed", key="app_text")
+        run = st.button("▶ ส่งเข้าโมเดลจริง แล้วโหลดหน้าจอใหม่", type="primary")
+    txt = st.session_state.get("app_text", DEFAULT_APP_TEXT)
+
+    text_en, engine = txt, None
+    if is_thai(txt):
+        with st.spinner("แปลไทย → อังกฤษ ..."):
+            out, err, engine = to_english(txt)
+        if out:
+            text_en = out
+            st.caption("แปลด้วย " + str(engine) + " แล้วส่งเข้าโมเดล")
+        else:
+            st.warning("แปลไม่สำเร็จ ใช้ข้อความเดิมส่งเข้าโมเดลแทน")
+
+    cleaned = clean_text(text_en)
+    payload = {"text": txt, "ranked": [], "urgency": urgency_flags(text_en), "threshold": TH}
+    if len(cleaned.split()) >= 5:
+        p = model.predict_proba([cleaned])[0]
+        order = np.argsort(p)[::-1]
+        payload["ranked"] = [
+            {"c": str(model.classes_[i]), "p": float(p[i])} for i in order
+        ]
+        top, conf = str(model.classes_[order[0]]), float(p[order[0]])
+        c1, c2, c3 = st.columns(3)
+        c1.metric("โมเดลทำนาย", top)
+        c2.metric("ความมั่นใจ", format(conf, ".3f"))
+        c3.metric("ผลการตัดสิน", "ส่งอัตโนมัติ" if conf >= TH else "ให้เจ้าหน้าที่ตรวจ")
+    else:
+        st.warning("ข้อความสั้นเกินไป — หน้าจอด้านล่างจะใช้ตัวจำลองในเบราว์เซอร์แทน")
+
+    inject = (
+        "<script>window.__MODEL=" + json.dumps(payload, ensure_ascii=False) + ";"
+        "window.__TEXT=" + json.dumps(txt, ensure_ascii=False) + ";</script>"
+    )
+    html = html.replace("</head>", inject + "</head>", 1)
+    components.html(html, height=1500, scrolling=True)
+    st.stop()
+
+
+if st.query_params.get("app"):
+    render_cfpb_app()
+
 # ── สไตล์แท็บให้ดูเป็นแท็บแฟ้มจริง มีมิติ ──────────────────────────
 st.html("""
 <style>
@@ -190,13 +290,14 @@ st.markdown(
 st.title("📮 Automated Complaint Routing")
 st.caption("QE830 Project #1 — จำแนกหมวดข้อร้องเรียนทางการเงินจากข้อความ")
 
-TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB, TAB_DEMO = st.tabs([
+TAB_CFPB, TAB_PROC, TAB_DATA, TAB_MODEL, TAB_NB, TAB_DEMO, TAB_APP = st.tabs([
     "CFPB คืออะไร",
     "กระบวนการ",
     "ที่มาของข้อมูล",
     "โมเดลของเรา",
     "Colab Notebook",
     "ลองใช้โมเดล",
+    "CFPB Application",
 ])
 
 
@@ -445,3 +546,46 @@ with TAB_DEMO:
             st.json(meta)
 
         tab_nav(prev=(4, "Colab Notebook"))
+
+
+# ══════════════════════════════════════════════════════════════════
+with TAB_APP:
+    _l, _m, _r = st.columns([1, 3, 1])
+    with _m:
+        st.subheader("CFPB Application — ระบบจริงจะหน้าตาแบบไหน")
+        st.write(
+            "แบบจำลองหน้าจอทั้งเส้นทาง ตั้งแต่ผู้บริโภคกรอกเรื่อง จนธนาคารตอบกลับ "
+            "และหน้าผู้บริหารที่เฝ้าดูโมเดล — ขั้นจำแนกหมวดเรียก **โมเดลจริง** ตัวเดียวกับแท็บ *ลองใช้โมเดล*"
+        )
+        st.markdown(
+            '<a href="?app=1" target="_blank" rel="noopener" '
+            'style="display:inline-block;background:#20aa3f;color:#fff;font-weight:700;'
+            'padding:13px 30px;border-radius:6px;text-decoration:none;font-size:17px;'
+            'margin:10px 0 6px">🚀 เปิด CFPB Application (แท็บใหม่)</a>',
+            unsafe_allow_html=True,
+        )
+        st.caption("เปิดเป็นหน้าเว็บใหม่ กดปุ่ม Next ทีละขั้น หรือ Auto-play ให้ข้อมูลวิ่งตามเส้นเอง")
+
+        st.divider()
+        st.markdown("**5 หน้าจอในเดโม**")
+        _c = st.columns(5)
+        for _col, _t, _d in zip(
+            _c,
+            ["1 · ผู้ร้องเรียน", "2 · เจ้าหน้าที่ CFPB", "3 · ธนาคาร", "4 · สถานะเรื่อง", "5 · ผู้บริหาร"],
+            ["กรอกเรื่องเป็นข้อความอิสระ ไม่ต้องเลือกหมวด",
+             "โมเดลเสนอหมวด + ความมั่นใจ + ธงเร่งด่วน เจ้าหน้าที่กดยืนยัน",
+             "รับเรื่องเข้าคิวที่ถูกต้อง พร้อมนาฬิกา 15 วัน",
+             "ผู้ร้องเรียนเห็นคำตอบและเส้นทางเดินเรื่อง",
+             "ปริมาณงาน · การกระจายความมั่นใจ · SLA · ธงเร่งด่วน"],
+        ):
+            _col.markdown("**" + _t + "**")
+            _col.caption(_d)
+
+        st.divider()
+        st.info(
+            "หน้าจอทั้งหมดเป็นแบบจำลองเพื่อการนำเสนอ **ไม่ใช่ระบบจริงของ CFPB** — "
+            "ไม่มีการเก็บหรือส่งข้อมูลจริง ชื่อบริษัทและเลขเคสสมมติขึ้น "
+            "ส่วนตัวเลขความแม่นยำและการกระจายข้อมูลเป็นค่าจริงจากโครงงาน",
+            icon="ℹ️",
+        )
+        tab_nav(prev=(5, "ลองใช้โมเดล"), next=None)
