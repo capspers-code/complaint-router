@@ -134,13 +134,55 @@ DEFAULT_APP_TEXT = (
 )
 
 
+FULLSCREEN_CSS = """
+<style>
+  header[data-testid="stHeader"], [data-testid="stToolbar"],
+  [data-testid="stDecoration"], [data-testid="stStatusWidget"], footer {display:none !important;}
+  [data-testid="stAppViewContainer"] {padding:0 !important;}
+  [data-testid="stAppViewContainer"] > .main {padding:0 !important;}
+  .block-container, [data-testid="stMainBlockContainer"],
+  [data-testid="block-container"] {padding:0 !important; max-width:100% !important;}
+  [data-testid="stVerticalBlock"], [data-testid="stVerticalBlockBorderWrapper"] {gap:0 !important;}
+  [data-testid="stIFrame"] {height:100vh !important;}
+  [data-testid="stIFrame"] iframe, iframe[title="st.iframe"],
+  .stIFrame iframe {height:100vh !important; width:100% !important; border:0 !important;}
+  #exitfs {position:fixed; right:12px; bottom:12px; z-index:99999;
+    background:rgba(16,24,32,.86); color:#fff; font:600 12.5px system-ui,sans-serif;
+    padding:7px 14px; border-radius:6px; text-decoration:none;
+    box-shadow:0 4px 16px rgba(0,0,0,.3)}
+  #exitfs:hover {background:#101820}
+</style>
+<a id="exitfs" href="?app=1" target="_self">← ออกจากโหมดเต็มจอ</a>
+"""
+
+
 def render_cfpb_app():
-    """หน้า CFPB Application แบบเต็มจอ — mockup + โมเดลจริง"""
+    """หน้า CFPB Application — mockup + โมเดลจริง (full=1 = ซ่อน chrome ของ Streamlit)"""
+    fullscreen = bool(st.query_params.get("full"))
     try:
         with open(APP_HTML_FILE, encoding="utf-8") as f:
             html = f.read()
     except FileNotFoundError:
         st.error("ไม่พบไฟล์ " + APP_HTML_FILE)
+        st.stop()
+
+    if fullscreen:
+        st.markdown(FULLSCREEN_CSS, unsafe_allow_html=True)
+        _txt = st.session_state.get("app_text", DEFAULT_APP_TEXT)
+        _en = _txt
+        if is_thai(_txt):
+            _out, _err, _eng = to_english(_txt)
+            if _out:
+                _en = _out
+        _cl = clean_text(_en)
+        _pay = {"text": _txt, "ranked": [], "urgency": urgency_flags(_en), "threshold": TH}
+        if len(_cl.split()) >= 5:
+            _p = model.predict_proba([_cl])[0]
+            _o = np.argsort(_p)[::-1]
+            _pay["ranked"] = [{"c": str(model.classes_[i]), "p": float(_p[i])} for i in _o]
+        _inj = ("<script>window.__MODEL=" + json.dumps(_pay, ensure_ascii=False) + ";"
+                "window.__TEXT=" + json.dumps(_txt, ensure_ascii=False) + ";</script>")
+        components.html(html.replace("</head>", _inj + "</head>", 1), height=1500, scrolling=True)
         st.stop()
 
     st.markdown(
@@ -151,6 +193,13 @@ def render_cfpb_app():
     st.caption(
         "หน้าจอทั้งหมดเป็นแบบจำลองเพื่อการนำเสนอ ไม่ใช่ระบบจริงของ CFPB · "
         "ไม่มีการเก็บหรือส่งข้อมูลจริง · ชื่อบริษัทและเลขเคสสมมติขึ้น"
+    )
+    st.markdown(
+        '<a href="?app=1&full=1" target="_self" '
+        'style="display:inline-block;background:#254b87;color:#fff;font-weight:700;'
+        'padding:9px 20px;border-radius:6px;text-decoration:none;font-size:15px;'
+        'margin:2px 0 10px">⛶ โหมดเต็มจอ — แสดงเฉพาะ CFPB Application</a>',
+        unsafe_allow_html=True,
     )
 
     with st.expander("✍️ แก้ข้อความร้องเรียนที่จะส่งเข้าระบบ (พิมพ์ไทยได้ ระบบแปลให้)", expanded=False):
@@ -561,10 +610,17 @@ with TAB_APP:
             '<a href="?app=1" target="_blank" rel="noopener" '
             'style="display:inline-block;background:#20aa3f;color:#fff;font-weight:700;'
             'padding:13px 30px;border-radius:6px;text-decoration:none;font-size:17px;'
-            'margin:10px 0 6px">🚀 เปิด CFPB Application (แท็บใหม่)</a>',
+            'margin:10px 8px 6px 0">🚀 เปิด CFPB Application (แท็บใหม่)</a>'
+            '<a href="?app=1&full=1" target="_blank" rel="noopener" '
+            'style="display:inline-block;background:#254b87;color:#fff;font-weight:700;'
+            'padding:13px 26px;border-radius:6px;text-decoration:none;font-size:17px;'
+            'margin:10px 0 6px">⛶ เปิดแบบเต็มจอ</a>',
             unsafe_allow_html=True,
         )
-        st.caption("เปิดเป็นหน้าเว็บใหม่ กดปุ่ม Next ทีละขั้น หรือ Auto-play ให้ข้อมูลวิ่งตามเส้นเอง")
+        st.caption(
+            "**เต็มจอ** = ซ่อนทุกอย่างของ Streamlit เหลือแต่หน้าจอ CFPB Application อย่างเดียว "
+            "เหมาะกับตอนนำเสนอ · ในหน้าจอยังมีปุ่ม ⛶ Full screen ให้ขยายเต็มหน้าจอเครื่องอีกชั้น (หรือกด F11)"
+        )
 
         st.divider()
         st.markdown("**5 หน้าจอในเดโม**")
