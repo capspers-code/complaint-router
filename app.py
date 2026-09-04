@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.5.0"
+APP_VERSION = "v1.5.1"
 APP_BUILD   = "2026-09-04"
 
 
@@ -476,6 +476,14 @@ _NAV = """
  }
  .arw{font-size:18px;line-height:1;transform:translateY(-1px)}
  .sp{flex:1}
+
+ /* จอแคบ: ปุ่มสองอันรวมกันกว้างเกินจอ ถ้าเรียงแนวนอนจะล้นออกนอก iframe แล้วโดนตัดหาย
+    จึงเรียงลงล่างแทน และให้แต่ละปุ่มเต็มความกว้าง */
+ @media (max-width: 640px){
+   .bar{flex-direction:column; align-items:stretch; gap:9px; padding:2px 2px 0}
+   .btn{width:100%; justify-content:center; padding:11px 14px 12px; font-size:14.5px}
+   .sp{display:none}
+ }
 </style>
 <div class="bar">__LEFT____RIGHT__</div>
 <script>
