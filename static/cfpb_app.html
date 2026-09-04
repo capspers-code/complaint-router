@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Complaint Routing — Interactive Mockup (QE830 Project #1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#20aa3f; --green-d:#1a8c34;
+  --navy:#254b87; --pacific:#0072ce; --teal:#257675;
+  --gold:#ff9e1b; --red:#d14124; --purple:#b4267a;
+  --black:#101820; --dark:#293037; --gray:#5a5d61; --gray60:#8f9195;
+  --g10:#e7e8e9; --g5:#f4f4f5; --white:#fff;
+  --shadow:0 1px 3px rgba(16,24,32,.12), 0 6px 20px rgba(16,24,32,.08);
+  --en:'Source Sans 3',-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --th:'Sarabun','Noto Sans Thai','Leelawadee UI','Tahoma',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--g5);color:var(--black);
+     font-family:var(--en),var(--th);font-size:15px;line-height:1.5;}
+.th{font-family:var(--th),var(--en)}
+h1,h2,h3,h4{margin:0 0 .4em;font-weight:600;line-height:1.22}
+a{color:var(--pacific)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+
+/* ─── demo banner ─────────────────────────────────────────── */
+.demobar{background:var(--dark);color:#fff;font-size:12.5px;padding:7px 18px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;letter-spacing:.01em}
+.demobar .tag{background:var(--gold);color:#101820;font-weight:700;border-radius:3px;
+  padding:1px 8px;font-size:11px;letter-spacing:.06em}
+.demobar .th{color:#c9ccd0}
+
+/* ─── controls ────────────────────────────────────────────── */
+.controls{position:sticky;top:0;z-index:50;background:var(--white);
+  border-bottom:1px solid var(--g10);padding:10px 18px;
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;box-shadow:0 1px 4px rgba(16,24,32,.06)}
+.controls .spacer{flex:1}
+.btn{border:1px solid var(--g10);background:var(--white);color:var(--black);
+  border-radius:4px;padding:7px 14px;font-weight:600;transition:.15s}
+.btn:hover:not(:disabled){border-color:var(--gray60);background:var(--g5)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn.primary:hover:not(:disabled){background:var(--green-d);border-color:var(--green-d)}
+.btn.ghost{background:transparent}
+.btn.playing{background:var(--red);border-color:var(--red);color:#fff}
+.dots{display:flex;gap:7px;align-items:center}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--g10);border:0;padding:0;
+  transition:.2s;position:relative}
+.dot.done{background:var(--green)}
+.dot.now{background:var(--navy);transform:scale(1.42);box-shadow:0 0 0 4px rgba(37,75,135,.16)}
+.stepname{font-size:13px;color:var(--gray);font-weight:600}
+
+/* ─── flow rail ───────────────────────────────────────────── */
+.rail{background:linear-gradient(180deg,#fff 0%,#fbfbfc 100%);
+  border-bottom:1px solid var(--g10);padding:6px 18px 2px}
+.rail svg{display:block;width:100%;height:auto;max-height:150px}
+.nodebox{fill:#fff;stroke:var(--g10);stroke-width:1.5}
+.nodebox.on{stroke:var(--navy);stroke-width:2.5}
+.nodebox.past{stroke:var(--green);stroke-width:2}
+.nlabel{font-family:var(--en);font-size:12.5px;font-weight:600;fill:var(--black);text-anchor:middle}
+.nsub{font-family:var(--th);font-size:10.5px;fill:var(--gray);text-anchor:middle}
+.link{stroke:var(--g10);stroke-width:3;fill:none;stroke-linecap:round}
+.link.past{stroke:var(--green)}
+.link.live{stroke:var(--navy);stroke-dasharray:7 6}
+.pkt{fill:var(--gold);stroke:#fff;stroke-width:2}
+.pktglow{fill:var(--gold);opacity:.22}
+
+/* ─── narration ───────────────────────────────────────────── */
+.narr{background:var(--navy);color:#fff;padding:11px 18px;display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.narr .n{background:rgba(255,255,255,.16);border-radius:3px;padding:1px 9px;font-weight:700;font-size:12px}
+.narr .en{font-weight:600;font-size:14px}
+.narr .thx{font-family:var(--th);font-size:14px;color:#cfd8e8}
+
+/* ─── stage ───────────────────────────────────────────────── */
+.stage{padding:22px 18px 60px;max-width:1180px;margin:0 auto}
+.screen{display:none;animation:fade .35s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.browser{background:var(--white);border:1px solid var(--g10);border-radius:8px;
+  overflow:hidden;box-shadow:var(--shadow)}
+.chrome{background:var(--g5);border-bottom:1px solid var(--g10);padding:8px 12px;
+  display:flex;gap:9px;align-items:center}
+.chrome i{width:11px;height:11px;border-radius:50%;background:#d8d9da;display:block}
+.url{flex:1;background:#fff;border:1px solid var(--g10);border-radius:20px;
+  padding:4px 13px;font-size:12.5px;color:var(--gray);font-family:var(--en)}
+.url b{color:var(--black);font-weight:600}
+.pad{padding:26px 30px 32px}
+
+/* CFPB-ish site header */
+.sitehead{border-bottom:1px solid var(--g10);padding:14px 30px;display:flex;
+  gap:16px;align-items:center;background:#fff}
+.seal{width:36px;height:36px;border-radius:50%;background:var(--green);flex:none;
+  display:grid;place-items:center;color:#fff;font-weight:700;font-size:9px;letter-spacing:.04em}
+.wordmark{font-weight:600;font-size:15px;line-height:1.15}
+.wordmark span{display:block;font-size:11px;color:var(--gray);font-weight:400}
+.sitenav{margin-left:auto;display:flex;gap:20px;font-size:13.5px;color:var(--dark);font-weight:600}
+.sitenav .cur{color:var(--green);box-shadow:inset 0 -3px 0 var(--green)}
+.gov{background:var(--g5);border-bottom:1px solid var(--g10);padding:5px 30px;
+  font-size:11.5px;color:var(--gray);display:flex;gap:8px;align-items:center}
+
+/* form */
+.hero{border-left:5px solid var(--green);padding-left:16px;margin-bottom:24px}
+.hero h2{font-size:26px}
+.hero p{margin:.35em 0 0;color:var(--gray);max-width:62ch}
+.field{margin-bottom:16px}
+.field label{display:block;font-weight:600;font-size:13.5px;margin-bottom:5px}
+.field .hint{font-weight:400;color:var(--gray);font-size:12.5px}
+input[type=text],select,textarea{width:100%;padding:9px 11px;border:1px solid var(--gray60);
+  border-radius:3px;font-family:inherit;font-size:14px;background:#fff;color:var(--black)}
+textarea{min-height:130px;resize:vertical;line-height:1.55}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--pacific);outline-offset:0;border-color:var(--pacific)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.steps-mini{display:flex;gap:0;margin-bottom:22px;font-size:12px;font-weight:600;flex-wrap:wrap}
+.steps-mini div{padding:6px 15px;background:var(--g5);color:var(--gray60);border-right:1px solid #fff}
+.steps-mini div.on{background:var(--green);color:#fff}
+.steps-mini div.ok{background:#d6f0dc;color:var(--green-d)}
+
+/* staff console */
+.console{display:grid;grid-template-columns:300px 1fr;min-height:520px}
+.queue{border-right:1px solid var(--g10);background:#fbfbfc}
+.qhead{padding:12px 15px;border-bottom:1px solid var(--g10);font-weight:600;font-size:13px;
+  display:flex;justify-content:space-between;align-items:center}
+.qhead .cnt{background:var(--navy);color:#fff;border-radius:11px;padding:1px 9px;font-size:11px}
+.qrow{padding:11px 15px;border-bottom:1px solid var(--g10);cursor:default;font-size:12.5px}
+.qrow.sel{background:#fff;box-shadow:inset 4px 0 0 var(--navy)}
+.qrow .id{font-weight:700;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+.qrow .p{color:var(--gray);margin-top:2px}
+.pill{display:inline-block;border-radius:11px;padding:1px 9px;font-size:10.5px;font-weight:700;letter-spacing:.02em}
+.pill.hi{background:#fbe3de;color:#a32d16}
+.pill.md{background:#ffeed2;color:#8a5300}
+.pill.lo{background:#e2efe6;color:var(--green-d)}
+.pill.new{background:#dbe7f7;color:var(--navy)}
+.detail{padding:20px 24px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:5px 14px;font-size:13.5px;margin-bottom:18px}
+.kv dt{color:var(--gray);font-weight:600}
+.kv dd{margin:0}
+.narrbox{background:var(--g5);border-left:3px solid var(--gray60);padding:13px 15px;
+  font-size:13.5px;line-height:1.6;border-radius:0 4px 4px 0;margin-bottom:18px;max-height:215px;overflow:auto}
+.mlcard{border:1px solid var(--g10);border-radius:6px;overflow:hidden;margin-bottom:18px}
+.mlhead{background:var(--navy);color:#fff;padding:9px 15px;font-size:13px;font-weight:600;
+  display:flex;justify-content:space-between;align-items:center}
+.mlhead .mv{font-weight:400;font-size:11.5px;opacity:.78;font-family:ui-monospace,Menlo,monospace}
+.mlbody{padding:15px}
+.probrow{display:grid;grid-template-columns:210px 1fr 52px;gap:11px;align-items:center;
+  font-size:13px;margin-bottom:7px}
+.bar{height:17px;background:var(--g10);border-radius:3px;overflow:hidden;position:relative}
+.bar i{display:block;height:100%;background:var(--pacific);width:0;transition:width .8s cubic-bezier(.4,0,.2,1)}
+.probrow.top .bar i{background:var(--green)}
+.probrow.top{font-weight:700}
+.probrow .pv{text-align:right;font-family:ui-monospace,Menlo,monospace;font-size:12.5px}
+.thresh{margin-top:12px;padding-top:12px;border-top:1px dashed var(--g10);font-size:13px;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.verdict{font-weight:700}
+.verdict.auto{color:var(--green-d)}
+.verdict.man{color:var(--gold)}
+.addons{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.addon{border:1px solid var(--g10);border-radius:6px;padding:12px 14px;font-size:13px}
+.addon h4{font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray);margin-bottom:6px}
+.addon .big{font-size:15px;font-weight:600}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  border-top:1px solid var(--g10);padding-top:16px}
+
+/* bank portal */
+.bankhead{background:var(--navy);color:#fff;padding:14px 30px;display:flex;
+  gap:14px;align-items:center}
+.bankhead .logo{width:34px;height:34px;border-radius:6px;background:#fff;color:var(--navy);
+  display:grid;place-items:center;font-weight:700;font-size:15px}
+.bankhead .sub{font-size:12px;opacity:.8;font-weight:400}
+.sla{margin-left:auto;background:rgba(255,255,255,.14);border-radius:4px;padding:6px 13px;
+  font-size:12.5px;text-align:right;line-height:1.3}
+.sla b{font-size:17px;display:block}
+.tl{list-style:none;padding:0;margin:0 0 20px}
+.tl li{position:relative;padding:0 0 18px 30px;font-size:13.5px}
+.tl li:before{content:'';position:absolute;left:6px;top:4px;width:11px;height:11px;
+  border-radius:50%;background:var(--g10);border:2px solid #fff;box-shadow:0 0 0 1px var(--g10)}
+.tl li:after{content:'';position:absolute;left:11px;top:15px;bottom:0;width:1px;background:var(--g10)}
+.tl li:last-child:after{display:none}
+.tl li.ok:before{background:var(--green);box-shadow:0 0 0 1px var(--green)}
+.tl li.now:before{background:var(--gold);box-shadow:0 0 0 4px #ffeed2}
+.tl .t{font-weight:600}
+.tl .d{color:var(--gray);font-size:12.5px}
+.resolved{background:#e2efe6;border:1px solid #b9dcc4;border-radius:6px;padding:16px 18px;margin-bottom:18px}
+.resolved h3{color:var(--green-d);font-size:16px}
+.note{font-size:12.5px;color:var(--gray);margin-top:6px}
+.tip{background:#fff8e8;border:1px solid #ffe0a8;border-left:4px solid var(--gold);
+  border-radius:0 5px 5px 0;padding:11px 14px;font-size:13px;margin:16px 0}
+.foot{max-width:1180px;margin:0 auto;padding:0 18px 50px;color:var(--gray);font-size:12.5px;line-height:1.65}
+.foot b{color:var(--black)}
+
+/* ─── dashboard ───────────────────────────────────────────── */
+.viz{ --surface-1:#fff; --text-primary:#101820; --text-secondary:#5a5d61;
+      --text-muted:#8f9195; --grid:#e7e8e9;
+      --series-1:#2a78d6; --series-2:#eb6834;
+      --good:#0ca30c; --warning:#fab219; --critical:#d03b3b; }
+.dashwrap{padding:22px 26px 28px;background:#fff}
+.dashhead{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.dashhead h2{font-size:22px;margin:0}
+.dashhead .per{color:var(--gray);font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}
+.kpi{border:1px solid var(--g10);border-radius:6px;padding:13px 15px}
+.kpi h4{font-size:10.5px;text-transform:uppercase;letter-spacing:.055em;color:var(--gray);
+  margin:0 0 5px;font-weight:600}
+.kpi .v{font-size:26px;font-weight:600;line-height:1.05;letter-spacing:-.01em}
+.kpi .d{font-size:12px;color:var(--gray);margin-top:3px}
+.kpi .d.up{color:#0a7c0a}.kpi .d.dn{color:#a32d16}
+.panels{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:16px}
+.panel{border:1px solid var(--g10);border-radius:6px;padding:15px 17px 17px;background:#fff}
+.panel h3{font-size:14px;margin:0 0 2px}
+.panel .sub{font-size:12px;color:var(--gray);margin:0 0 14px}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--gray);margin:0 0 12px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;
+  position:relative;top:1px}
+/* horizontal bars */
+.hb{display:grid;grid-template-columns:172px 1fr 62px;gap:10px;align-items:center;
+  font-size:12.5px;margin-bottom:6px}
+.hb .nm{color:var(--text-primary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb .tr{background:transparent;height:15px;position:relative}
+.hb .tr i{display:block;height:100%;background:var(--series-1);
+  border-radius:0 4px 4px 0;width:0;transition:width .75s cubic-bezier(.4,0,.2,1)}
+.hb .vl{text-align:right;font-variant-numeric:tabular-nums;color:var(--text-secondary)}
+/* histogram */
+.hist{display:flex;align-items:flex-end;gap:2px;height:150px;position:relative;margin-top:22px;
+  border-bottom:1px solid var(--grid);padding-bottom:0}
+.hist .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative}
+.hist .col i{display:block;background:var(--series-1);border-radius:4px 4px 0 0;height:0;
+  transition:height .75s cubic-bezier(.4,0,.2,1)}
+.hist .col.sub i{background:var(--series-1);opacity:.42}
+.histx{display:flex;gap:2px;font-size:10.5px;color:var(--text-muted);margin-top:5px}
+.histx span{flex:1;text-align:center}
+.thline{position:absolute;top:-6px;bottom:0;border-left:2px dashed var(--critical);z-index:2}
+.thline b{position:absolute;top:-19px;left:5px;white-space:nowrap;font-size:11px;
+  color:var(--critical);background:#fff;padding:0 3px}
+/* sla table */
+table.sla{width:100%;border-collapse:collapse;font-size:12.5px}
+table.sla th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;
+  color:var(--gray);border-bottom:1px solid var(--g10);padding:0 8px 7px 0;font-weight:600}
+table.sla td{padding:8px 8px 8px 0;border-bottom:1px solid #f2f2f3;vertical-align:middle}
+table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
+.mini{height:7px;background:var(--grid);border-radius:4px;overflow:hidden;min-width:64px}
+.mini i{display:block;height:100%;background:var(--series-1);border-radius:4px;width:0;
+  transition:width .7s cubic-bezier(.4,0,.2,1)}
+.st{white-space:nowrap;font-weight:600;font-size:11.5px}
+.st.good{color:#0a7c0a}.st.warn{color:#8a5300}.st.crit{color:#a32d16}
+/* tooltip */
+#tip{position:fixed;z-index:999;background:#101820;color:#fff;font-size:12px;
+  padding:6px 10px;border-radius:4px;pointer-events:none;opacity:0;transition:opacity .12s;
+  white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.22)}
+#tip b{color:#ffd98a}
+@media(max-width:980px){.kpis{grid-template-columns:repeat(2,1fr)}.panels{grid-template-columns:1fr}}
+
+@media(max-width:900px){
+  .console{grid-template-columns:1fr}
+  .queue{border-right:0;border-bottom:1px solid var(--g10)}
+  .grid2,.addons{grid-template-columns:1fr}
+  .probrow{grid-template-columns:135px 1fr 46px}
+  .kv{grid-template-columns:110px 1fr}
+}
+</style>
+</head>
+<body>
+<div id="tip"></div>
+
+<div class="demobar">
+  <span class="tag">MOCKUP</span>
+  <span>UI prototype for academic presentation — <b>not</b> a real CFPB system, no real data is collected or submitted.</span>
+  <span class="th">แบบจำลองหน้าจอเพื่อการนำเสนอ QE830 Project #1 · ไม่ใช่ระบบจริงของ CFPB · ไม่มีการเก็บหรือส่งข้อมูลจริง</span>
+</div>
+
+<div class="controls">
+  <button class="btn ghost" id="prev">◀ Prev</button>
+  <button class="btn primary" id="next">Next ▶</button>
+  <div class="dots" id="dots"></div>
+  <span class="stepname" id="stepname"></span>
+  <div class="spacer"></div>
+  <button class="btn" id="play">▶ Auto-play</button>
+  <button class="btn ghost" id="reset">↺ Reset</button>
+</div>
+
+<div class="rail">
+  <svg viewBox="0 0 1060 132" preserveAspectRatio="xMidYMid meet" id="rail">
+    <g id="links"></g>
+    <g id="nodes"></g>
+    <g id="packet" style="opacity:0">
+      <circle class="pktglow" r="13"/><circle class="pkt" r="6.5"/>
+    </g>
+  </svg>
+</div>
+
+<div class="narr">
+  <span class="n" id="nnum">1 / 4</span>
+  <span class="en" id="nen"></span>
+  <span class="thx" id="nth"></span>
+</div>
+
+<div class="stage">
+
+<!-- ══════════ SCREEN 1 — CONSUMER PORTAL ══════════ -->
+<section class="screen active" id="s1">
+  <div class="browser">
+    <div class="chrome"><i></i><i></i><i></i>
+      <div class="url">🔒 <b>consumerfinance.gov</b>/complaint/new &nbsp;<span style="color:#b0b2b5">· mockup</span></div>
+    </div>
+    <div class="gov">⚑ Demonstration environment — this page imitates a public complaint form for a class project.</div>
+    <div class="sitehead">
+      <div class="seal">MOCK</div>
+      <div class="wordmark">Consumer Financial Protection Bureau<span>Submit a complaint · demo</span></div>
+      <nav class="sitenav"><span class="cur">Submit a complaint</span><span>Check status</span><span>Data &amp; research</span></nav>
+    </div>
+    <div class="pad">
+      <div class="steps-mini">
+        <div class="ok">1 · Product</div><div class="ok">2 · Issue</div>
+        <div class="on">3 · What happened</div><div>4 · Your info</div><div>5 · Review</div>
+      </div>
+      <div class="hero">
+        <h2>Tell us what happened</h2>
+        <p>Describe the problem in your own words. Be as specific as you can about dates and amounts.</p>
+        <p class="th" style="color:#8f9195;font-size:13.5px">ผู้บริโภคเล่าเหตุการณ์เป็นภาษาของตัวเอง — ข้อความอิสระตรงนี้คือ <b>input เดียว</b> ที่โมเดลของเราใช้ทำนายหมวด</p>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>What product or service is this about? <span class="hint">(optional)</span></label>
+          <select id="f_product">
+            <option value="">— I'm not sure / let the CFPB decide —</option>
+            <option>Checking or savings account</option><option>Credit card or prepaid card</option>
+            <option>Credit reporting</option><option>Debt collection</option>
+            <option>Money transfer or virtual currency</option><option>Mortgage</option>
+            <option>Payday, title or personal loan</option><option>Student loan</option>
+            <option>Vehicle loan or lease</option>
+          </select>
+          <p class="hint th" style="margin:6px 0 0">ปล่อยว่างได้ — ปัญหาคือคนส่วนใหญ่เลือกผิดหรือไม่รู้จะเลือกอะไร นี่คือเหตุผลที่ต้องมีโมเดลช่วยจัดหมวด</p>
+        </div>
+        <div class="field">
+          <label>Which company is this about?</label>
+          <input type="text" id="f_company" value="Nationwide Credit Bureau Services"/>
+          <p class="hint" style="margin:6px 0 0">Start typing to search the company list.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>What happened? <span class="hint">Do not include account numbers or Social Security numbers.</span></label>
+        <textarea id="f_text">I am writing about inaccurate information on my credit report. A tradeline appears on my credit file that does not belong to me. It was opened fraudulently after my identity was stolen, and I filed a police report about the identity theft. I have disputed this item with the credit bureau three separate times since XX/XX/2026 and sent them my FTC identity theft affidavit and the police report number XXXXXXXX. Each time the credit bureau completes its reinvestigation it reports back that the item was verified as accurate, but it never explains what method of verification was used or which records were reviewed, which I believe violates the Fair Credit Reporting Act. This inaccurate credit reporting has lowered my credit score and I was denied a mortgage because of it. The company has also threatened to take legal action against me. I am asking that this fraudulent account be deleted from my consumer report and that the credit bureau send me a corrected credit report in writing.</textarea>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>What would be a fair resolution?</label>
+          <textarea style="min-height:78px">Delete the fraudulent account from my credit file and send me written confirmation.</textarea>
+        </div>
+        <div class="field">
+          <label>Attach supporting documents <span class="hint">(up to 50 pages)</span></label>
+          <div style="border:2px dashed var(--g10);border-radius:5px;padding:22px;text-align:center;color:var(--gray);font-size:13px">
+            📎 ftc_identity_theft_affidavit.pdf · police_report.pdf<br>
+            <span style="font-size:12px;color:#b0b2b5">2 files attached</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">
+        <b>What the demo does next:</b> pressing <b>Next</b> submits this narrative to the intake pipeline.
+        <span class="th">— ข้อความนี้จะถูกทำความสะอาด (mask XXXX, ตัดตัวเลข/เครื่องหมาย) แล้วส่งเข้าโมเดล TF-IDF + Logistic Regression ตัวเดียวกับที่ deploy อยู่</span>
+      </div>
+
+      <button class="btn primary" style="padding:11px 26px;font-size:15px" onclick="go(1)">Submit complaint →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SCREEN 2 — CFPB STAFF CONSOLE ══════════ -->
+<section class="screen" id="s2">
+  <div class="browser">
+    <div class="chrome"><i></i><i></i><i></i>
+      <div class="url">🔒 <b>intake.cfpb.internal</b>/console/queue &nbsp;<span style="color:#b0b2b5">· mockup · staff only</span></div>
+    </div>
+    <div class="gov">⚑ Demonstration environment — fictional internal console built for a class project.</div>
+    <div class="sitehead" style="padding:11px 24px">
+      <div class="seal" style="background:var(--navy)">MOCK</div>
+      <div class="wordmark">Consumer Response — Intake Console<span>Routing queue · demo operator: analyst_02</span></div>
+      <nav class="sitenav"><span class="cur">Queue</span><span>Assigned to me</span><span>Model monitor</span><span>Reports</span></nav>
+    </div>
+
+    <div class="console">
+      <div class="queue">
+        <div class="qhead"><span>Unrouted queue</span><span class="cnt" id="qcount">4</span></div>
+        <div class="qrow sel">
+          <div class="id">26-0904-8871204</div>
+          <div class="p">Nationwide Credit Bureau Services</div>
+          <div style="margin-top:6px"><span class="pill new">NEW</span> <span class="pill hi">URGENT</span></div>
+        </div>
+        <div class="qrow"><div class="id">26-0904-8871198</div><div class="p">Harbor Point Bank, N.A.</div>
+          <div style="margin-top:6px"><span class="pill lo">AUTO 0.94</span></div></div>
+        <div class="qrow"><div class="id">26-0904-8871185</div><div class="p">Summit Auto Finance LLC</div>
+          <div style="margin-top:6px"><span class="pill md">REVIEW 0.48</span></div></div>
+        <div class="qrow"><div class="id">26-0904-8871171</div><div class="p">Clearwater Student Servicing</div>
+          <div style="margin-top:6px"><span class="pill lo">AUTO 0.88</span></div></div>
+      </div>
+
+      <div class="detail">
+        <h3 style="font-size:19px">Complaint 26-0904-8871204</h3>
+        <dl class="kv">
+          <dt>Received</dt><dd>Sep 4, 2026 · 09:41 ET · web form</dd>
+          <dt>Company named</dt><dd id="d_company">Nationwide Credit Bureau Services</dd>
+          <dt>Consumer-selected product</dt><dd style="color:var(--gray)"><i>not provided</i></dd>
+          <dt>State</dt><dd>TX</dd>
+          <dt>Status</dt><dd><span class="pill new">Awaiting routing</span></dd>
+        </dl>
+
+        <div class="narrbox" id="d_text"></div>
+
+        <div class="mlcard">
+          <div class="mlhead">
+            <span>⚙ Automated product classification</span>
+            <span class="mv" id="mv">TF-IDF (1–2 gram) + LogisticRegression · acc 0.877 · macro-F1 0.730</span>
+          </div>
+          <div class="mlbody">
+            <div id="probs"></div>
+            <div class="thresh">
+              <span>Confidence threshold <b>0.60</b> →</span>
+              <span class="verdict" id="verdict"></span>
+              <span class="th" id="verdict_th" style="color:var(--gray);font-size:12.5px"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="addons">
+          <div class="addon">
+            <h4>Predicted issue <span style="text-transform:none;letter-spacing:0">(§9.3 model 2)</span></h4>
+            <div class="big">Incorrect information on your report</div>
+            <div style="color:var(--gray);font-size:12.5px">confidence 0.63 · 59 issue classes</div>
+          </div>
+          <div class="addon" style="border-color:#f0c4b8;background:#fdf5f3">
+            <h4 style="color:#a32d16">Urgency flag <span style="text-transform:none;letter-spacing:0">(§9.3 rule 5)</span></h4>
+            <div class="big" style="color:#a32d16">HIGH — 2 signals</div>
+            <div style="color:var(--gray);font-size:12.5px">matched: <b>police report</b>, <b>legal threat</b> → priority lane</div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <div class="field" style="margin:0;min-width:270px">
+            <label style="font-size:12.5px">Route to product queue</label>
+            <select id="d_route"></select>
+          </div>
+          <button class="btn" style="align-self:flex-end">Override…</button>
+          <button class="btn primary" style="align-self:flex-end;padding:9px 20px" onclick="go(2)">
+            ✓ Confirm &amp; forward to company
+          </button>
+        </div>
+        <p class="th note">เจ้าหน้าที่เห็นผลของโมเดลพร้อมค่าความมั่นใจก่อนเสมอ กดยืนยันหรือแก้หมวดเองได้ — โมเดล <b>แนะนำ</b> ไม่ได้ตัดสินใจแทน ทุกการ override ถูกบันทึกไว้เป็นข้อมูลเทรนรอบถัดไป</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SCREEN 3 — COMPANY / BANK PORTAL ══════════ -->
+<section class="screen" id="s3">
+  <div class="browser">
+    <div class="chrome"><i></i><i></i><i></i>
+      <div class="url">🔒 <b>portal.nationwide-crb.example</b>/cfpb-complaints/26-0904-8871204 &nbsp;<span style="color:#b0b2b5">· mockup</span></div>
+    </div>
+    <div class="bankhead">
+      <div class="logo">N</div>
+      <div><div style="font-weight:600">Nationwide Credit Bureau Services</div>
+           <div class="sub">Regulatory Complaint Portal — case received from CFPB</div></div>
+      <div class="sla">Initial response due in <b>15 days</b> Sep 19, 2026</div>
+    </div>
+    <div class="pad">
+      <dl class="kv">
+        <dt>CFPB complaint ID</dt><dd style="font-family:ui-monospace,Menlo,monospace"><b>26-0904-8871204</b></dd>
+        <dt>Routed product</dt><dd><b id="b_product">Credit reporting</b> <span class="pill lo">confirmed by analyst_02</span></dd>
+        <dt>Issue</dt><dd>Incorrect information on your report</dd>
+        <dt>Priority</dt><dd><span class="pill hi">HIGH — identity theft / legal threat</span></dd>
+        <dt>Forwarded</dt><dd>Sep 4, 2026 · 09:44 ET (3 minutes after submission)</dd>
+      </dl>
+
+      <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray)">Consumer narrative</h4>
+      <div class="narrbox" id="b_text"></div>
+
+      <div class="grid2">
+        <div class="field">
+          <label>Response category <span class="hint">(published in the public database)</span></label>
+          <select>
+            <option>Closed with explanation</option>
+            <option selected>Closed with non-monetary relief</option>
+            <option>Closed with monetary relief</option>
+            <option>In progress</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Relief provided</label>
+          <input type="text" value="Tradeline deleted; corrected file sent to consumer"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Response to the consumer</label>
+        <textarea style="min-height:96px">We reviewed the dispute together with the FTC identity theft affidavit and the police report you provided. The disputed tradeline has been deleted from your file and a corrected credit report has been mailed to your address on record. We have also placed an extended fraud alert on the file at no cost.</textarea>
+      </div>
+      <button class="btn primary" style="padding:11px 24px" onclick="go(3)">Submit response to CFPB →</button>
+      <p class="th note">CFPB ให้เวลาบริษัทตอบกลับ <b>15 วัน</b> (ปิดเคสสมบูรณ์ภายใน 60 วัน) การจัดหมวดถูกตั้งแต่ต้นทางแปลว่าเรื่องถึงทีมที่ดูแลเรื่องนั้นจริง ๆ ไม่ต้องส่งต่อวนหลายรอบ</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SCREEN 4 — CONSUMER STATUS ══════════ -->
+<section class="screen" id="s4">
+  <div class="browser">
+    <div class="chrome"><i></i><i></i><i></i>
+      <div class="url">🔒 <b>consumerfinance.gov</b>/complaint/status/26-0904-8871204 &nbsp;<span style="color:#b0b2b5">· mockup</span></div>
+    </div>
+    <div class="gov">⚑ Demonstration environment — this page imitates a public status page for a class project.</div>
+    <div class="sitehead">
+      <div class="seal">MOCK</div>
+      <div class="wordmark">Consumer Financial Protection Bureau<span>Your complaint · demo</span></div>
+      <nav class="sitenav"><span>Submit a complaint</span><span class="cur">Check status</span><span>Data &amp; research</span></nav>
+    </div>
+    <div class="pad">
+      <div class="resolved">
+        <h3>✓ Company responded — closed with non-monetary relief</h3>
+        <p style="margin:.3em 0 0">The disputed tradeline was deleted from your credit file and a corrected report was mailed to you. You can review the response and tell us whether it was fair.</p>
+      </div>
+
+      <div class="grid2" style="align-items:start">
+        <div>
+          <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray)">Your complaint</h4>
+          <ul class="tl">
+            <li class="ok"><div class="t">Complaint submitted</div><div class="d">Sep 4, 2026 · 09:41 — you described the problem</div></li>
+            <li class="ok"><div class="t">Routed automatically</div><div class="d">Sep 4, 2026 · 09:41 — classified as <b id="t_cls">Credit reporting</b> (<span id="t_prob">0.91</span>)</div></li>
+            <li class="ok"><div class="t">Reviewed by CFPB</div><div class="d">Sep 4, 2026 · 09:44 — analyst confirmed and forwarded</div></li>
+            <li class="ok"><div class="t">Sent to company</div><div class="d">Sep 4, 2026 · 09:44 — Nationwide Credit Bureau Services</div></li>
+            <li class="now"><div class="t">Company responded</div><div class="d">Sep 11, 2026 — 7 days · within the 15-day window</div></li>
+            <li><div class="t">Published to the public database</div><div class="d">after your review period closes</div></li>
+          </ul>
+        </div>
+        <div>
+          <h4 style="font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--gray)">What the routing model changed</h4>
+          <div class="addon" style="margin-bottom:10px">
+            <h4>Time to reach the right team</h4>
+            <div class="big"><span style="color:var(--gray);text-decoration:line-through;font-weight:400">~2 days manual</span> → <span style="color:var(--green-d)">3 minutes</span></div>
+          </div>
+          <div class="addon" style="margin-bottom:10px">
+            <h4>Routing accuracy on held-out data</h4>
+            <div class="big">87.7% <span style="color:var(--gray);font-weight:400;font-size:13px">accuracy · 0.730 macro-F1</span></div>
+            <div style="color:var(--gray);font-size:12.5px">vs 0.078 macro-F1 for the majority-class baseline</div>
+          </div>
+          <div class="addon">
+            <h4>Human in the loop</h4>
+            <div class="big">100% of cases</div>
+            <div style="color:var(--gray);font-size:12.5px">confidence &lt; 0.60 goes to a manual review lane instead of auto-routing</div>
+          </div>
+          <p class="th note">ตัวเลขความแม่นยำมาจากโมเดลจริงที่เทรนใน Project #1 · ตัวเลขเวลา (2 วัน → 3 นาที) เป็นค่าสมมติเพื่อการนำเสนอ ยังไม่ได้วัดจากระบบจริง</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SCREEN 5 — EXECUTIVE DASHBOARD ══════════ -->
+<section class="screen" id="s5">
+  <div class="browser viz">
+    <div class="chrome"><i></i><i></i><i></i>
+      <div class="url">🔒 <b>intake.cfpb.internal</b>/dashboard/operations &nbsp;<span style="color:#b0b2b5">· mockup · supervisor view</span></div>
+    </div>
+    <div class="gov">⚑ Demonstration environment — fictional supervisor dashboard built for a class project.</div>
+    <div class="sitehead" style="padding:11px 24px">
+      <div class="seal" style="background:var(--teal)">MOCK</div>
+      <div class="wordmark">Consumer Response — Operations Dashboard<span>Routing performance &amp; SLA · demo</span></div>
+      <nav class="sitenav"><span>Queue</span><span>Assigned to me</span><span class="cur">Model monitor</span><span>Reports</span></nav>
+    </div>
+
+    <div class="dashwrap">
+      <div class="dashhead">
+        <h2>Routing operations</h2>
+        <span class="per">Last 7 days · updated Sep 4, 2026 09:45 ET</span>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><h4>Complaints received</h4><div class="v">1,823</div><div class="d up">▲ 4.1% vs prior week</div></div>
+        <div class="kpi"><h4>Auto-routed</h4><div class="v">77.9%</div><div class="d">1,420 of 1,823 above 0.60</div></div>
+        <div class="kpi"><h4>Median time to route</h4><div class="v">3.1<span style="font-size:15px;font-weight:400"> min</span></div><div class="d up">▼ from ~2 days manual</div></div>
+        <div class="kpi"><h4>Company SLA on-time</h4><div class="v">94.2%</div><div class="d dn">▼ 1.3 pts · 1 company at risk</div></div>
+        <div class="kpi"><h4>Analyst overrides</h4><div class="v">6.8%</div><div class="d">124 cases · fed back to training</div></div>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <h3>Complaint volume by product</h3>
+          <p class="sub">Real distribution of the 60,000-row training sample · one class carries most of the traffic</p>
+          <div id="volbars"></div>
+          <p class="sub th" style="margin:12px 0 0">Credit reporting คิดเป็น 64% ของทั้งหมด — นี่คือเหตุผลที่วัดด้วย <b>macro-F1</b> ไม่ใช่ accuracy เพราะ accuracy จะถูกคลาสใหญ่กลบ</p>
+        </div>
+
+        <div class="panel">
+          <h3>Model confidence distribution</h3>
+          <p class="sub">Cases below the 0.60 threshold go to a human review lane</p>
+          <div class="hist" id="hist"><div class="thline" style="left:60%"><b>0.60 threshold</b></div></div>
+          <div class="histx" id="histx"></div>
+          <p class="sub" style="margin:12px 0 0"><b>403 cases (22.1%)</b> fell below the threshold and were queued for an analyst.</p>
+        </div>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <h3>Auto-routed vs manual review</h3>
+          <p class="sub">Weekly counts · the auto share rises as analyst overrides are fed back into training</p>
+          <div class="legend">
+            <span><i style="background:var(--series-1)"></i>Auto-routed</span>
+            <span><i style="background:var(--series-2)"></i>Manual review</span>
+          </div>
+          <svg id="trend" viewBox="0 0 560 190" style="width:100%;height:auto"></svg>
+        </div>
+
+        <div class="panel">
+          <h3>Company response SLA</h3>
+          <p class="sub">Share of complaints answered inside the 15-day window</p>
+          <table class="sla">
+            <thead><tr><th>Company</th><th class="num">Open</th><th style="width:90px">On-time</th><th class="num">%</th><th>Status</th></tr></thead>
+            <tbody id="slabody"></tbody>
+          </table>
+          <p class="sub th" style="margin:12px 0 0">สีอย่างเดียวไม่ได้บอกสถานะ — มีทั้งไอคอนและคำกำกับ เพื่อให้คนตาบอดสีอ่านได้</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Urgency signals detected</h3>
+        <p class="sub">Rule-based flags from §9.3 item 5 · measured on the real 60,000-row sample — 8,732 complaints (14.6%) carried at least one signal</p>
+        <div id="urgbars"></div>
+      </div>
+
+      <p class="th note" style="margin-top:16px">
+        <b>ที่มาของตัวเลข:</b> การกระจายตามหมวด และสถิติ urgency เป็น<b>ค่าจริง</b>จากข้อมูล 60,000 แถวที่ใช้เทรน ·
+        threshold 0.60 มาจาก <code>model_meta.json</code> ·
+        ส่วนตัวเลขปฏิบัติการ (ยอดรายสัปดาห์ เวลา SLA ชื่อบริษัท) เป็น<b>ค่าสมมติ</b>เพื่อการนำเสนอ ยังไม่ได้วัดจากระบบจริง
+      </p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="foot">
+  <p><b>About this mockup.</b> Single self-contained HTML file — no backend, no network calls, no data leaves the page.
+  Screens imitate a consumer complaint portal, an internal routing console and a company response portal so the routing
+  concept can be demonstrated end-to-end. Visual language follows the publicly documented CFPB design system
+  (green #20aa3f, navy #254b87, Source Sans 3); the seal is a placeholder marked <b>MOCK</b>, never the real seal.</p>
+  <p class="th">การจำแนกหมวดในหน้าคอนโซลใช้ตัวจำลองแบบคำสำคัญ (client-side) ที่เลียนพฤติกรรมโมเดลจริง เพื่อให้เดโมทำงานได้แบบออฟไลน์ —
+  โมเดลจริง TF-IDF + Logistic Regression รันอยู่ที่แอป Streamlit ของโครงงาน · ตัวเลข accuracy 0.877 / macro-F1 0.730 / threshold 0.60
+  เป็นค่าจริงจาก <code>model_meta.json</code> · ชื่อบริษัทและเลขเคสทั้งหมดสมมติขึ้น</p>
+</div>
+
+<script>
+/* ═══════════ demo data ═══════════ */
+const CLASSES = ["Checking / savings account","Credit card / Prepaid card","Credit reporting",
+  "Debt collection","Debt or credit management","Money transfer / crypto","Mortgage",
+  "Payday / title / personal loan","Student loan","Vehicle loan / lease"];
+
+/* lightweight stand-in for the deployed TF-IDF + LogReg model, so the demo runs offline */
+const KW = {
+  "Credit reporting":["credit report","credit file","tradeline","dispute","bureau","inaccurate","fico","score","identity theft","verified"],
+  "Debt collection":["collector","collection agency","debt","harass","called me","owe","validation"],
+  "Credit card / Prepaid card":["credit card","charge","statement","apr","annual fee","dispute charge","prepaid"],
+  "Mortgage":["mortgage","escrow","loan modification","foreclos","servicer","refinance"],
+  "Checking / savings account":["checking","savings","overdraft","debit card","branch","deposit","nsf"],
+  "Student loan":["student loan","navient","forbearance","income driven","school","tuition"],
+  "Vehicle loan / lease":["auto loan","car loan","vehicle","repossess","lease","dealership"],
+  "Payday / title / personal loan":["payday","title loan","personal loan","installment loan","interest rate"],
+  "Money transfer / crypto":["wire transfer","zelle","venmo","crypto","bitcoin","money transfer","remittance"],
+  "Debt or credit management":["credit repair","debt settlement","credit counseling","consolidat"]
+};
+const URGENT = {"police report":/police|law enforcement/i, "legal threat":/threaten|lawsuit|legal action|sue\b|attorney/i,
+  "repossession":/repossess|garnish|foreclos|lien\b/i, "eviction":/evict/i, "harassment":/harass|every day|constantly/i};
+
+function classify(text){
+  // when the page is embedded in the Streamlit app, Python injects the REAL model's output
+  if (window.__MODEL && Array.isArray(window.__MODEL.ranked)) return window.__MODEL.ranked;
+  const t = " " + text.toLowerCase().replace(/[^a-z\s]/g," ").replace(/\s+/g," ") + " ";
+  let raw = CLASSES.map(c => {
+    let hits = 0;
+    (KW[c]||[]).forEach(k => { if (t.includes(k)) hits++; });
+    return {c, s: 0.35 + 1.15 * Math.sqrt(hits)};   // diminishing returns per extra keyword
+  });
+  const mx = Math.max(...raw.map(r=>r.s));
+  let exp = raw.map(r => ({c:r.c, e:Math.exp((r.s-mx)*2.2)}));
+  const sum = exp.reduce((a,b)=>a+b.e,0);
+  return exp.map(r => ({c:r.c, p:r.e/sum})).sort((a,b)=>b.p-a.p);
+}
+function urgency(text){
+  if (window.__MODEL && Array.isArray(window.__MODEL.urgency)) return window.__MODEL.urgency;
+  return Object.keys(URGENT).filter(k => URGENT[k].test(text));
+}
+function modelBadge(){
+  const el = document.getElementById("mv");
+  if(!el) return;
+  el.textContent = window.__MODEL
+    ? "LIVE · TF-IDF + LogisticRegression from model.joblib"
+    : "TF-IDF (1–2 gram) + LogisticRegression · acc 0.877 · macro-F1 0.730";
+}
+
+/* ═══════════ flow rail ═══════════ */
+const NODES = [
+  {x:100, en:"Consumer",     th:"ผู้ร้องเรียน",      ic:"👤"},
+  {x:330, en:"CFPB Intake",  th:"รับเรื่อง · คัดกรอง", ic:"🏛"},
+  {x:560, en:"ML Router",    th:"จำแนกหมวดอัตโนมัติ",  ic:"⚙"},
+  {x:790, en:"Company / Bank",th:"ธนาคาร · ตอบกลับ",  ic:"🏦"},
+  {x:975, en:"Consumer",     th:"แจ้งผลกลับ",         ic:"✓"}
+];
+const NW=132, NH=44, NY=34;
+const svgNS="http://www.w3.org/2000/svg";
+const gL=document.getElementById("links"), gN=document.getElementById("nodes"),
+      pkt=document.getElementById("packet");
+
+NODES.forEach((n,i)=>{
+  if(i<NODES.length-1){
+    const p=document.createElementNS(svgNS,"path");
+    const x1=NODES[i].x+NW/2-4, x2=NODES[i+1].x-NW/2+4;
+    p.setAttribute("d",`M ${x1} ${NY+NH/2} L ${x2} ${NY+NH/2}`);
+    p.setAttribute("class","link"); p.dataset.i=i; gL.appendChild(p);
+  }
+  const g=document.createElementNS(svgNS,"g");
+  const r=document.createElementNS(svgNS,"rect");
+  r.setAttribute("x",n.x-NW/2); r.setAttribute("y",NY); r.setAttribute("width",NW);
+  r.setAttribute("height",NH); r.setAttribute("rx",6); r.setAttribute("class","nodebox");
+  r.dataset.i=i; g.appendChild(r);
+  const t1=document.createElementNS(svgNS,"text");
+  t1.setAttribute("x",n.x); t1.setAttribute("y",NY+19); t1.setAttribute("class","nlabel");
+  t1.textContent=n.ic+"  "+n.en; g.appendChild(t1);
+  const t2=document.createElementNS(svgNS,"text");
+  t2.setAttribute("x",n.x); t2.setAttribute("y",NY+35); t2.setAttribute("class","nsub");
+  t2.textContent=n.th; g.appendChild(t2);
+  gN.appendChild(g);
+});
+
+function movePacket(from,to,ms,done){
+  const path=gL.querySelector(`path[data-i="${Math.min(from,to)}"]`);
+  if(!path){ done&&done(); return; }
+  const len=path.getTotalLength(), t0=performance.now();
+  pkt.style.opacity=1;
+  (function frame(now){
+    let k=Math.min(1,(now-t0)/ms);
+    const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    const pt=path.getPointAtLength((from<to?e:1-e)*len);
+    pkt.setAttribute("transform",`translate(${pt.x},${pt.y})`);
+    if(k<1) requestAnimationFrame(frame);
+    else { pkt.style.opacity=0; done&&done(); }
+  })(t0);
+}
+function paintRail(stage){
+  // stage 0..3  → packet resting node index
+  const at=[0,2,3,4,4][stage];
+  gN.querySelectorAll(".nodebox").forEach((r,i)=>{
+    r.classList.toggle("on", i===at);
+    r.classList.toggle("past", i<at);
+  });
+  gL.querySelectorAll(".link").forEach((p,i)=>{
+    p.classList.toggle("past", i<at); p.classList.remove("live");
+  });
+}
+
+/* ═══════════ step machine ═══════════ */
+const STEPS=[
+  {id:"s1", name:"Consumer portal",
+   en:"A consumer describes the problem in free text — no product category required.",
+   th:"ผู้บริโภคพิมพ์เล่าปัญหาเอง ไม่ต้องเลือกหมวดสินค้า"},
+  {id:"s2", name:"CFPB intake console",
+   en:"Intake receives it; the model predicts the product and an analyst confirms before it moves.",
+   th:"CFPB รับเรื่อง โมเดลทำนายหมวดพร้อมค่าความมั่นใจ เจ้าหน้าที่ยืนยันก่อนส่งต่อ"},
+  {id:"s3", name:"Company portal",
+   en:"The complaint lands in the right company queue with a 15-day response clock.",
+   th:"เรื่องถึงคิวที่ถูกต้องของบริษัท พร้อมนาฬิกานับ 15 วันที่ต้องตอบ"},
+  {id:"s4", name:"Consumer status",
+   en:"The consumer sees the response and the full routing trail.",
+   th:"ผู้ร้องเรียนเห็นคำตอบและเส้นทางเดินเรื่องทั้งหมด"},
+  {id:"s5", name:"Operations dashboard",
+   en:"Supervisors watch throughput, confidence and SLA — the model is monitored, not trusted blindly.",
+   th:"หน้าผู้บริหาร ดูปริมาณงาน ความมั่นใจของโมเดล และ SLA — โมเดลถูกเฝ้าดูตลอด ไม่ได้ปล่อยให้ทำงานลอย ๆ"}
+];
+let cur=0, playing=false, timer=null, busy=false;
+
+const dotsEl=document.getElementById("dots");
+STEPS.forEach((s,i)=>{
+  const b=document.createElement("button"); b.className="dot"; b.title=s.name;
+  b.onclick=()=>{ stop(); jump(i); }; dotsEl.appendChild(b);
+});
+
+function render(){
+  STEPS.forEach((s,i)=>document.getElementById(s.id).classList.toggle("active",i===cur));
+  dotsEl.querySelectorAll(".dot").forEach((d,i)=>{
+    d.classList.toggle("now",i===cur); d.classList.toggle("done",i<cur);
+  });
+  document.getElementById("nnum").textContent=(cur+1)+" / "+STEPS.length;
+  document.getElementById("nen").textContent=STEPS[cur].en;
+  document.getElementById("nth").textContent=STEPS[cur].th;
+  document.getElementById("stepname").textContent=STEPS[cur].name;
+  document.getElementById("prev").disabled=(cur===0)||busy;
+  document.getElementById("next").disabled=(cur===STEPS.length-1)||busy;
+  paintRail(cur);
+  if(cur===1) fillConsole();
+  if(cur===2) fillBank();
+  if(cur===3) fillStatus();
+  if(cur===4) fillDash();
+}
+function jump(i){ cur=Math.max(0,Math.min(STEPS.length-1,i)); render(); }
+
+function go(){ stop(); advance(); }   // in-screen buttons ("Submit", "Forward", …)
+function advance(){
+  if(busy||cur>=STEPS.length-1) return;
+  busy=true; render();
+  const hops=[[0,2],[2,3],[3,4],null][cur]; // rail node indexes to travel (null = no transport)
+  const links=[[0,1],[2],[3],[]][cur];      // link indexes lit on the way
+  if(!hops){ cur++; busy=false; render();
+             if(playing) timer=setTimeout(advance,3200); return; }
+  links.forEach(i=>gL.querySelector(`path[data-i="${i}"]`)?.classList.add("live"));
+  let seq=[]; for(let i=hops[0];i<hops[1];i++) seq.push(i);
+  (function hop(k){
+    if(k>=seq.length){ cur++; busy=false; render();
+      if(playing) timer=setTimeout(advance,3200); return; }
+    movePacket(seq[k],seq[k]+1,760,()=>{
+      gL.querySelector(`path[data-i="${seq[k]}"]`)?.classList.add("past");
+      hop(k+1);
+    });
+  })(0);
+}
+function back(){ if(busy||cur===0) return; cur--; render(); }
+function stop(){ playing=false; clearTimeout(timer);
+  const b=document.getElementById("play"); b.textContent="▶ Auto-play"; b.classList.remove("playing"); }
+
+document.getElementById("next").onclick=()=>{ stop(); advance(); };
+document.getElementById("prev").onclick=()=>{ stop(); back(); };
+document.getElementById("reset").onclick=()=>{ stop(); cur=0; render(); };
+document.getElementById("play").onclick=function(){
+  if(playing){ stop(); return; }
+  playing=true; this.textContent="⏸ Pause"; this.classList.add("playing");
+  if(cur===STEPS.length-1){ cur=0; render(); }
+  timer=setTimeout(advance,900);
+};
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowRight"){ stop(); advance(); }
+  if(e.key==="ArrowLeft"){ stop(); back(); }
+});
+
+/* ═══════════ screen fillers ═══════════ */
+function fillConsole(){
+  modelBadge();
+  const text=document.getElementById("f_text").value.trim();
+  const company=document.getElementById("f_company").value.trim()||"—";
+  document.getElementById("d_text").textContent=text;
+  document.getElementById("d_company").textContent=company;
+
+  const ranked=classify(text), top=ranked[0];
+  const box=document.getElementById("probs"); box.innerHTML="";
+  ranked.slice(0,4).forEach((r,i)=>{
+    const row=document.createElement("div");
+    row.className="probrow"+(i===0?" top":"");
+    row.innerHTML=`<span>${r.c}</span><span class="bar"><i></i></span>
+                   <span class="pv">${r.p.toFixed(3)}</span>`;
+    box.appendChild(row);
+    setTimeout(()=>row.querySelector(".bar i").style.width=(r.p*100).toFixed(1)+"%", 60+i*90);
+  });
+
+  const auto=top.p>=0.60;
+  const v=document.getElementById("verdict");
+  v.textContent=auto?`AUTO-ROUTE to “${top.c}”`:"HOLD for manual review";
+  v.className="verdict "+(auto?"auto":"man");
+  document.getElementById("verdict_th").textContent=
+    auto?"ความมั่นใจผ่านเกณฑ์ ระบบเสนอหมวดให้เจ้าหน้าที่กดยืนยัน"
+        :"ความมั่นใจต่ำกว่าเกณฑ์ เข้าคิวให้เจ้าหน้าที่จัดหมวดเอง";
+
+  const sel=document.getElementById("d_route"); sel.innerHTML="";
+  CLASSES.forEach(c=>{ const o=document.createElement("option");
+    o.textContent=c; if(c===top.c) o.selected=true; sel.appendChild(o); });
+
+  const hits=urgency(text);
+  const ua=document.querySelector(".addon .big[style*='a32d16']")||null;
+  const uBox=document.querySelectorAll(".addon")[1];
+  if(uBox){
+    const lvl=hits.length>=2?"HIGH":hits.length===1?"MEDIUM":"NORMAL";
+    uBox.querySelector(".big").textContent=`${lvl} — ${hits.length} signal${hits.length===1?"":"s"}`;
+    uBox.querySelector("div:last-child").innerHTML= hits.length
+      ? `matched: ${hits.map(h=>"<b>"+h+"</b>").join(", ")} → priority lane`
+      : "no urgency keywords matched → standard lane";
+    uBox.style.borderColor=hits.length?"#f0c4b8":"var(--g10)";
+    uBox.style.background=hits.length?"#fdf5f3":"#fff";
+    uBox.querySelector(".big").style.color=hits.length?"#a32d16":"var(--black)";
+  }
+  window.__top=top.c; window.__topP=top.p;
+}
+function fillStatus(){
+  if(window.__top){ document.getElementById("t_cls").textContent=window.__top; }
+  if(window.__topP!=null){ document.getElementById("t_prob").textContent=window.__topP.toFixed(2); }
+}
+function fillBank(){
+  document.getElementById("b_text").textContent=document.getElementById("f_text").value.trim();
+  document.getElementById("b_product").textContent=window.__top||"Credit reporting";
+}
+
+/* ═══════════ screen 5 · dashboard ═══════════ */
+const VOL=[["Credit reporting",38383],["Debt collection",6382],["Credit card / Prepaid card",4331],
+  ["Checking / savings account",4140],["Money transfer / crypto",2345],["Mortgage",1557],
+  ["Vehicle loan / lease",1022],["Student loan",962],["Payday / title / personal loan",712],
+  ["Debt or credit management",166]];
+const HIST=[0,12,38,71,118,164,213,268,341,598];
+const TREND=[["W1",892,331],["W2",915,318],["W3",968,302],["W4",1004,296],
+  ["W5",1057,281],["W6",1089,274],["W7",1131,268],["W8",1164,259]];
+const SLA=[["Nationwide Credit Bureau Services",412,94.8],["Meridian Card Services",149,79.4],
+  ["Harbor Point Bank, N.A.",128,96.1],["Summit Auto Finance LLC",74,88.2],
+  ["Clearwater Student Servicing",63,91.7]];
+const URG=[["Legal threat / lawsuit",4325],["Police report filed",3082],
+  ["Repossession / garnishment",1288],["Repeated harassing calls",1062],["Eviction",154]];
+
+const tip=document.getElementById("tip");
+function tipOn(e){ const t=e.currentTarget.dataset.tip; if(!t) return;
+  tip.innerHTML=t; tip.style.opacity=1;
+  tip.style.left=Math.min(window.innerWidth-tip.offsetWidth-12, e.clientX+14)+"px";
+  tip.style.top=(e.clientY-36)+"px"; }
+function tipOff(){ tip.style.opacity=0; }
+function hook(el,txt){ el.dataset.tip=txt; el.addEventListener("mousemove",tipOn);
+  el.addEventListener("mouseleave",tipOff); }
+
+let dashDone=false;
+function fillDash(){
+  if(dashDone){ return; } dashDone=true;
+  const nf=n=>n.toLocaleString("en-US");
+
+  // volume by product — one series, single hue, direct labels
+  const vmax=Math.max(...VOL.map(v=>v[1])), vtot=VOL.reduce((a,b)=>a+b[1],0), vb=document.getElementById("volbars");
+  VOL.forEach(([n,v],i)=>{
+    const r=document.createElement("div"); r.className="hb";
+    r.innerHTML=`<span class="nm">${n}</span><span class="tr"><i></i></span>
+                 <span class="vl">${nf(v)}</span>`;
+    vb.appendChild(r);
+    hook(r,`<b>${n}</b><br>${nf(v)} complaints · ${(v/vtot*100).toFixed(1)}% of sample`);
+    setTimeout(()=>r.querySelector("i").style.width=(v/vmax*100).toFixed(1)+"%",70+i*55);
+  });
+
+  // confidence histogram — sub-threshold bins de-emphasised, threshold ruled + labelled
+  const hmax=Math.max(...HIST), h=document.getElementById("hist"), hx=document.getElementById("histx");
+  HIST.forEach((v,i)=>{
+    const lo=(i/10).toFixed(1), hi=((i+1)/10).toFixed(1);
+    const c=document.createElement("div"); c.className="col"+(i<6?" sub":"");
+    c.innerHTML="<i></i>"; h.appendChild(c);
+    hook(c,`<b>${lo}–${hi}</b><br>${v} cases · ${i<6?"manual review":"auto-routed"}`);
+    setTimeout(()=>c.querySelector("i").style.height=(v/hmax*100).toFixed(1)+"%",90+i*45);
+    const sp=document.createElement("span"); sp.textContent=(i%2===0)?lo:""; hx.appendChild(sp);
+  });
+
+  // weekly trend — 2 series, legend above, endpoints direct-labelled
+  const sv=document.getElementById("trend"); if(sv.childNodes.length===0){
+    const W=560,H=190,L=42,R=14,T=12,B=26, ymax=1300;
+    const x=i=>L+i*(W-L-R)/(TREND.length-1), y=v=>T+(1-v/ymax)*(H-T-B);
+    let g="";
+    [0,325,650,975,1300].forEach(v=>{ g+=`<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}"
+        stroke="var(--grid)" stroke-width="1"/><text x="${L-7}" y="${y(v)+4}" text-anchor="end"
+        font-size="10.5" fill="var(--text-muted)" font-family="var(--en)">${v}</text>`; });
+    [[1,"var(--series-1)"],[2,"var(--series-2)"]].forEach(([k,col])=>{
+      const pts=TREND.map((d,i)=>`${x(i)},${y(d[k])}`).join(" ");
+      g+=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2"
+           stroke-linejoin="round" stroke-linecap="round"/>`;
+      TREND.forEach((d,i)=>{ g+=`<circle cx="${x(i)}" cy="${y(d[k])}" r="4" fill="${col}"
+           stroke="#fff" stroke-width="2"/>`; });
+      const last=TREND[TREND.length-1];
+      g+=`<text x="${x(TREND.length-1)-6}" y="${y(last[k])-11}" text-anchor="end" font-size="11.5"
+           font-weight="600" fill="var(--text-secondary)" font-family="var(--en)">${last[k]}</text>`;
+    });
+    TREND.forEach((d,i)=>{ g+=`<text x="${x(i)}" y="${H-7}" text-anchor="middle" font-size="10.5"
+        fill="var(--text-muted)" font-family="var(--en)">${d[0]}</text>`; });
+    sv.innerHTML=g;
+    // hover columns
+    TREND.forEach((d,i)=>{
+      const hitW=(W-L-R)/TREND.length;
+      const r=document.createElementNS("http://www.w3.org/2000/svg","rect");
+      r.setAttribute("x",x(i)-hitW/2); r.setAttribute("y",T); r.setAttribute("width",hitW);
+      r.setAttribute("height",H-T-B); r.setAttribute("fill","transparent"); sv.appendChild(r);
+      hook(r,`<b>Week ${i+1}</b><br>Auto-routed ${d[1]} · Manual ${d[2]}<br>auto share ${(d[1]/(d[1]+d[2])*100).toFixed(1)}%`);
+    });
+  }
+
+  // SLA table — status carries icon + word, never colour alone
+  const tb=document.getElementById("slabody");
+  SLA.forEach(([n,open,pct],i)=>{
+    const cls = pct>=93?"good":pct>=85?"warn":"crit";
+    const word= pct>=93?"On track":pct>=85?"Watch":"At risk";
+    const icon= pct>=93?"●":pct>=85?"▲":"✕";
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${n}</td><td class="num">${open}</td>
+      <td><span class="mini"><i></i></span></td>
+      <td class="num">${pct.toFixed(1)}</td>
+      <td><span class="st ${cls}">${icon} ${word}</span></td>`;
+    tb.appendChild(tr);
+    hook(tr,`<b>${n}</b><br>${open} open · ${pct.toFixed(1)}% answered inside 15 days`);
+    setTimeout(()=>tr.querySelector(".mini i").style.width=pct+"%",120+i*70);
+  });
+
+  // urgency mix
+  const umax=Math.max(...URG.map(u=>u[1])), ub=document.getElementById("urgbars");
+  URG.forEach(([n,v],i)=>{
+    const r=document.createElement("div"); r.className="hb";
+    r.innerHTML=`<span class="nm">${n}</span><span class="tr"><i></i></span>
+                 <span class="vl">${nf(v)}</span>`;
+    ub.appendChild(r);
+    hook(r,`<b>${n}</b><br>${nf(v)} complaints · ${(v/60000*100).toFixed(1)}% of the sample`);
+    setTimeout(()=>r.querySelector("i").style.width=(v/umax*100).toFixed(1)+"%",70+i*55);
+  });
+}
+
+if (window.__TEXT) document.getElementById("f_text").value = window.__TEXT;
+render();
+</script>
+</body>
+</html>
