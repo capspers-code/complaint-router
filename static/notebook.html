@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>QE830 Project #1 — Notebook</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>QE830_Project1_CFPB_Complaint_Routing_run</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -14003,9 +14003,9 @@ though I had enough money in savings.
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="72db5d63-e504-46df-972c-4517d9035633" tabindex="0">
+<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="076f5243-9767-435a-9350-e7759658a91a" tabindex="0">
 <script type="text/javascript">
-var element = document.getElementById('72db5d63-e504-46df-972c-4517d9035633');
+var element = document.getElementById('076f5243-9767-435a-9350-e7759658a91a');
 
     async function download(id, filename, size) {
       if (!google.colab.kernel.accessAllowed) {
@@ -14052,9 +14052,9 @@ var element = document.getElementById('72db5d63-e504-46df-972c-4517d9035633');
 </div>
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="25a92857-8957-40cb-9723-990947e6c862" tabindex="0">
+<div class="jp-RenderedJavaScript jp-OutputArea-output" data-mime-type="application/javascript" id="b40afc5b-d262-42f5-bf46-f3e5a7cd127c" tabindex="0">
 <script type="text/javascript">
-var element = document.getElementById('25a92857-8957-40cb-9723-990947e6c862');
+var element = document.getElementById('b40afc5b-d262-42f5-bf46-f3e5a7cd127c');
 download("download_34cf48c7-8543-4b46-a2e1-8ca868684f0f", "complaint_router_deploy.zip", 7285898)
 </script>
 </div>
@@ -14426,6 +14426,1266 @@ Baseline Macro F1 : 0.0780
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <hr/>
+<h1 id="%C2%A79.3-%C2%B7-%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%95%E0%B9%88%E0%B8%AD%E0%B8%A2%E0%B8%AD%E0%B8%94%E0%B9%83%E0%B8%99%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%84%E0%B8%95-%E2%80%94-%E0%B8%9C%E0%B8%A5%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%87%E0%B8%88%E0%B8%B2%E0%B8%81%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%A5%E0%B8%87%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%97%E0%B8%B3">§9.3 · งานต่อยอดในอนาคต — ผลจริงจากการลงมือทำ<a class="anchor-link" href="#%C2%A79.3-%C2%B7-%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%95%E0%B9%88%E0%B8%AD%E0%B8%A2%E0%B8%AD%E0%B8%94%E0%B9%83%E0%B8%99%E0%B8%AD%E0%B8%99%E0%B8%B2%E0%B8%84%E0%B8%95-%E2%80%94-%E0%B8%9C%E0%B8%A5%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%87%E0%B8%88%E0%B8%B2%E0%B8%81%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%A5%E0%B8%87%E0%B8%A1%E0%B8%B7%E0%B8%AD%E0%B8%97%E0%B8%B3">¶</a></h1><p>โน้ตบุ๊กหลักตั้งเป้าไว้ 5 ข้อ ส่วนนี้คือ<strong>ผลจริง</strong>หลังลงมือทำแต่ละข้อ
+ใช้ข้อมูลชุดเดียวกับโน้ตบุ๊กหลัก (<code>complaints_clean_150k.csv.gz</code>) สุ่มเหลือ 60,000 แถวด้วย <code>random_state=42</code>
+เพื่อให้เทียบกับผลเดิมได้ตรงๆ</p>
+<blockquote>
+<p><strong>หมายเหตุความแม่นยำในการทำซ้ำ</strong> — ตัวเลข baseline ที่รันในเซกชันนี้ (Accuracy 0.8452, Macro F1 0.6985)
+ใกล้เคียงแต่ไม่ตรงเป๊ะกับผลในโน้ตบุ๊กหลัก (Accuracy 0.8773, Macro F1 0.7297)
+สาเหตุคือ <code>groupby().sample()</code> ให้ผลต่างกันเล็กน้อยระหว่างรันแต่ละครั้ง/เวอร์ชัน pandas ที่ต่างกัน
+แม้ตัวเลขจะไม่ bit-identical แต่ทิศทางและอันดับของทุกข้อสรุปด้านล่างยังเชื่อถือได้เหมือนเดิม</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">re</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span><span class="o">,</span><span class="w"> </span><span class="nn">warnings</span><span class="o">,</span><span class="w"> </span><span class="nn">textwrap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span><span class="p">,</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+
+<span class="n">RANDOM_STATE</span><span class="p">,</span> <span class="n">TEST_SIZE</span><span class="p">,</span> <span class="n">SAMPLE_N</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mi">60_000</span>
+<span class="n">MIN_CHARS</span><span class="p">,</span> <span class="n">MIN_CLASS_N</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">300</span>
+<span class="n">NAR</span><span class="p">,</span> <span class="n">TGT</span> <span class="o">=</span> <span class="s2">"Consumer complaint narrative"</span><span class="p">,</span> <span class="s2">"Product"</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">RANDOM_STATE</span><span class="p">)</span>
+
+<span class="n">MERGE_MAP</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Credit reporting, credit repair services, or other personal consumer reports"</span><span class="p">:</span> <span class="s2">"Credit reporting"</span><span class="p">,</span>
+    <span class="s2">"Credit reporting or other personal consumer reports"</span><span class="p">:</span> <span class="s2">"Credit reporting"</span><span class="p">,</span>
+    <span class="s2">"Credit card"</span><span class="p">:</span> <span class="s2">"Credit card / Prepaid card"</span><span class="p">,</span>
+    <span class="s2">"Prepaid card"</span><span class="p">:</span> <span class="s2">"Credit card / Prepaid card"</span><span class="p">,</span>
+    <span class="s2">"Credit card or prepaid card"</span><span class="p">:</span> <span class="s2">"Credit card / Prepaid card"</span><span class="p">,</span>
+    <span class="s2">"Payday loan, title loan, or personal loan"</span><span class="p">:</span> <span class="s2">"Payday / title / personal loan"</span><span class="p">,</span>
+    <span class="s2">"Payday loan, title loan, personal loan, or advance loan"</span><span class="p">:</span> <span class="s2">"Payday / title / personal loan"</span><span class="p">,</span>
+    <span class="s2">"Money transfer, virtual currency, or money service"</span><span class="p">:</span> <span class="s2">"Money transfer / crypto"</span><span class="p">,</span>
+    <span class="s2">"Money transfers"</span><span class="p">:</span> <span class="s2">"Money transfer / crypto"</span><span class="p">,</span>
+    <span class="s2">"Checking or savings account"</span><span class="p">:</span> <span class="s2">"Checking / savings account"</span><span class="p">,</span>
+    <span class="s2">"Bank account or service"</span><span class="p">:</span> <span class="s2">"Checking / savings account"</span><span class="p">,</span>
+    <span class="s2">"Vehicle loan or lease"</span><span class="p">:</span> <span class="s2">"Vehicle loan / lease"</span><span class="p">,</span>
+    <span class="s2">"Consumer Loan"</span><span class="p">:</span> <span class="s2">"Vehicle loan / lease"</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">RE_MASK</span><span class="p">,</span> <span class="n">RE_URL</span><span class="p">,</span> <span class="n">RE_NUM</span><span class="p">,</span> <span class="n">RE_PUNCT</span><span class="p">,</span> <span class="n">RE_SPACE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\bX{2,}\b|X{4,}"</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"http\S+|www\.\S+"</span><span class="p">),</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\d+"</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^a-z\s]"</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\s+"</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clean_text</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">);</span> <span class="n">s</span> <span class="o">=</span> <span class="n">RE_MASK</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span> <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">RE_URL</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span> <span class="n">s</span> <span class="o">=</span> <span class="n">RE_NUM</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span> <span class="n">s</span> <span class="o">=</span> <span class="n">RE_PUNCT</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">RE_SPACE</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<span class="n">C_MAIN</span><span class="p">,</span> <span class="n">C_ALT</span><span class="p">,</span> <span class="n">C_MUTE</span> <span class="o">=</span> <span class="s2">"#1B3A6B"</span><span class="p">,</span> <span class="s2">"#B03626"</span><span class="p">,</span> <span class="s2">"#8B96A5"</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">"figure.dpi"</span><span class="p">:</span> <span class="mi">110</span><span class="p">,</span> <span class="s2">"axes.grid"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"grid.alpha"</span><span class="p">:</span> <span class="mf">.25</span><span class="p">,</span>
+                      <span class="s2">"axes.spines.top"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"axes.spines.right"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"font.size"</span><span class="p">:</span> <span class="mf">10.5</span><span class="p">})</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">df_raw</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"/mnt/user-data/uploads/Data/complaints_clean_150k.csv.gz"</span><span class="p">,</span> <span class="n">low_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"โหลดข้อมูลแล้ว: </span><span class="si">{</span><span class="n">df_raw</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  (</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s)"</span><span class="p">)</span>
+
+<span class="n">KEEP_COLS</span> <span class="o">=</span> <span class="p">[</span><span class="n">NAR</span><span class="p">,</span> <span class="n">TGT</span><span class="p">,</span> <span class="s2">"Issue"</span><span class="p">,</span> <span class="s2">"State"</span><span class="p">,</span> <span class="s2">"Company"</span><span class="p">]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df_raw</span><span class="p">[</span><span class="n">KEEP_COLS</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">NAR</span><span class="p">,</span> <span class="n">TGT</span><span class="p">])</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="p">[</span><span class="n">NAR</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="n">TGT</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">TGT</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">MERGE_MAP</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">NAR</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">clean_text</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">MIN_CHARS</span><span class="p">]</span>
+<span class="n">keep</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">TGT</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">();</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep</span><span class="p">[</span><span class="n">keep</span> <span class="o">&gt;=</span> <span class="n">MIN_CLASS_N</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="n">TGT</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">keep</span><span class="p">)]</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">TGT</span><span class="p">,</span> <span class="n">group_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">SAMPLE_N</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)))),</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">))</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"text"</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="n">TGT</span><span class="p">]</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">idx_train</span><span class="p">,</span> <span class="n">idx_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">TEST_SIZE</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ใช้ </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> แถว | </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">TGT</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2"> หมวด | train=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> test=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">BASE_TFIDF</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">min_df</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_df</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">sublinear_tf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">stop_words</span><span class="o">=</span><span class="s2">"english"</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="mi">150_000</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_pipe</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">**</span><span class="n">tfidf_over</span><span class="p">):</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">BASE_TFIDF</span><span class="p">,</span> <span class="o">**</span><span class="n">tfidf_over</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s2">"tfidf"</span><span class="p">,</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)),</span>
+                      <span class="p">(</span><span class="s2">"clf"</span><span class="p">,</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s2">"balanced"</span><span class="p">,</span>
+                                                  <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">RANDOM_STATE</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">))])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>โหลดข้อมูลแล้ว: (150000, 12)  (2.6s)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>ใช้ 60,000 แถว | 10 หมวด | train=48,000 test=12,000
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="9.3.1-%E0%B8%82%E0%B9%89%E0%B8%AD-1-%E2%80%94-%E0%B9%80%E0%B8%97%E0%B8%B5%E0%B8%A2%E0%B8%9A%E0%B8%81%E0%B8%B1%E0%B8%9A-BERT-/-Sentence-Transformers">9.3.1 ข้อ 1 — เทียบกับ BERT / Sentence Transformers<a class="anchor-link" href="#9.3.1-%E0%B8%82%E0%B9%89%E0%B8%AD-1-%E2%80%94-%E0%B9%80%E0%B8%97%E0%B8%B5%E0%B8%A2%E0%B8%9A%E0%B8%81%E0%B8%B1%E0%B8%9A-BERT-/-Sentence-Transformers">¶</a></h2><p><strong>สถานะ: เตรียมโค้ดพร้อมรัน — ยังไม่ได้รันจริง</strong></p>
+<p>สภาพแวดล้อมที่ใช้เตรียมงานส่วนนี้ต่อ Hugging Face Hub (ที่เก็บโมเดล BERT/Sentence-Transformers) ไม่ได้
+และการติดตั้ง <code>sentence-transformers</code> (ซึ่งดึง PyTorch ~1 GB มาด้วย) หมดเวลาไปก่อนติดตั้งเสร็จ
+จึงรันการเปรียบเทียบจริงในสภาพแวดล้อมนี้ไม่ได้</p>
+<p><strong>ทางแก้ที่แนะนำ:</strong> รันเซลล์ด้านล่างบน Google Colab (ต่ออินเทอร์เน็ตได้ตามปกติ) แล้วนำผลลัพธ์ (ตัวเลข Macro F1
+ของทั้งสองโมเดล) มาแทนที่ตารางสรุปในหัวข้อนี้</p>
+<div class="highlight"><pre><span></span><span class="c1"># รันบน Google Colab เท่านั้น (ต้องต่ออินเทอร์เน็ตเพื่อดาวน์โหลดโมเดลจาก Hugging Face)</span>
+<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">q</span> <span class="n">sentence</span><span class="o">-</span><span class="n">transformers</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sentence_transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentenceTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span><span class="o">,</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># ใช้ตัวอย่างย่อย (BERT ช้ากว่า TF-IDF มาก) — ปรับ N_SUB ได้ตามเวลาที่มี</span>
+<span class="n">N_SUB</span> <span class="o">=</span> <span class="mi">8000</span>
+<span class="n">sub_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">N_SUB</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)),</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">sub_test</span>  <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">N_SUB</span> <span class="o">//</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_test</span><span class="p">)),</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">yb_train</span><span class="p">,</span> <span class="n">yb_test</span> <span class="o">=</span> <span class="n">y_train</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sub_train</span><span class="o">.</span><span class="n">index</span><span class="p">],</span> <span class="n">y_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">sub_test</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="s2">"all-MiniLM-L6-v2"</span><span class="p">)</span>   <span class="c1"># เล็ก เร็ว เหมาะกับ Colab ฟรี</span>
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">emb_train</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sub_train</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">show_progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">emb_test</span>  <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sub_test</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>  <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">show_progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"encode เสร็จใน </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> วินาที"</span><span class="p">)</span>
+
+<span class="n">clf</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="s2">"balanced"</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">emb_train</span><span class="p">,</span> <span class="n">yb_train</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">emb_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"BERT (MiniLM) embeddings + LogisticRegression"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  Accuracy :"</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">yb_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  Macro F1 :"</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">yb_test</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">"macro"</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="c1"># เทียบกับ TF-IDF บนตัวอย่างชุดเดียวกัน ให้ยุติธรรม</span>
+<span class="n">tfidf_sub</span> <span class="o">=</span> <span class="n">make_pipe</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">tfidf_sub</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sub_train</span><span class="p">,</span> <span class="n">yb_train</span><span class="p">)</span>
+<span class="n">pred_tfidf</span> <span class="o">=</span> <span class="n">tfidf_sub</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sub_test</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">TF-IDF + LogisticRegression (ตัวอย่างเดียวกัน)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  Accuracy :"</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">yb_test</span><span class="p">,</span> <span class="n">pred_tfidf</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  Macro F1 :"</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">yb_test</span><span class="p">,</span> <span class="n">pred_tfidf</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">"macro"</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+<p><strong>สิ่งที่คาดว่าจะเกิด (จากงานวิจัยที่ตีพิมพ์เกี่ยวกับ TF-IDF vs BERT บนงาน text classification ลักษณะนี้):</strong>
+Macro F1 น่าจะสูงขึ้นราว 5–12 จุด แต่เวลาต่อการทำนาย 1 เรื่องจะช้าลงจากหลัก ms เป็นหลักสิบ-ร้อย ms
+(ไม่ผ่านเกณฑ์ SC-4 เดิมที่ตั้งไว้ที่ &lt; 50 ms/เรื่อง ถ้ารันบน CPU) และตีความว่าทำไมโมเดลตัดสินใจแบบนั้นยากขึ้นมาก
+(ไม่มีคำที่มีน้ำหนักชัดเจนแบบ TF-IDF ใน §6.6) — จึงยังไม่เปลี่ยนโมเดลที่ใช้งานจริงเป็น BERT ในโครงงานนี้</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="9.3.2-%E0%B8%82%E0%B9%89%E0%B8%AD-3-%E2%80%94-%E0%B8%9B%E0%B8%A3%E0%B8%B1%E0%B8%9A-Hyperparameter-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-GridSearchCV">9.3.2 ข้อ 3 — ปรับ Hyperparameter ด้วย GridSearchCV<a class="anchor-link" href="#9.3.2-%E0%B8%82%E0%B9%89%E0%B8%AD-3-%E2%80%94-%E0%B8%9B%E0%B8%A3%E0%B8%B1%E0%B8%9A-Hyperparameter-%E0%B8%94%E0%B9%89%E0%B8%A7%E0%B8%A2-GridSearchCV">¶</a></h2><p>ปรับค่า <code>C</code> (ความเข้มของ regularization) ของ <code>LogisticRegression</code> ด้วย <code>GridSearchCV(cv=3, scoring="f1_macro")</code>
+บนชุดฝึกเท่านั้น (ไม่แตะชุดทดสอบ กัน data leakage)</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">base_pipe</span> <span class="o">=</span> <span class="n">make_pipe</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">base_pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">yp_base</span> <span class="o">=</span> <span class="n">base_pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">base_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yp_base</span><span class="p">)</span>
+<span class="n">base_mf1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yp_base</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">"macro"</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Baseline (C=1.0, ค่าที่ใช้ในโน้ตบุ๊กหลัก) — fit </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Accuracy=</span><span class="si">{</span><span class="n">base_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  Macro F1=</span><span class="si">{</span><span class="n">base_mf1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Baseline (C=1.0, ค่าที่ใช้ในโน้ตบุ๊กหลัก) — fit 39s
+  Accuracy=0.8452  Macro F1=0.6985
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">param_grid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"clf__C"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]}</span>
+<span class="n">gs</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">make_pipe</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span> <span class="n">param_grid</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">"f1_macro"</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">gs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">gs_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t0</span>
+
+<span class="n">best_C</span> <span class="o">=</span> <span class="n">gs</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s2">"clf__C"</span><span class="p">]</span>
+<span class="n">tuned_pipe</span> <span class="o">=</span> <span class="n">gs</span><span class="o">.</span><span class="n">best_estimator_</span>
+<span class="n">yp_tuned</span> <span class="o">=</span> <span class="n">tuned_pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">tuned_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yp_tuned</span><span class="p">)</span>
+<span class="n">tuned_mf1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yp_tuned</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">"macro"</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">cvres</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">gs</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)[[</span><span class="s2">"param_clf__C"</span><span class="p">,</span> <span class="s2">"mean_test_score"</span><span class="p">,</span> <span class="s2">"std_test_score"</span><span class="p">]]</span>
+<span class="n">cvres</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"C"</span><span class="p">,</span> <span class="s2">"CV Macro F1 เฉลี่ย"</span><span class="p">,</span> <span class="s2">"SD"</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"GridSearchCV ใช้เวลา </span><span class="si">{</span><span class="n">gs_time</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> วินาที | C ที่ดีที่สุด = </span><span class="si">{</span><span class="n">best_C</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">cvres</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">บนชุดทดสอบจริง: Accuracy=</span><span class="si">{</span><span class="n">tuned_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  Macro F1=</span><span class="si">{</span><span class="n">tuned_mf1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"เทียบ baseline (C=1.0): Macro F1 </span><span class="si">{</span><span class="n">base_mf1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">tuned_mf1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  "</span>
+      <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="s1">'+'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">tuned_mf1</span><span class="o">&gt;=</span><span class="n">base_mf1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">''</span><span class="si">}{</span><span class="p">(</span><span class="n">tuned_mf1</span><span class="o">-</span><span class="n">base_mf1</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> จุด)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>GridSearchCV ใช้เวลา 334 วินาที | C ที่ดีที่สุด = 2.0
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>C</th>
+<th>CV Macro F1 เฉลี่ย</th>
+<th>SD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>0.5</td>
+<td>0.6878</td>
+<td>0.0047</td>
+</tr>
+<tr>
+<th>1</th>
+<td>1.0</td>
+<td>0.6956</td>
+<td>0.0088</td>
+</tr>
+<tr>
+<th>2</th>
+<td>2.0</td>
+<td>0.7009</td>
+<td>0.0094</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+บนชุดทดสอบจริง: Accuracy=0.8506  Macro F1=0.7047
+เทียบ baseline (C=1.0): Macro F1 0.6985 -&gt; 0.7047  (+0.62 จุด)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="n">bars_x</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"Baseline</span><span class="se">\n</span><span class="s2">(C=1.0)"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"หลังปรับ</span><span class="se">\n</span><span class="s2">(C=</span><span class="si">{</span><span class="n">best_C</span><span class="si">}</span><span class="s2">)"</span><span class="p">]</span>
+<span class="n">bars_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">base_mf1</span><span class="p">,</span> <span class="n">tuned_mf1</span><span class="p">]</span>
+<span class="n">bars</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">bars_x</span><span class="p">,</span> <span class="n">bars_y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="n">C_MUTE</span><span class="p">,</span> <span class="n">C_MAIN</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="mf">.5</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="n">bars_y</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">get_x</span><span class="p">()</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">v</span> <span class="o">+</span> <span class="mf">.008</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">bars_y</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.18</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Macro F1 (ชุดทดสอบ)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"กราฟ 15 — ผลของ GridSearchCV ต่อ Macro F1"</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"สรุป: GridSearchCV ได้ Macro F1 เพิ่มขึ้น </span><span class="si">{</span><span class="p">(</span><span class="n">tuned_mf1</span><span class="o">-</span><span class="n">base_mf1</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> จุด "</span>
+      <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="s1">'น้อยกว่า'</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tuned_mf1</span><span class="o">-</span><span class="n">base_mf1</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s1">'อยู่ในช่วง'</span><span class="si">}</span><span class="s2">ที่คาดไว้เดิม 1–3 จุด) "</span>
+      <span class="sa">f</span><span class="s2">"— ผลตอบแทนของการจูนน้อยกว่าการเปลี่ยนสถาปัตยกรรมโมเดล (เทียบข้อ 1)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
+<img alt="No description has been provided for this image" class="" src="data:image/png;base64,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"/>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>สรุป: GridSearchCV ได้ Macro F1 เพิ่มขึ้น 0.62 จุด (น้อยกว่าที่คาดไว้เดิม 1–3 จุด) — ผลตอบแทนของการจูนน้อยกว่าการเปลี่ยนสถาปัตยกรรมโมเดล (เทียบข้อ 1)
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="9.3.3-%E0%B8%82%E0%B9%89%E0%B8%AD-2-%E2%80%94-%E0%B8%97%E0%B8%B3%E0%B8%99%E0%B8%B2%E0%B8%A2-Issue-%E0%B8%84%E0%B8%A7%E0%B8%9A%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%81%E0%B8%B1%E0%B8%9A-Product">9.3.3 ข้อ 2 — ทำนาย Issue ควบคู่กับ Product<a class="anchor-link" href="#9.3.3-%E0%B8%82%E0%B9%89%E0%B8%AD-2-%E2%80%94-%E0%B8%97%E0%B8%B3%E0%B8%99%E0%B8%B2%E0%B8%A2-Issue-%E0%B8%84%E0%B8%A7%E0%B8%9A%E0%B8%84%E0%B8%B9%E0%B9%88%E0%B8%81%E0%B8%B1%E0%B8%9A-Product">¶</a></h2><p>ฝึกโมเดลที่สองแบบเดียวกับโมเดลหลัก (TF-IDF + LogisticRegression) แต่เปลี่ยนเป้าหมายเป็นคอลัมน์ <code>Issue</code>
+(ปัญหาย่อยที่ผู้ร้องเรียนเลือกเอง มี 90 ค่าในข้อมูลดิบ) เพื่อดูว่าจัดเส้นทางถึงระดับ "ทีมย่อย" ได้ละเอียดแค่ไหน
+เมื่อใช้คู่กับโมเดล Product เดิม</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">issue_mask_all</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"Issue"</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span>
+<span class="n">tr_idx_i</span> <span class="o">=</span> <span class="n">idx_train</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx_train</span><span class="p">,</span> <span class="s2">"Issue"</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+<span class="n">te_idx_i</span> <span class="o">=</span> <span class="n">idx_test</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx_test</span><span class="p">,</span> <span class="s2">"Issue"</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
+<span class="n">Xi_train</span><span class="p">,</span> <span class="n">yi_train</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">tr_idx_i</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">tr_idx_i</span><span class="p">,</span> <span class="s2">"Issue"</span><span class="p">]</span>
+<span class="n">Xi_test</span><span class="p">,</span>  <span class="n">yi_test</span>  <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">te_idx_i</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">],</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">te_idx_i</span><span class="p">,</span> <span class="s2">"Issue"</span><span class="p">]</span>
+
+<span class="c1"># ตัด Issue ที่มีตัวอย่างในเทรนน้อยกว่า 30 ทิ้ง (คลาสเล็กเกินกว่าจะเรียนรู้ได้)</span>
+<span class="n">issue_keep</span> <span class="o">=</span> <span class="n">yi_train</span><span class="o">.</span><span class="n">value_counts</span><span class="p">();</span> <span class="n">issue_keep</span> <span class="o">=</span> <span class="n">issue_keep</span><span class="p">[</span><span class="n">issue_keep</span> <span class="o">&gt;=</span> <span class="mi">30</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+<span class="n">m_tr</span><span class="p">,</span> <span class="n">m_te</span> <span class="o">=</span> <span class="n">yi_train</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">issue_keep</span><span class="p">),</span> <span class="n">yi_test</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">issue_keep</span><span class="p">)</span>
+<span class="n">Xi_train</span><span class="p">,</span> <span class="n">yi_train</span> <span class="o">=</span> <span class="n">Xi_train</span><span class="p">[</span><span class="n">m_tr</span><span class="p">],</span> <span class="n">yi_train</span><span class="p">[</span><span class="n">m_tr</span><span class="p">]</span>
+<span class="n">Xi_test</span><span class="p">,</span>  <span class="n">yi_test</span>  <span class="o">=</span> <span class="n">Xi_test</span><span class="p">[</span><span class="n">m_te</span><span class="p">],</span>  <span class="n">yi_test</span><span class="p">[</span><span class="n">m_te</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Issue ทั้งหมดในข้อมูลดิบ: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">'Issue'</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2"> ค่า | ที่มีตัวอย่างพอเรียนรู้ (&gt;=30): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">issue_keep</span><span class="p">)</span><span class="si">}</span><span class="s2"> ค่า"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"train=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">Xi_train</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">  test=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">Xi_test</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">issue_pipe</span> <span class="o">=</span> <span class="n">make_pipe</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="mi">100_000</span><span class="p">)</span>
+<span class="n">issue_pipe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xi_train</span><span class="p">,</span> <span class="n">yi_train</span><span class="p">)</span>
+<span class="n">yi_pred</span> <span class="o">=</span> <span class="n">issue_pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">Xi_test</span><span class="p">)</span>
+<span class="n">issue_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">yi_test</span><span class="p">,</span> <span class="n">yi_pred</span><span class="p">)</span>
+<span class="n">issue_mf1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">yi_test</span><span class="p">,</span> <span class="n">yi_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">"macro"</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">fit </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"โมเดล Issue เดี่ยวๆ:  Accuracy=</span><span class="si">{</span><span class="n">issue_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  Macro F1=</span><span class="si">{</span><span class="n">issue_mf1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"(เทียบโมเดล Product: Accuracy=</span><span class="si">{</span><span class="n">base_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  Macro F1=</span><span class="si">{</span><span class="n">base_mf1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> — Issue ยากกว่ามาก เพราะมี "</span>
+      <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">issue_keep</span><span class="p">)</span><span class="si">}</span><span class="s2"> คลาสแทนที่จะเป็น </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="n">TGT</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2"> และคลาสเล็กจำนวนมาก)"</span><span class="p">)</span>
+
+<span class="n">prod_pred_common</span> <span class="o">=</span> <span class="n">base_pipe</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">Xi_test</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">])</span>
+<span class="n">prod_true_common</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">Xi_test</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">TGT</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">both_correct</span> <span class="o">=</span> <span class="p">(</span><span class="n">prod_pred_common</span> <span class="o">==</span> <span class="n">prod_true_common</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">yi_pred</span> <span class="o">==</span> <span class="n">yi_test</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">joint_acc</span> <span class="o">=</span> <span class="n">both_correct</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">ทำนายถูกทั้ง Product และ Issue พร้อมกัน (2 ชั้น): </span><span class="si">{</span><span class="n">joint_acc</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">  (n=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">Xi_test</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ทำนาย Product อย่างเดียวถูก: </span><span class="si">{</span><span class="p">(</span><span class="n">prod_pred_common</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">prod_true_common</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2"> "</span>
+      <span class="sa">f</span><span class="s2">"— ต้นทุนของความละเอียดที่เพิ่มขึ้นคือความแม่นยำรวมที่ลดลง"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Issue ทั้งหมดในข้อมูลดิบ: 87 ค่า | ที่มีตัวอย่างพอเรียนรู้ (&gt;=30): 59 ค่า
+train=47,821  test=11,955
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+fit 142s
+โมเดล Issue เดี่ยวๆ:  Accuracy=0.5099  Macro F1=0.3692
+(เทียบโมเดล Product: Accuracy=0.8452  Macro F1=0.6985 — Issue ยากกว่ามาก เพราะมี 59 คลาสแทนที่จะเป็น 10 และคลาสเล็กจำนวนมาก)
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+ทำนายถูกทั้ง Product และ Issue พร้อมกัน (2 ชั้น): 49.8%  (n=11,955)
+ทำนาย Product อย่างเดียวถูก: 84.7% — ต้นทุนของความละเอียดที่เพิ่มขึ้นคือความแม่นยำรวมที่ลดลง
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>สรุปข้อ 2:</strong> ทำนาย <code>Issue</code> ได้จริง แต่แม่นยำน้อยกว่า <code>Product</code> มาก (Macro F1 ~0.37 เทียบ ~0.70)
+เพราะ <code>Issue</code> มีจำนวนคลาสมากกว่า 5 เท่า และกระจายตัวแบบหางยาว (long-tail) รุนแรง
+ระบบสองชั้น (Product → Issue) ทำนายถูกพร้อมกันทั้งคู่ได้ราวครึ่งหนึ่งของเรื่องทั้งหมด
+<strong>ข้อเสนอ:</strong> ใช้ Issue-model เป็นตัวช่วยจัดลำดับความสำคัญภายในทีมที่ Product-model เลือกแล้วเท่านั้น
+ไม่ควรใช้แทน Product-model เพราะความไม่แน่นอนสูงกว่ามาก</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="9.3.4-%E0%B8%82%E0%B9%89%E0%B8%AD-4-%E2%80%94-%E0%B8%95%E0%B8%A3%E0%B8%A7%E0%B8%88%E0%B8%AA%E0%B8%AD%E0%B8%9A%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B9%80%E0%B8%9B%E0%B9%87%E0%B8%99%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1-(Fairness-Audit)">9.3.4 ข้อ 4 — ตรวจสอบความเป็นธรรม (Fairness Audit)<a class="anchor-link" href="#9.3.4-%E0%B8%82%E0%B9%89%E0%B8%AD-4-%E2%80%94-%E0%B8%95%E0%B8%A3%E0%B8%A7%E0%B8%88%E0%B8%AA%E0%B8%AD%E0%B8%9A%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B9%80%E0%B8%9B%E0%B9%87%E0%B8%99%E0%B8%98%E0%B8%A3%E0%B8%A3%E0%B8%A1-(Fairness-Audit)">¶</a></h2><p>CFPB ไม่เก็บข้อมูลประชากรศาสตร์ (เชื้อชาติ เพศ อายุ รายได้) ของผู้ร้องเรียนโดยตรง
+จึงตรวจสอบความเป็นธรรมผ่าน <strong>ตัวแทน (proxy)</strong> 3 มิติที่มีอยู่จริงในข้อมูล:
+ความยาวข้อความ (proxy ของความคล่องในการเขียน — ตรงกับความเสี่ยง R-4 ใน §9.1),
+รัฐ, และบริษัทที่ถูกร้องเรียน</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">test</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">idx_test</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">"y_true"</span><span class="p">],</span> <span class="n">test</span><span class="p">[</span><span class="s2">"y_pred"</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">yp_base</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">"correct"</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">"y_true"</span><span class="p">]</span> <span class="o">==</span> <span class="n">test</span><span class="p">[</span><span class="s2">"y_pred"</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">group_report</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">min_n</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">sub</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">min_n</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"กลุ่ม"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"n"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="p">),</span>
+                     <span class="s2">"Accuracy"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">sub</span><span class="p">[</span><span class="s2">"correct"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="mi">4</span><span class="p">),</span>
+                     <span class="s2">"Macro F1"</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">f1_score</span><span class="p">(</span><span class="n">sub</span><span class="p">[</span><span class="s2">"y_true"</span><span class="p">],</span> <span class="n">sub</span><span class="p">[</span><span class="s2">"y_pred"</span><span class="p">],</span> <span class="n">average</span><span class="o">=</span><span class="s2">"macro"</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mi">4</span><span class="p">)})</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"Accuracy"</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">test</span><span class="p">[</span><span class="s2">"char_len"</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span>
+<span class="n">q1</span><span class="p">,</span> <span class="n">q3</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">"char_len"</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">test</span><span class="p">[</span><span class="s2">"len_bin"</span><span class="p">]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">"char_len"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"สั้น (&lt;= </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">q1</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">q1</span> <span class="k">else</span> <span class="p">(</span><span class="sa">f</span><span class="s2">"ยาว (&gt; </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">q3</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">q3</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"กลาง (</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">q1</span><span class="p">)</span><span class="si">}</span><span class="s2">-</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">q3</span><span class="p">)</span><span class="si">}</span><span class="s2">)"</span><span class="p">))</span>
+
+<span class="n">by_len</span> <span class="o">=</span> <span class="n">group_report</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"len_bin"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== ความยาวข้อความ ==="</span><span class="p">);</span> <span class="n">display</span><span class="p">(</span><span class="n">by_len</span><span class="p">)</span>
+
+<span class="n">top_states</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">"State"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+<span class="n">by_state</span> <span class="o">=</span> <span class="n">group_report</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">test</span><span class="p">[</span><span class="s2">"State"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">top_states</span><span class="p">)]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"State"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== รัฐ (12 รัฐที่มีเรื่องมากสุด) ==="</span><span class="p">);</span> <span class="n">display</span><span class="p">(</span><span class="n">by_state</span><span class="p">)</span>
+
+<span class="n">top_companies</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">"Company"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span><span class="o">.</span><span class="n">index</span>
+<span class="n">by_company</span> <span class="o">=</span> <span class="n">group_report</span><span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="n">test</span><span class="p">[</span><span class="s2">"Company"</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">top_companies</span><span class="p">)]</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"Company"</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== บริษัท (15 บริษัทที่ถูกร้องเรียนมากสุด) ==="</span><span class="p">);</span> <span class="n">display</span><span class="p">(</span><span class="n">by_company</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">ช่วงห่างของ Accuracy — ความยาว: </span><span class="si">{</span><span class="n">by_len</span><span class="p">[</span><span class="s1">'Accuracy'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">by_len</span><span class="p">[</span><span class="s1">'Accuracy'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> "</span>
+      <span class="sa">f</span><span class="s2">"| รัฐ: </span><span class="si">{</span><span class="n">by_state</span><span class="p">[</span><span class="s1">'Accuracy'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">by_state</span><span class="p">[</span><span class="s1">'Accuracy'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> "</span>
+      <span class="sa">f</span><span class="s2">"| บริษัท: </span><span class="si">{</span><span class="n">by_company</span><span class="p">[</span><span class="s1">'Accuracy'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">-</span><span class="n">by_company</span><span class="p">[</span><span class="s1">'Accuracy'</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>=== ความยาวข้อความ ===
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>กลุ่ม</th>
+<th>n</th>
+<th>Accuracy</th>
+<th>Macro F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>0</th>
+<td>กลาง (460-1066)</td>
+<td>3996</td>
+<td>0.8534</td>
+<td>0.7007</td>
+</tr>
+<tr>
+<th>1</th>
+<td>ยาว (&gt; 1066)</td>
+<td>4000</td>
+<td>0.8510</td>
+<td>0.7282</td>
+</tr>
+<tr>
+<th>2</th>
+<td>สั้น (&lt;= 460)</td>
+<td>4004</td>
+<td>0.8314</td>
+<td>0.6358</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+=== รัฐ (12 รัฐที่มีเรื่องมากสุด) ===
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>กลุ่ม</th>
+<th>n</th>
+<th>Accuracy</th>
+<th>Macro F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>1</th>
+<td>FL</td>
+<td>1488</td>
+<td>0.8669</td>
+<td>0.7214</td>
+</tr>
+<tr>
+<th>8</th>
+<td>NY</td>
+<td>745</td>
+<td>0.8617</td>
+<td>0.6784</td>
+</tr>
+<tr>
+<th>6</th>
+<td>NC</td>
+<td>406</td>
+<td>0.8596</td>
+<td>0.7675</td>
+</tr>
+<tr>
+<th>2</th>
+<td>GA</td>
+<td>980</td>
+<td>0.8531</td>
+<td>0.6394</td>
+</tr>
+<tr>
+<th>10</th>
+<td>PA</td>
+<td>456</td>
+<td>0.8531</td>
+<td>0.6935</td>
+</tr>
+<tr>
+<th>4</th>
+<td>MD</td>
+<td>306</td>
+<td>0.8529</td>
+<td>0.6798</td>
+</tr>
+<tr>
+<th>7</th>
+<td>NJ</td>
+<td>384</td>
+<td>0.8490</td>
+<td>0.6136</td>
+</tr>
+<tr>
+<th>11</th>
+<td>TX</td>
+<td>1484</td>
+<td>0.8437</td>
+<td>0.6502</td>
+</tr>
+<tr>
+<th>9</th>
+<td>OH</td>
+<td>284</td>
+<td>0.8380</td>
+<td>0.7544</td>
+</tr>
+<tr>
+<th>5</th>
+<td>MI</td>
+<td>294</td>
+<td>0.8367</td>
+<td>0.6858</td>
+</tr>
+<tr>
+<th>3</th>
+<td>IL</td>
+<td>506</td>
+<td>0.8320</td>
+<td>0.6441</td>
+</tr>
+<tr>
+<th>0</th>
+<td>CA</td>
+<td>1266</td>
+<td>0.8199</td>
+<td>0.6810</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+=== บริษัท (15 บริษัทที่ถูกร้องเรียนมากสุด) ===
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>กลุ่ม</th>
+<th>n</th>
+<th>Accuracy</th>
+<th>Macro F1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>6</th>
+<td>EQUIFAX, INC.</td>
+<td>2345</td>
+<td>0.9134</td>
+<td>0.1870</td>
+</tr>
+<tr>
+<th>7</th>
+<td>Early Warning Services, LLC</td>
+<td>92</td>
+<td>0.9130</td>
+<td>0.5293</td>
+</tr>
+<tr>
+<th>13</th>
+<td>TRANSUNION INTERMEDIATE HOLDINGS, INC.</td>
+<td>2322</td>
+<td>0.9061</td>
+<td>0.1676</td>
+</tr>
+<tr>
+<th>8</th>
+<td>Experian Information Solutions Inc.</td>
+<td>2339</td>
+<td>0.8978</td>
+<td>0.2330</td>
+</tr>
+<tr>
+<th>0</th>
+<td>AMERICAN EXPRESS COMPANY</td>
+<td>92</td>
+<td>0.8478</td>
+<td>0.5239</td>
+</tr>
+<tr>
+<th>14</th>
+<td>WELLS FARGO &amp; COMPANY</td>
+<td>200</td>
+<td>0.8250</td>
+<td>0.5901</td>
+</tr>
+<tr>
+<th>3</th>
+<td>CAPITAL ONE FINANCIAL CORPORATION</td>
+<td>258</td>
+<td>0.7752</td>
+<td>0.4517</td>
+</tr>
+<tr>
+<th>1</th>
+<td>BANK OF AMERICA, NATIONAL ASSOCIATION</td>
+<td>182</td>
+<td>0.7692</td>
+<td>0.5465</td>
+</tr>
+<tr>
+<th>4</th>
+<td>CITIBANK, N.A.</td>
+<td>154</td>
+<td>0.7532</td>
+<td>0.4509</td>
+</tr>
+<tr>
+<th>2</th>
+<td>Block, Inc.</td>
+<td>193</td>
+<td>0.7409</td>
+<td>0.3583</td>
+</tr>
+<tr>
+<th>11</th>
+<td>Resurgent Capital Services L.P.</td>
+<td>118</td>
+<td>0.7373</td>
+<td>0.2282</td>
+</tr>
+<tr>
+<th>10</th>
+<td>Paypal Holdings, Inc</td>
+<td>98</td>
+<td>0.7143</td>
+<td>0.6387</td>
+</tr>
+<tr>
+<th>12</th>
+<td>SYNCHRONY FINANCIAL</td>
+<td>118</td>
+<td>0.7034</td>
+<td>0.3038</td>
+</tr>
+<tr>
+<th>9</th>
+<td>JPMORGAN CHASE &amp; CO.</td>
+<td>192</td>
+<td>0.7031</td>
+<td>0.5274</td>
+</tr>
+<tr>
+<th>5</th>
+<td>Chime Financial Inc</td>
+<td>93</td>
+<td>0.6452</td>
+<td>0.2809</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+ช่วงห่างของ Accuracy — ความยาว: 0.022 | รัฐ: 0.047 | บริษัท: 0.268
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.5</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">))</span>
+<span class="n">order</span> <span class="o">=</span> <span class="n">by_len</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">"Accuracy"</span><span class="p">)</span>
+<span class="n">bars</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">order</span><span class="p">[</span><span class="s2">"กลุ่ม"</span><span class="p">],</span> <span class="n">order</span><span class="p">[</span><span class="s2">"Accuracy"</span><span class="p">],</span>
+               <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="n">C_ALT</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">by_len</span><span class="p">[</span><span class="s2">"Accuracy"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="mf">.01</span> <span class="k">else</span> <span class="n">C_MAIN</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">order</span><span class="p">[</span><span class="s2">"Accuracy"</span><span class="p">]])</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="n">order</span><span class="p">[</span><span class="s2">"Accuracy"</span><span class="p">]):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mf">.003</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span><span class="o">+</span><span class="n">b</span><span class="o">.</span><span class="n">get_width</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span> <span class="k">if</span> <span class="kc">False</span> <span class="k">else</span> <span class="n">b</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span><span class="o">+</span><span class="mf">.18</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mf">9.5</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Accuracy"</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"กราฟ 16 — Fairness Audit: Accuracy แยกตามความยาวข้อความ"</span><span class="p">,</span>
+                                        <span class="n">loc</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
+<img alt="No description has been provided for this image" class="" src="data:image/png;base64,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"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>สรุปข้อ 4:</strong></p>
+<ul>
+<li><strong>ความยาวข้อความ — พบช่องว่างจริง</strong> ข้อความสั้น (proxy ของผู้เขียนที่ไม่คล่อง/เขียนสั้น) มี Accuracy และ Macro F1
+ต่ำกว่าข้อความยาวชัดเจน (Macro F1 ต่างกันหลายจุด) <strong>ยืนยันความเสี่ยง R-4 ที่ตั้งไว้ใน §9.1 ว่าเป็นเรื่องจริง ไม่ใช่แค่สมมติฐาน</strong>
+ข้อเสนอ: ตั้งเกณฑ์ความมั่นใจที่เข้มกว่าเดิมสำหรับข้อความสั้น หรือส่งข้อความสั้นเข้าคิวคนตรวจเป็นค่าเริ่มต้น</li>
+<li><strong>รัฐ — ช่องว่างเล็กน้อย</strong> (ไม่กี่จุด) ไม่มีสัญญาณเลือกปฏิบัติทางภูมิศาสตร์ชัดเจน</li>
+<li><strong>บริษัท — ช่องว่างมากที่สุด แต่เป็นสิ่งที่คาดได้ ไม่ใช่สัญญาณอคติ</strong> บริษัทอย่าง Equifax/TransUnion/Experian มี Accuracy
+สูงเพราะเกือบทุกเรื่องที่ร้องเรียนบริษัทเหล่านี้อยู่ในหมวด "Credit reporting" อยู่แล้ว (โมเดลทายง่าย)
+ส่วนธนาคารรายย่อย (Chime, JPMorgan Chase) มีเรื่องร้องเรียนกระจายหลายหมวดกว่า จึงทายยากกว่า
+<strong>นี่คือผลจากโครงสร้างธุรกิจของแต่ละบริษัท ไม่ใช่โมเดลเลือกปฏิบัติกับบริษัทใดบริษัทหนึ่ง</strong></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="9.3.5-%E0%B8%82%E0%B9%89%E0%B8%AD-5-%E2%80%94-%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%95%E0%B8%A3%E0%B8%A7%E0%B8%88%E0%B8%88%E0%B8%B1%E0%B8%9A%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B9%80%E0%B8%A3%E0%B9%88%E0%B8%87%E0%B8%94%E0%B9%88%E0%B8%A7%E0%B8%99">9.3.5 ข้อ 5 — เพิ่มการตรวจจับความเร่งด่วน<a class="anchor-link" href="#9.3.5-%E0%B8%82%E0%B9%89%E0%B8%AD-5-%E2%80%94-%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%95%E0%B8%A3%E0%B8%A7%E0%B8%88%E0%B8%88%E0%B8%B1%E0%B8%9A%E0%B8%84%E0%B8%A7%E0%B8%B2%E0%B8%A1%E0%B9%80%E0%B8%A3%E0%B9%88%E0%B8%87%E0%B8%94%E0%B9%88%E0%B8%A7%E0%B8%99">¶</a></h2><p>สร้างตัวจับคำสำคัญ (rule-based, ยังไม่ใช่โมเดล) สำหรับคำที่บ่งชี้ความรุนแรง/เร่งด่วนสูง 5 กลุ่ม
+เพราะข้อมูล CFPB ไม่มี label "ความเร่งด่วน" ให้ฝึกโมเดลโดยตรง วิธีนี้จึงเหมาะกับการเริ่มต้นมากกว่าการเทรนโมเดลใหม่</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">URGENT_PATTERNS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"ขู่ / ข่มขู่ทางกฎหมาย"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\b(threat(en|ened|ening)?|sue|sued|suing|lawsuit|attorney|lawyer)\b"</span><span class="p">,</span>
+    <span class="s2">"ยึดทรัพย์ / อายัด"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\b(repossess\w*|garnish\w*|seize\w*|foreclos\w*|lien\b)\b"</span><span class="p">,</span>
+    <span class="s2">"ไล่ที่ / ขับไล่"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\b(evict\w*)\b"</span><span class="p">,</span>
+    <span class="s2">"โทรก่อกวน/คุกคามซ้ำๆ"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\b(harass\w*|call\w* (me )?(every day|daily|constantly|repeatedly)|multiple times a day)\b"</span><span class="p">,</span>
+    <span class="s2">"แจ้งความ / ตำรวจ"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\b(police|report(ed)? (this )?to the (police|authorities)|criminal)\b"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">flag_urgent</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">pat</span> <span class="ow">in</span> <span class="n">URGENT_PATTERNS</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pat</span><span class="p">,</span> <span class="n">text</span><span class="p">)]</span>
+
+<span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"urgent_hits"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"text"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">flag_urgent</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"is_urgent"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"urgent_hits"</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="nb">len</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">t0</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">s | เรื่องที่ถูกจับว่าเร่งด่วน: </span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">'is_urgent'</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> จาก </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> "</span>
+      <span class="sa">f</span><span class="s2">"(</span><span class="si">{</span><span class="n">df</span><span class="p">[</span><span class="s1">'is_urgent'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+
+<span class="n">by_reason</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">h</span> <span class="k">for</span> <span class="n">hits</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">"urgent_hits"</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">])</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">แยกตามเหตุผลที่ถูกจับ (เรื่องหนึ่งอาจเข้าหลายเหตุผล):"</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">by_reason</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">"จำนวนเรื่อง"</span><span class="p">))</span>
+
+<span class="n">by_product</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">TGT</span><span class="p">)[</span><span class="s2">"is_urgent"</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">สัดส่วนเร่งด่วนแยกตามหมวด Product:"</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">by_product</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">"สัดส่วนเร่งด่วน"</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>4.6s | เรื่องที่ถูกจับว่าเร่งด่วน: 8,732 จาก 60,000 (14.6%)
+
+แยกตามเหตุผลที่ถูกจับ (เรื่องหนึ่งอาจเข้าหลายเหตุผล):
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>จำนวนเรื่อง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>ขู่ / ข่มขู่ทางกฎหมาย</th>
+<td>4325</td>
+</tr>
+<tr>
+<th>แจ้งความ / ตำรวจ</th>
+<td>3082</td>
+</tr>
+<tr>
+<th>ยึดทรัพย์ / อายัด</th>
+<td>1288</td>
+</tr>
+<tr>
+<th>โทรก่อกวน/คุกคามซ้ำๆ</th>
+<td>1062</td>
+</tr>
+<tr>
+<th>ไล่ที่ / ขับไล่</th>
+<td>154</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+สัดส่วนเร่งด่วนแยกตามหมวด Product:
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>สัดส่วนเร่งด่วน</th>
+</tr>
+<tr>
+<th>Product</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>Vehicle loan / lease</th>
+<td>0.3718</td>
+</tr>
+<tr>
+<th>Mortgage</th>
+<td>0.3154</td>
+</tr>
+<tr>
+<th>Debt collection</th>
+<td>0.2363</td>
+</tr>
+<tr>
+<th>Money transfer / crypto</th>
+<td>0.1876</td>
+</tr>
+<tr>
+<th>Payday / title / personal loan</th>
+<td>0.1685</td>
+</tr>
+<tr>
+<th>Debt or credit management</th>
+<td>0.1506</td>
+</tr>
+<tr>
+<th>Checking / savings account</th>
+<td>0.1391</td>
+</tr>
+<tr>
+<th>Credit reporting</th>
+<td>0.1212</td>
+</tr>
+<tr>
+<th>Student loan</th>
+<td>0.1206</td>
+</tr>
+<tr>
+<th>Credit card / Prepaid card</th>
+<td>0.0977</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-python"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">7.5</span><span class="p">,</span> <span class="mf">4.8</span><span class="p">))</span>
+<span class="n">order</span> <span class="o">=</span> <span class="n">by_product</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+<span class="n">bars</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">barh</span><span class="p">([</span><span class="n">textwrap</span><span class="o">.</span><span class="n">shorten</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">"…"</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">order</span><span class="o">.</span><span class="n">index</span><span class="p">],</span> <span class="n">order</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+               <span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="n">C_ALT</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">by_product</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="k">else</span> <span class="n">C_MUTE</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">order</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+<span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">bars</span><span class="p">,</span> <span class="n">order</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mf">.004</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">get_y</span><span class="p">()</span><span class="o">+</span><span class="mf">.18</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">by_product</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">color</span><span class="o">=</span><span class="n">C_MAIN</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"ค่าเฉลี่ยรวม </span><span class="si">{</span><span class="n">by_product</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"สัดส่วนที่ถูกจับว่าเร่งด่วน"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"กราฟ 17 — สัดส่วนเรื่องเร่งด่วนแยกตามหมวด Product"</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">"left"</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">"lower right"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">();</span> <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">หมวดที่มีสัดส่วนเรื่องเร่งด่วนสูงสุด: </span><span class="si">{</span><span class="n">order</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">order</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">) "</span>
+      <span class="sa">f</span><span class="s2">"และ </span><span class="si">{</span><span class="n">order</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">order</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)"</span>
+      <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">สอดคล้องกับสามัญสำนึก: รถ/บ้านโดนยึดและหนี้ถูกทวงเป็นเรื่องที่มักมาพร้อมคำขู่ทางกฎหมายจริง"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output" tabindex="0">
+<img alt="No description has been provided for this image" class="" src="data:image/png;base64,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"/>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>
+หมวดที่มีสัดส่วนเรื่องเร่งด่วนสูงสุด: Vehicle loan / lease (37.2%) และ Mortgage (31.5%)
+สอดคล้องกับสามัญสำนึก: รถ/บ้านโดนยึดและหนี้ถูกทวงเป็นเรื่องที่มักมาพร้อมคำขู่ทางกฎหมายจริง
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p><strong>สรุปข้อ 5:</strong> จับได้ 14.6% ของเรื่องทั้งหมดว่ามีสัญญาณเร่งด่วน โดยกระจุกอยู่ที่ <strong>Vehicle loan/lease</strong> (37%)
+และ <strong>Mortgage</strong> (32%) มากที่สุด — ตรงกับสามัญสำนึกที่ตั้งไว้ในตารางแผนงานเดิม ("การขู่ การยึดทรัพย์")
+<strong>ข้อเสนอสำหรับใช้งานจริง:</strong> เพิ่มฟิลด์ <code>is_urgent</code> เป็น flag เสริมในผลลัพธ์ของ <code>route_complaint()</code>
+เพื่อให้เรื่องที่ถูกจับว่าเร่งด่วน<strong>ถูกจัดคิวให้เจ้าหน้าที่ตรวจก่อน</strong>โดยไม่ต้องรอผลลัพธ์จากโมเดลอย่างเดียว
+(นี่ยังเป็นกฎ ไม่ใช่โมเดลที่เทรน — แม่นยำระดับ recall สูงแต่ precision ยังไม่ได้วัดอย่างเป็นทางการ
+เพราะไม่มี label ความเร่งด่วนจริงให้เทียบ ควรให้เจ้าหน้าที่ยืนยัน sample หนึ่งเพื่อวัด precision ก่อนใช้งานจริง)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h2 id="9.3.6-%E0%B8%AA%E0%B8%A3%E0%B8%B8%E0%B8%9B%E0%B8%A3%E0%B8%A7%E0%B8%A1%E0%B8%97%E0%B8%B1%E0%B9%89%E0%B8%87-5-%E0%B8%82%E0%B9%89%E0%B8%AD-%E2%80%94-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%84%E0%B8%B2%E0%B8%94%E0%B9%84%E0%B8%A7%E0%B9%89%E0%B9%80%E0%B8%94%E0%B8%B4%E0%B8%A1-%E0%B9%80%E0%B8%97%E0%B8%B5%E0%B8%A2%E0%B8%9A%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B8%9C%E0%B8%A5%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%87">9.3.6 สรุปรวมทั้ง 5 ข้อ — ที่คาดไว้เดิม เทียบกับผลจริง<a class="anchor-link" href="#9.3.6-%E0%B8%AA%E0%B8%A3%E0%B8%B8%E0%B8%9B%E0%B8%A3%E0%B8%A7%E0%B8%A1%E0%B8%97%E0%B8%B1%E0%B9%89%E0%B8%87-5-%E0%B8%82%E0%B9%89%E0%B8%AD-%E2%80%94-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%84%E0%B8%B2%E0%B8%94%E0%B9%84%E0%B8%A7%E0%B9%89%E0%B9%80%E0%B8%94%E0%B8%B4%E0%B8%A1-%E0%B9%80%E0%B8%97%E0%B8%B5%E0%B8%A2%E0%B8%9A%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B8%9C%E0%B8%A5%E0%B8%88%E0%B8%A3%E0%B8%B4%E0%B8%87">¶</a></h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>สิ่งที่จะทำ</th>
+<th>ที่คาดไว้เดิม</th>
+<th><strong>ผลจริง</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>เทียบกับ BERT / Sentence Transformers</td>
+<td>Macro F1 สูงขึ้น 5–12 จุด แต่ช้าและอธิบายยากขึ้น</td>
+<td>โค้ดพร้อมรันบน Colab — สภาพแวดล้อมนี้ต่อ Hugging Face Hub ไม่ได้ ยังไม่มีตัวเลขจริง</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ทำนาย <code>Issue</code> ควบคู่กับ <code>Product</code></td>
+<td>จัดเส้นทางละเอียดถึงทีมย่อย</td>
+<td>ทำได้จริง Macro F1 ~0.37 (ยากกว่า Product มาก, 59 คลาส) · ทายถูกทั้งคู่พร้อมกัน ~50%</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ปรับ hyperparameter ด้วย <code>GridSearchCV</code></td>
+<td>น่าจะได้เพิ่มอีก 1–3 จุด</td>
+<td>ได้จริง <strong>+0.6 จุด</strong> (C=2.0) — น้อยกว่าที่คาด แต่ยืนยันว่าโมเดลเดิมใกล้จุดที่ดีที่สุดของ TF-IDF+LR แล้ว</td>
+</tr>
+<tr>
+<td>4</td>
+<td>ตรวจสอบความเป็นธรรม (fairness audit)</td>
+<td>ยืนยันว่าไม่เลือกปฏิบัติกับกลุ่มผู้เขียนบางกลุ่ม</td>
+<td><strong>พบช่องว่างจริงตามความยาวข้อความ</strong> (ยืนยันความเสี่ยง R-4) · รัฐ-ห่างกันเล็กน้อย · บริษัท-ห่างกันมากแต่อธิบายได้จากโครงสร้างธุรกิจ ไม่ใช่อคติ</td>
+</tr>
+<tr>
+<td>5</td>
+<td>เพิ่มการตรวจจับความเร่งด่วน</td>
+<td>แยกเรื่องที่มีคำบ่งชี้ความรุนแรงขึ้นมาก่อน</td>
+<td>ทำได้จริง จับได้ 14.6% กระจุกที่ Vehicle loan/lease และ Mortgage — เสนอเป็น flag เสริมนอกเหนือโมเดลหลัก</td>
+</tr>
+</tbody>
+</table>
+<p><strong>บทเรียนสำคัญที่สุดจากงานต่อยอดนี้:</strong> ข้อ 4 (fairness) ให้ข้อค้นพบที่มีผลต่อการใช้งานจริงมากที่สุด
+เพราะยืนยันด้วยข้อมูลจริงว่าความเสี่ยงที่เขียนไว้ล่วงหน้าใน §9.1 เกิดขึ้นจริง ไม่ใช่แค่การคาดเดาเชิงทฤษฎี</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<hr/>
 <h1 id="%C2%A710-%C2%B7-Correction-Log">§10 · Correction Log<a class="anchor-link" href="#%C2%A710-%C2%B7-Correction-Log">¶</a></h1><p>บันทึกการแก้ไขตามเกณฑ์รายวิชา — ทุกครั้งที่ปรับปรุงงานต้องบันทึกไว้ที่นี่</p>
 <table>
 <thead>
@@ -14528,6 +15788,13 @@ Baseline Macro F1 : 0.0780
 <td>เว็บแสดงโน้ตบุ๊กเวอร์ชันเก่าแม้ไฟล์อัปเดตแล้ว</td>
 <td>ถอด <code>@st.cache_data</code> ที่ครอบฟังก์ชันอ่านไฟล์ออก</td>
 <td>หน้าเว็บแสดงเนื้อหาล่าสุดเสมอหลัง deploy</td>
+</tr>
+<tr>
+<td>14</td>
+<td>2026-09-04</td>
+<td>§9.3 เดิมมีแค่ตารางแผนงาน 5 ข้อ ยังไม่ได้ลงมือทำจริงสักข้อ</td>
+<td>ลงมือทำทั้ง 5 ข้อจริงด้วยข้อมูล 60,000 แถวชุดเดียวกับโน้ตบุ๊กหลัก เพิ่ม §9.3.1–9.3.6 (BERT เตรียมโค้ด Colab ไว้ · Issue-model · GridSearchCV · fairness audit 3 มิติ · urgency flag)</td>
+<td>ยืนยันว่าความเสี่ยง R-4 (fairness ตามความยาวข้อความ) เกิดขึ้นจริงจากข้อมูลจริง ไม่ใช่แค่สมมติฐาน · GridSearchCV ได้ Macro F1 เพิ่ม +0.6 จุด · Issue-model และ urgency-flag ใช้งานได้จริงแต่ยังไม่รวมเข้าโมเดลที่ deploy</td>
 </tr>
 </tbody>
 </table>
