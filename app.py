@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.6.4"
+APP_VERSION = "v1.6.5"
 APP_BUILD   = "2026-09-05"
 
 
@@ -194,6 +194,14 @@ def render_cfpb_app():
         components.html(html.replace("</head>", _inj + "</head>", 1), height=1500, scrolling=True)
         st.stop()
 
+    # ปุ่มกลับหน้าหลัก — หน้านี้เปิดในแท็บใหม่ ผู้ใช้จึงไม่มีทางกลับถ้าไม่มีปุ่มนี้
+    st.markdown(
+        '<a href="./" target="_self" '
+        'style="display:inline-block;background:#1E2836;color:#EAF1FA;font-weight:700;'
+        'border:1px solid #46596F;padding:9px 18px;border-radius:8px;text-decoration:none;'
+        'font-size:15px;margin:0 0 14px">&#10229;&nbsp; กลับหน้าหลัก</a>',
+        unsafe_allow_html=True,
+    )
     st.markdown(
         "### 📮 CFPB Application — mockup ระบบจริง\n"
         "แบบจำลองหน้าจอ **ผู้ร้องเรียน → CFPB → ธนาคาร → ผู้ร้องเรียน → หน้าผู้บริหาร** "
@@ -430,8 +438,8 @@ _NAV = """
  *{box-sizing:border-box}
  body{margin:0;background:transparent;
       font-family:"Sarabun",-apple-system,"Segoe UI",sans-serif}
- .bar{display:flex;justify-content:space-between;align-items:center;
-      gap:12px;padding:6px 2px 0}
+ .bar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;
+      gap:10px;padding:6px 2px 0}
  .btn{
    position:relative; top:0;
    display:inline-flex; align-items:center; gap:10px;
@@ -482,14 +490,9 @@ _NAV = """
               0 2px 6px rgba(0,0,0,.5) !important;
  }
  .arw{font-size:18px;line-height:1;transform:translateY(-1px)}
- .sp{flex:1}
-
- /* จอแคบ: ปุ่มสองอันรวมกันกว้างเกินจอ ถ้าเรียงแนวนอนจะล้นออกนอก iframe แล้วโดนตัดหาย
-    จึงเรียงลงล่างแทน และให้แต่ละปุ่มเต็มความกว้าง */
- @media (max-width: 640px){
-   /* บนมือถือใช้แถบลอยติดขอบล่างจอแทน (สร้างในหน้าแม่) จึงซ่อนอันนี้ */
-   .bar{display:none}
- }
+ .sp{flex:1 1 0;min-width:0}
+ /* ถ้าคอลัมน์แคบจนสองปุ่มเรียงข้างกันไม่พอ ให้ตกลงบรรทัดใหม่แทนที่จะล้นออกนอกกรอบ */
+ .btn{max-width:100%}
 </style>
 <div class="bar">__LEFT____RIGHT__</div>
 <script>
@@ -499,6 +502,27 @@ function jump(i){
     if(t[i]){ t[i].click(); window.parent.scrollTo({top:0, behavior:'smooth'}); }
   }catch(e){}
 }
+
+// ── ซ่อนแถบนี้เฉพาะตอนที่หน้าแม่สร้างแถบลอยติดขอบล่างให้แล้ว ──────────
+//  เดิมใช้ @media (max-width:640px) ซึ่งวัด "ความกว้างของ iframe" ไม่ใช่ของหน้าต่าง
+//  แท็บที่อยู่ในคอลัมน์ 3/5 จึงมี iframe แคบกว่า 640 ทั้งที่จอยังกว้าง
+//  ผลคือแถบนี้ถูกซ่อน แต่แถบลอยก็ไม่ถูกสร้าง (เงื่อนไขคือจอ <= 640) ปุ่มเลยหายไปเฉย ๆ
+var bar = document.querySelector('.bar');
+var last = -1;
+function sync(){
+  var mob = false;
+  try { mob = window.parent.innerWidth <= 640; } catch (e) {}
+  bar.style.display = mob ? 'none' : 'flex';
+  var h = mob ? 1 : Math.ceil(bar.offsetHeight + 10);   // 1 ไม่ใช่ 0 เพราะตัวปรับความสูงมองข้ามค่า 0
+  if (h !== last) {
+    last = h;
+    try{ parent.postMessage({isStreamlitMessage:true, type:"streamlit:setFrameHeight", height:h}, "*"); }catch(e){}
+    try{ parent.postMessage({qe830Height:h}, "*"); }catch(e){}
+  }
+}
+sync();
+setInterval(sync, 400);
+window.addEventListener("resize", sync);
 </script>
 """
 
@@ -967,7 +991,7 @@ with TAB_DEMO:
         with st.expander("รายละเอียดโมเดล"):
             st.json(meta)
 
-        tab_nav(prev=(4, "Colab Notebook"))
+        tab_nav(prev=(4, "Colab Notebook"), next=(6, "CFPB Application"))
 
 
 # ══════════════════════════════════════════════════════════════════
