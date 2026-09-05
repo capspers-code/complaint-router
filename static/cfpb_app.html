@@ -489,12 +489,12 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
         <div class="mlcard">
           <div class="mlhead">
             <span>⚙ Automated product classification</span>
-            <span class="mv" id="mv">TF-IDF (1–2 gram) + LogisticRegression · acc 0.877 · macro-F1 0.730</span>
+            <span class="mv" id="mv">TF-IDF (1–2 gram) + LogisticRegression · acc 0.845 · macro-F1 0.699</span>
           </div>
           <div class="mlbody">
             <div id="probs"></div>
             <div class="thresh">
-              <span>Confidence threshold <b>0.60</b> →</span>
+              <span>Confidence threshold <b id="th_hdr">0.70</b> →</span>
               <span class="verdict" id="verdict"></span>
               <span class="th" id="verdict_th" style="color:var(--gray);font-size:12.5px"></span>
             </div>
@@ -617,13 +617,13 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
           </div>
           <div class="addon" style="margin-bottom:10px">
             <h4>Routing accuracy on held-out data</h4>
-            <div class="big">87.7% <span style="color:var(--gray);font-weight:400;font-size:13px">accuracy · 0.730 macro-F1</span></div>
+            <div class="big">84.5% <span style="color:var(--gray);font-weight:400;font-size:13px">accuracy · 0.699 macro-F1</span></div>
             <div style="color:var(--gray);font-size:12.5px">vs 0.078 macro-F1 for the majority-class baseline</div>
           </div>
           <div class="addon">
             <h4>Human in the loop</h4>
             <div class="big">100% of cases</div>
-            <div style="color:var(--gray);font-size:12.5px">confidence &lt; 0.60 goes to a manual review lane instead of auto-routing</div>
+            <div style="color:var(--gray);font-size:12.5px">confidence &lt; <span class="thv">0.70</span> goes to a manual review lane instead of auto-routing</div>
           </div>
           <p class="th note">ตัวเลขความแม่นยำมาจากโมเดลจริงที่เทรนใน Project #1 · ตัวเลขเวลา (2 วัน → 3 นาที) เป็นค่าสมมติเพื่อการนำเสนอ ยังไม่ได้วัดจากระบบจริง</p>
         </div>
@@ -653,7 +653,7 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
 
       <div class="kpis">
         <div class="kpi"><h4>Complaints received</h4><div class="v">1,823</div><div class="d up">▲ 4.1% vs prior week</div></div>
-        <div class="kpi"><h4>Auto-routed</h4><div class="v">77.9%</div><div class="d">1,420 of 1,823 above 0.60</div></div>
+        <div class="kpi"><h4>Auto-routed</h4><div class="v">66.3%</div><div class="d">1,209 of 1,823 above <span class="thv">0.70</span></div></div>
         <div class="kpi"><h4>Median time to route</h4><div class="v">3.1<span style="font-size:15px;font-weight:400"> min</span></div><div class="d up">▼ from ~2 days manual</div></div>
         <div class="kpi"><h4>Company SLA on-time</h4><div class="v">94.2%</div><div class="d dn">▼ 1.3 pts · 1 company at risk</div></div>
         <div class="kpi"><h4>Analyst overrides</h4><div class="v">6.8%</div><div class="d">124 cases · fed back to training</div></div>
@@ -669,10 +669,10 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
 
         <div class="panel">
           <h3>Model confidence distribution</h3>
-          <p class="sub">Cases below the 0.60 threshold go to a human review lane</p>
-          <div class="hist" id="hist"><div class="thline" style="left:60%"><b>0.60 threshold</b></div></div>
+          <p class="sub">Cases below the <span id="th_txt">0.70</span> threshold go to a human review lane</p>
+          <div class="hist" id="hist"><div class="thline" id="thline" style="left:70%"><b id="thline_lbl">0.70 threshold</b></div></div>
           <div class="histx" id="histx"></div>
-          <p class="sub" style="margin:12px 0 0"><b>403 cases (22.1%)</b> fell below the threshold and were queued for an analyst.</p>
+          <p class="sub" style="margin:12px 0 0"><b id="hist_sub">—</b> fell below the threshold and were queued for an analyst.</p>
         </div>
       </div>
 
@@ -706,7 +706,7 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
 
       <p class="th note" style="margin-top:16px">
         <b>ที่มาของตัวเลข:</b> การกระจายตามหมวด และสถิติ urgency เป็น<b>ค่าจริง</b>จากข้อมูล 60,000 แถวที่ใช้เทรน ·
-        threshold 0.60 มาจาก <code>model_meta.json</code> ·
+        threshold 0.70 มาจาก <code>model_meta.json</code> (ที่มาของค่านี้อยู่ใน §6.5b ของโน้ตบุ๊ก) ·
         ส่วนตัวเลขปฏิบัติการ (ยอดรายสัปดาห์ เวลา SLA ชื่อบริษัท) เป็น<b>ค่าสมมติ</b>เพื่อการนำเสนอ ยังไม่ได้วัดจากระบบจริง
       </p>
     </div>
@@ -721,7 +721,7 @@ table.sla td.num{text-align:right;font-variant-numeric:tabular-nums}
   concept can be demonstrated end-to-end. Visual language follows the publicly documented CFPB design system
   (green #20aa3f, navy #254b87, Source Sans 3); the seal is a placeholder marked <b>MOCK</b>, never the real seal.</p>
   <p class="th">การจำแนกหมวดในหน้าคอนโซลใช้ตัวจำลองแบบคำสำคัญ (client-side) ที่เลียนพฤติกรรมโมเดลจริง เพื่อให้เดโมทำงานได้แบบออฟไลน์ —
-  โมเดลจริง TF-IDF + Logistic Regression รันอยู่ที่แอป Streamlit ของโครงงาน · ตัวเลข accuracy 0.877 / macro-F1 0.730 / threshold 0.60
+  โมเดลจริง TF-IDF + Logistic Regression รันอยู่ที่แอป Streamlit ของโครงงาน · ตัวเลข accuracy 0.845 / macro-F1 0.699 / threshold 0.70
   เป็นค่าจริงจาก <code>model_meta.json</code> · ชื่อบริษัทและเลขเคสทั้งหมดสมมติขึ้น</p>
 </div>
 
@@ -747,6 +747,12 @@ const KW = {
 const URGENT = {"police report":/police|law enforcement/i, "legal threat":/threaten|lawsuit|legal action|sue\b|attorney/i,
   "repossession":/repossess|garnish|foreclos|lien\b/i, "eviction":/evict/i, "harassment":/harass|every day|constantly/i};
 
+// เกณฑ์ความมั่นใจ — มาจาก model_meta.json ที่ Python ฉีดเข้ามา ไม่ได้ฝังไว้ในหน้านี้
+function TH(){
+  var t = window.__MODEL && window.__MODEL.threshold;
+  return (typeof t === "number" && t > 0 && t <= 1) ? t : 0.70;
+}
+
 function classify(text){
   // when the page is embedded in the Streamlit app, Python injects the REAL model's output
   if (window.__MODEL && Array.isArray(window.__MODEL.ranked)) return window.__MODEL.ranked;
@@ -770,7 +776,7 @@ function modelBadge(){
   if(!el) return;
   el.textContent = window.__MODEL
     ? "LIVE · TF-IDF + LogisticRegression from model.joblib"
-    : "TF-IDF (1–2 gram) + LogisticRegression · acc 0.877 · macro-F1 0.730";
+    : "TF-IDF (1–2 gram) + LogisticRegression · acc 0.845 · macro-F1 0.699";
 }
 
 /* ═══════════ flow rail ═══════════ */
@@ -958,7 +964,8 @@ function fillConsole(){
     setTimeout(()=>row.querySelector(".bar i").style.width=(r.p*100).toFixed(1)+"%", 60+i*90);
   });
 
-  const auto=top.p>=0.60;
+  const auto=top.p>=TH();
+  var _h=document.getElementById("th_hdr"); if(_h) _h.textContent=TH().toFixed(2);
   const v=document.getElementById("verdict");
   v.textContent=auto?`AUTO-ROUTE to “${top.c}”`:"HOLD for manual review";
   v.className="verdict "+(auto?"auto":"man");
@@ -1035,11 +1042,19 @@ function fillDash(){
 
   // confidence histogram — sub-threshold bins de-emphasised, threshold ruled + labelled
   const hmax=Math.max(...HIST), h=document.getElementById("hist"), hx=document.getElementById("histx");
+  const thBin=Math.round(TH()*10);            // แถบแรกที่ถือว่า "ส่งอัตโนมัติ"
+  document.getElementById("thline").style.left=(TH()*100).toFixed(0)+"%";
+  document.getElementById("thline_lbl").textContent=TH().toFixed(2)+" threshold";
+  document.getElementById("th_txt").textContent=TH().toFixed(2);
+  [].forEach.call(document.querySelectorAll(".thv"),function(e){e.textContent=TH().toFixed(2);});
+  const below=HIST.slice(0,thBin).reduce((a,b)=>a+b,0), htot=HIST.reduce((a,b)=>a+b,0);
+  document.getElementById("hist_sub").textContent=
+    below+" cases ("+(below/htot*100).toFixed(1)+"%)";
   HIST.forEach((v,i)=>{
     const lo=(i/10).toFixed(1), hi=((i+1)/10).toFixed(1);
-    const c=document.createElement("div"); c.className="col"+(i<6?" sub":"");
+    const c=document.createElement("div"); c.className="col"+(i<thBin?" sub":"");
     c.innerHTML="<i></i>"; h.appendChild(c);
-    hook(c,`<b>${lo}–${hi}</b><br>${v} cases · ${i<6?"manual review":"auto-routed"}`);
+    hook(c,`<b>${lo}–${hi}</b><br>${v} cases · ${i<thBin?"manual review":"auto-routed"}`);
     setTimeout(()=>c.querySelector("i").style.height=(v/hmax*100).toFixed(1)+"%",90+i*45);
     const sp=document.createElement("span"); sp.textContent=(i%2===0)?lo:""; hx.appendChild(sp);
   });
