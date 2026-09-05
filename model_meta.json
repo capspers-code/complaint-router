@@ -15,8 +15,8 @@
   ],
   "n_train": 48000,
   "n_test": 12000,
-  "accuracy": 0.87725,
-  "macro_f1": 0.7296941509693464,
+  "accuracy": 0.8451666666666666,
+  "macro_f1": 0.6985522695260605,
   "baseline_macro_f1": 0.07803018752858668,
   "confidence_threshold": 0.6,
   "tfidf_params": {
@@ -30,5 +30,12 @@
     "stop_words": "english",
     "max_features": 150000
   },
-  "random_state": 42
+  "random_state": 42,
+  "metrics_note": "ตัวเลขนี้วัดจากโมเดลที่อยู่ใน model.joblib จริง (TF-IDF + LogisticRegression, class_weight=balanced) บนชุดทดสอบเดิม 12,000 แถว random_state=42 — เดิมไฟล์นี้เคยบันทึกค่าของ LinearSVM ซึ่งเป็นโมเดลที่ Macro F1 สูงสุด (0.8772 / 0.7297) แต่ไม่ได้ถูก deploy เพราะไม่มี predict_proba จึงตั้งเกณฑ์ความมั่นใจไม่ได้",
+  "best_f1_model": {
+    "name": "TF-IDF + LinearSVM",
+    "accuracy": 0.87725,
+    "macro_f1": 0.7296941509693464,
+    "not_deployed_reason": "ไม่มี predict_proba"
+  }
 }

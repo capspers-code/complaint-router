@@ -9,8 +9,8 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.6.3"
-APP_BUILD   = "2026-09-04"
+APP_VERSION = "v1.6.4"
+APP_BUILD   = "2026-09-05"
 
 
 
@@ -874,6 +874,12 @@ with TAB_DEMO:
         c1.metric("Macro F1", round(meta["macro_f1"], 3))
         c2.metric("Accuracy", round(meta["accuracy"], 3))
         c3.metric("จำนวนหมวด", len(meta["classes"]))
+        st.caption(
+            "วัดจาก **โมเดลตัวที่ทำงานอยู่ในหน้านี้จริง** (" + str(meta.get("model", "")) + ") "
+            "บนชุดทดสอบ " + format(meta.get("n_test", 0), ",") + " แถว · "
+            "LinearSVM ได้ Macro F1 สูงกว่า (0.730) แต่ไม่มี `predict_proba` "
+            "จึงตั้งเกณฑ์ความมั่นใจไม่ได้ เราจึงเลือกตัวนี้แทน"
+        )
 
         st.info(
             "โมเดลเทรนด้วยข้อความภาษาอังกฤษ — ถ้าพิมพ์ภาษาไทย "
