@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.7.0"
+APP_VERSION = "v1.7.1"
 APP_BUILD   = "2026-09-05"
 
 
@@ -124,20 +124,51 @@ def urgency_flags(text):
     return [k for k, rx in URGENT_PATTERNS.items() if rx.search(text or "")]
 
 
-DEFAULT_APP_TEXT = (
-    "I am writing about inaccurate information on my credit report. A tradeline appears on "
-    "my credit file that does not belong to me. It was opened fraudulently after my identity "
-    "was stolen, and I filed a police report about the identity theft. I have disputed this "
-    "item with the credit bureau three separate times since XX/XX/2026 and sent them my FTC "
-    "identity theft affidavit and the police report number XXXXXXXX. Each time the credit "
-    "bureau completes its reinvestigation it reports back that the item was verified as "
-    "accurate, but it never explains what method of verification was used or which records "
-    "were reviewed, which I believe violates the Fair Credit Reporting Act. This inaccurate "
-    "credit reporting has lowered my credit score and I was denied a mortgage because of it. "
-    "The company has also threatened to take legal action against me. I am asking that this "
-    "fraudulent account be deleted from my consumer report and that the credit bureau send "
-    "me a corrected credit report in writing."
-)
+# ══════════════════════════════════════════════════════════════════
+#  ข้อความตัวอย่างสองกรณี — ออกแบบให้เห็นทั้งสองเส้นทางของระบบ
+#  1) ความมั่นใจสูงกว่าเกณฑ์ -> ส่งเข้าทีมอัตโนมัติ
+#  2) ความมั่นใจต่ำกว่าเกณฑ์ -> เข้าคิวให้เจ้าหน้าที่จัดหมวดเอง
+# ══════════════════════════════════════════════════════════════════
+DEMO_CASES = {
+    "auto": {
+        "label": "① เคสชัดเจน — ระบบส่งเข้าทีมอัตโนมัติ",
+        "note": "จำนอง/บัญชี escrow · คำเฉพาะทางชัด โมเดลมั่นใจเกือบเต็ม",
+        "source": "เขียนขึ้นเพื่อการนำเสนอ ไม่มีชื่อบริษัทจริง",
+        "text": (
+            "My mortgage servicer applied my monthly payment to the wrong month and then reported me as "
+            "delinquent to the credit bureaus. They also ran an escrow analysis that doubled my escrow "
+            "payment without sending me the escrow statement required by RESPA. I called the loan servicing "
+            "department four times and each time they told me the escrow shortage would be corrected on the "
+            "next statement, but the payment has not changed. I have now received a letter warning that my "
+            "home loan may be referred for foreclosure if the past due amount is not paid. I have the "
+            "cancelled checks showing every mortgage payment was made on time and I am asking that the late "
+            "reporting be removed and my escrow account be corrected."
+        ),
+    },
+    "review": {
+        "label": "② เคสกำกวม — เข้าคิวให้เจ้าหน้าที่ตรวจ",
+        "note": "บัญชีทวงหนี้ที่ไปโผล่บนเครดิตรีพอร์ต · คาบเกี่ยวสองหมวด โมเดลจึงไม่มั่นใจพอ",
+        "source": "เรื่องร้องเรียนจริงจากชุดข้อมูล CFPB (ไม่มีชื่อบริษัทและข้อมูลส่วนบุคคล)",
+        "text": (
+            "I am filing this complaint because my credit report shows a collection account that I have no "
+            "knowledge of or connection to. This account has been mistakenly linked to my profile, and my "
+            "attempts to address the issue through the credit bureau have not led to a satisfactory outcome. "
+            "Despite submitting documentation to request verification and removal, the credit bureau "
+            "continues to report the account as legitimate without providing sufficient evidence. This has "
+            "negatively impacted my credit score and financial stability, and the lack of corrective action "
+            "is both unfair and deeply frustrating."
+        ),
+    },
+}
+
+
+def demo_case_key():
+    """อ่านกรณีที่เลือกจาก URL — ค่าเริ่มต้นคือเคสชัดเจน"""
+    k = st.query_params.get("case")
+    return k if k in DEMO_CASES else "auto"
+
+
+DEFAULT_APP_TEXT = DEMO_CASES["auto"]["text"]
 
 
 FULLSCREEN_CSS = """
@@ -176,8 +207,9 @@ def render_cfpb_app():
 
     if fullscreen:
         st.markdown(FULLSCREEN_CSS, unsafe_allow_html=True)
-        st.link_button("← ออกจากโหมดเต็มจอ", "?app=1")
-        _txt = st.session_state.get("app_text", DEFAULT_APP_TEXT)
+        _case = demo_case_key()
+        st.link_button("← ออกจากโหมดเต็มจอ", "?app=1&case=" + _case)
+        _txt = st.session_state.get("app_text", DEMO_CASES[_case]["text"])
         _en = _txt
         if is_thai(_txt):
             _out, _err, _eng = to_english(_txt)
@@ -212,19 +244,41 @@ def render_cfpb_app():
         "ไม่มีการเก็บหรือส่งข้อมูลจริง · ชื่อบริษัทและเลขเคสสมมติขึ้น · "
         "เวอร์ชัน " + APP_VERSION + " (" + APP_BUILD + ")"
     )
+    _case = demo_case_key()
     st.markdown(
-        '<a href="?app=1&full=1" target="_self" '
+        '<a href="?app=1&full=1&case=' + _case + '" target="_self" '
         'style="display:inline-block;background:#254b87;color:#fff;font-weight:700;'
         'padding:9px 20px;border-radius:6px;text-decoration:none;font-size:15px;'
         'margin:2px 0 10px">⛶ โหมดเต็มจอ — แสดงเฉพาะ CFPB Application</a>',
         unsafe_allow_html=True,
     )
 
-    with st.expander("✍️ แก้ข้อความร้องเรียนที่จะส่งเข้าระบบ (พิมพ์ไทยได้ ระบบแปลให้)", expanded=False):
-        txt = st.text_area("ข้อความร้องเรียน", DEFAULT_APP_TEXT, height=190,
+    st.markdown("**เลือกกรณีตัวอย่าง** — สองกรณีนี้พาไปคนละเส้นทางของระบบ")
+    _cc = st.columns(len(DEMO_CASES))
+    for _col, (_k, _c) in zip(_cc, DEMO_CASES.items()):
+        _on = _k == _case
+        _col.markdown(
+            '<a href="?app=1&case=' + _k + '" target="_self" style="display:block;'
+            'background:' + ("#254b87" if _on else "#1E2836") + ";"
+            'color:' + ("#fff" if _on else "#C6D2E0") + ";"
+            'border:1px solid ' + ("#6EA8FF" if _on else "#46596F") + ";"
+            'border-radius:9px;padding:11px 14px;text-decoration:none;line-height:1.45">'
+            '<b style="font-size:15px">' + _c["label"] + "</b><br>"
+            '<span style="font-size:12.5px;opacity:.85">' + _c["note"] + "</span></a>",
+            unsafe_allow_html=True,
+        )
+    st.caption("ที่มาของข้อความ: " + DEMO_CASES[_case]["source"])
+
+    # เปลี่ยนกรณีแล้วต้องล้างข้อความที่ค้างอยู่ในกล่องแก้ไข ไม่งั้นจะยังเป็นของกรณีก่อน
+    if st.session_state.get("app_case") != _case:
+        st.session_state["app_case"] = _case
+        st.session_state["app_text"] = DEMO_CASES[_case]["text"]
+
+    with st.expander("✍️ หรือพิมพ์ข้อความเอง (พิมพ์ไทยได้ ระบบแปลให้)", expanded=False):
+        txt = st.text_area("ข้อความร้องเรียน", height=190,
                            label_visibility="collapsed", key="app_text")
         run = st.button("▶ ส่งเข้าโมเดลจริง แล้วโหลดหน้าจอใหม่", type="primary")
-    txt = st.session_state.get("app_text", DEFAULT_APP_TEXT)
+    txt = st.session_state.get("app_text", DEMO_CASES[_case]["text"])
 
     text_en, engine = txt, None
     if is_thai(txt):
