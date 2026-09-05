@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.6.2"
+APP_VERSION = "v1.6.3"
 APP_BUILD   = "2026-09-04"
 
 
@@ -516,6 +516,35 @@ def tab_nav(prev=None, next=None):
 
 
 
+# ── ทำโน้ตบุ๊ก nbconvert ให้ไม่ตกขอบบนจอแคบ ────────────────────────
+#  ต้นเหตุ: เลย์เอาต์ jp-* เป็น flex ซึ่งไม่ยอมหดต่ำกว่าความกว้างเนื้อหา
+#  ถ้าไม่ใส่ min-width:0 กล่องโค้ด/ตาราง/ผลลัพธ์จะดันทั้งหน้าให้เลื่อนออกนอกจอ
+NB_MOBILE_CSS = """
+@media (max-width:900px){
+  html,body{max-width:100%!important;overflow-x:hidden!important}
+  body.jp-Notebook{padding:0!important}
+  .jp-Cell{padding-left:0!important;padding-right:0!important}
+  .jp-InputPrompt,.jp-OutputPrompt{display:none!important}
+  .jp-Cell-inputWrapper,.jp-Cell-outputWrapper,.jp-InputArea,.jp-OutputArea,
+  .jp-OutputArea-child,.jp-OutputArea-output,.jp-InputArea-editor,
+  .jp-RenderedHTMLCommon{min-width:0!important}
+  .jp-InputArea-editor,.jp-OutputArea-output,.jp-RenderedText,.highlight,pre{
+    max-width:100%!important;overflow-x:auto!important}
+  .jp-RenderedText pre,.highlight pre,.jp-InputArea-editor{
+    font-size:10.5px!important;line-height:1.5!important}
+  .jp-RenderedHTMLCommon table,table.dataframe{
+    display:block!important;overflow-x:auto!important;max-width:100%!important;
+    white-space:nowrap!important;font-size:11px!important}
+  .jp-RenderedHTMLCommon img,.jp-OutputArea-output img,.jp-OutputArea-output svg{
+    max-width:100%!important;height:auto!important}
+  .jp-RenderedHTMLCommon{font-size:14px!important;padding-left:10px!important;
+    padding-right:10px!important}
+  .jp-RenderedHTMLCommon h1{font-size:22px!important}
+  .jp-RenderedHTMLCommon h2{font-size:19px!important}
+  .jp-RenderedHTMLCommon h3{font-size:17px!important}
+}
+"""
+
 # ── ปรับความสูง iframe ให้เท่าเนื้อหาจริง (สำคัญมากบนมือถือ ที่เนื้อหายืดยาวกว่าเดิม) ──
 st.html("""
 <style>
@@ -536,6 +565,8 @@ components.html("""
   var doc = window.parent && window.parent.document;
   if (!doc || doc.__qe830Resizer) return;
   doc.__qe830Resizer = true;
+
+  var NBCSS = __NBCSS__;    // CSS กันตกขอบ ยัดเข้าไปในโน้ตบุ๊กตอนเปิดเต็มจอ
 
   var wanted = [];               // [{win, h}] ความสูงที่ประกาศไว้ของแต่ละ iframe
 
@@ -619,9 +650,15 @@ components.html("""
     fr.setAttribute("title", p.title || "notebook");
     fr.src = p.src;
     fr.style.cssText = "flex:1 1 auto;width:100%;border:0;background:#fff";
-    // ให้กด Esc ปิดได้แม้โฟกัสอยู่ในโน้ตบุ๊ก (ไฟล์อยู่โดเมนเดียวกันจึงเข้าถึงได้)
+    // ไฟล์อยู่โดเมนเดียวกัน จึงยัด CSS กันตกขอบ + ผูกปุ่ม Esc เข้าไปในโน้ตบุ๊กได้
     fr.addEventListener("load", function(){
-      try { fr.contentDocument.addEventListener("keydown", escClose); } catch (e) {}
+      try {
+        var d = fr.contentDocument;
+        var st = d.createElement("style");
+        st.textContent = NBCSS;
+        d.head.appendChild(st);
+        d.addEventListener("keydown", escClose);
+      } catch (e) {}
     });
     bar.appendChild(ttl); bar.appendChild(x);
     ov.appendChild(bar); ov.appendChild(fr);
@@ -710,7 +747,7 @@ components.html("""
   W.addEventListener("resize", buildStickyNav);
 })();
 </script>
-""", height=0)
+""".replace("__NBCSS__", json.dumps(NB_MOBILE_CSS)), height=0)
 
 with TAB_CFPB:
     components.html(content.doc(content.CFPB), height=content.HEIGHT['CFPB'], scrolling=True)
@@ -731,7 +768,8 @@ with TAB_MODEL:
 def load_notebook_html(fname):
     """อ่านสดทุกครั้ง — ห้าม cache ไม่งั้นได้ไฟล์เก่าหลัง deploy ใหม่"""
     with open("static/" + fname, encoding="utf-8") as f:
-        return f.read()
+        html = f.read()
+    return html.replace("</head>", "<style>" + NB_MOBILE_CSS + "</style></head>", 1)
 
 
 # ปุ่มขยายเต็มจอของโน้ตบุ๊ก — ต้องเป็น components.html เพราะ st.markdown ตัด <script> ทิ้ง
