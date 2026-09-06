@@ -9,7 +9,7 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.7.1"
+APP_VERSION = "v1.7.2"
 APP_BUILD   = "2026-09-05"
 
 
@@ -315,6 +315,105 @@ def render_cfpb_app():
     st.stop()
 
 
+# ── ทำโน้ตบุ๊ก nbconvert ให้ไม่ตกขอบบนจอแคบ ────────────────────────
+#  ต้นเหตุ: เลย์เอาต์ jp-* เป็น flex ซึ่งไม่ยอมหดต่ำกว่าความกว้างเนื้อหา
+#  ถ้าไม่ใส่ min-width:0 กล่องโค้ด/ตาราง/ผลลัพธ์จะดันทั้งหน้าให้เลื่อนออกนอกจอ
+NB_MOBILE_CSS = """
+@media (max-width:900px){
+  html,body{max-width:100%!important;overflow-x:hidden!important}
+  body.jp-Notebook{padding:0!important}
+  .jp-Cell{padding-left:0!important;padding-right:0!important}
+  .jp-InputPrompt,.jp-OutputPrompt{display:none!important}
+  .jp-Cell-inputWrapper,.jp-Cell-outputWrapper,.jp-InputArea,.jp-OutputArea,
+  .jp-OutputArea-child,.jp-OutputArea-output,.jp-InputArea-editor,
+  .jp-RenderedHTMLCommon{min-width:0!important}
+  .jp-InputArea-editor,.jp-OutputArea-output,.jp-RenderedText,.highlight,pre{
+    max-width:100%!important;overflow-x:auto!important}
+  .jp-RenderedText pre,.highlight pre,.jp-InputArea-editor{
+    font-size:10.5px!important;line-height:1.5!important}
+  .jp-RenderedHTMLCommon table,table.dataframe{
+    display:block!important;overflow-x:auto!important;max-width:100%!important;
+    white-space:nowrap!important;font-size:11px!important}
+  .jp-RenderedHTMLCommon img,.jp-OutputArea-output img,.jp-OutputArea-output svg{
+    max-width:100%!important;height:auto!important}
+  .jp-RenderedHTMLCommon{font-size:14px!important;padding-left:10px!important;
+    padding-right:10px!important}
+  .jp-RenderedHTMLCommon h1{font-size:22px!important}
+  .jp-RenderedHTMLCommon h2{font-size:19px!important}
+  .jp-RenderedHTMLCommon h3{font-size:17px!important}
+}
+"""
+
+def load_notebook_html(fname):
+    """อ่านสดทุกครั้ง — ห้าม cache ไม่งั้นได้ไฟล์เก่าหลัง deploy ใหม่"""
+    with open("static/" + fname, encoding="utf-8") as f:
+        html = f.read()
+    return html.replace("</head>", "<style>" + NB_MOBILE_CSS + "</style></head>", 1)
+
+
+NOTEBOOKS = [
+    {
+        "key": "screening",
+        "file": "screening.html",
+        "name": "QE830_Dataset_Screening_Tool.ipynb",
+        "desc": ("**Dataset Screening Tool** ตรวจก่อนลงมือว่าชุดข้อมูลมีสัญญาณจริงไหม — "
+                 "lookup-table · leakage · chi-square · baseline vs model · "
+                 "single-feature dominance → GO/NO-GO"),
+    },
+    {
+        "key": "main",
+        "file": "notebook.html",
+        "name": "QE830_Project1_CFPB_Complaint_Routing.ipynb",
+        "desc": ("**CRISP-DM ฉบับเต็ม** งานหลัก §0–§10 กรอง 17.5 ล้าน → 150,000 · "
+                 "EDA 13 กราฟ · เทรน 5 โมเดล · เลือกโมเดล · สร้างไฟล์ deploy · "
+                 "**+ §9.3 งานต่อยอด 5 ข้อ ลงมือทำจริงแล้ว** (Issue-model · GridSearchCV · "
+                 "fairness audit · urgency flag · โค้ด BERT พร้อมรัน)"),
+    },
+]
+
+
+def nb_fullscreen_button(nb):
+    """ปุ่มเปิดโน้ตบุ๊กเต็มหน้าจอ
+
+    เดิมใช้ชั้นทับที่โหลด /app/static/<ไฟล์> เข้า iframe ซึ่งทำงานได้ตอนรันบนเครื่อง
+    แต่ **ใช้ไม่ได้บน Streamlit Community Cloud** เพราะ Cloud ไม่รับค่าในหมวด [server]
+    ของ config.toml (enableStaticServing จึงไม่มีผล) เส้นทางนั้นเลยคืนหน้าแอปกลับมาแทนไฟล์
+    ตอนนี้เปลี่ยนไปเปิดเส้นทาง ?nb=<key> ของแอปเอง ที่อ่านไฟล์ด้วย Python
+    แบบเดียวกับที่ฝังในแท็บ จึงทำงานเหมือนกันทั้งบนเครื่องและบน Cloud
+    """
+    st.markdown(
+        '<div style="display:flex;justify-content:flex-end;margin:-6px 0 2px">'
+        '<a href="?nb=' + nb["key"] + '" target="_blank" rel="noopener" '
+        'style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;'
+        'background:linear-gradient(180deg,#2A3646 0%,#171F29 100%);color:#EAF1FA;'
+        'border:1px solid #6EA8FF;border-radius:9px;padding:10px 17px;'
+        'font-weight:700;font-size:14px">'
+        '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+        'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">'
+        '<path d="M9 3H3v6M15 3h6v6M21 15v6h-6M3 15v6h6"/></svg>'
+        'ขยายเต็มจอ</a></div>',
+        unsafe_allow_html=True,
+    )
+
+
+def render_notebook_page():
+    """หน้าโน้ตบุ๊กเต็มจอ (เปิดผ่าน ?nb=<key>) — อ่านไฟล์ด้วย Python ไม่พึ่ง static serving"""
+    key = st.query_params.get("nb")
+    nb = next((x for x in NOTEBOOKS if x["key"] == key), None)
+    if nb is None:
+        st.error("ไม่พบโน้ตบุ๊ก: " + str(key))
+        st.stop()
+    st.markdown(FULLSCREEN_CSS, unsafe_allow_html=True)
+    st.link_button("← กลับหน้าหลัก", "./")
+    with st.spinner("กำลังโหลดโน้ตบุ๊ก ..."):
+        components.html(load_notebook_html(nb["file"]), height=1500, scrolling=True)
+    st.stop()
+
+
+if st.query_params.get("nb"):
+    render_notebook_page()
+
+
 if st.query_params.get("app"):
     render_cfpb_app()
 
@@ -594,35 +693,6 @@ def tab_nav(prev=None, next=None):
 
 
 
-# ── ทำโน้ตบุ๊ก nbconvert ให้ไม่ตกขอบบนจอแคบ ────────────────────────
-#  ต้นเหตุ: เลย์เอาต์ jp-* เป็น flex ซึ่งไม่ยอมหดต่ำกว่าความกว้างเนื้อหา
-#  ถ้าไม่ใส่ min-width:0 กล่องโค้ด/ตาราง/ผลลัพธ์จะดันทั้งหน้าให้เลื่อนออกนอกจอ
-NB_MOBILE_CSS = """
-@media (max-width:900px){
-  html,body{max-width:100%!important;overflow-x:hidden!important}
-  body.jp-Notebook{padding:0!important}
-  .jp-Cell{padding-left:0!important;padding-right:0!important}
-  .jp-InputPrompt,.jp-OutputPrompt{display:none!important}
-  .jp-Cell-inputWrapper,.jp-Cell-outputWrapper,.jp-InputArea,.jp-OutputArea,
-  .jp-OutputArea-child,.jp-OutputArea-output,.jp-InputArea-editor,
-  .jp-RenderedHTMLCommon{min-width:0!important}
-  .jp-InputArea-editor,.jp-OutputArea-output,.jp-RenderedText,.highlight,pre{
-    max-width:100%!important;overflow-x:auto!important}
-  .jp-RenderedText pre,.highlight pre,.jp-InputArea-editor{
-    font-size:10.5px!important;line-height:1.5!important}
-  .jp-RenderedHTMLCommon table,table.dataframe{
-    display:block!important;overflow-x:auto!important;max-width:100%!important;
-    white-space:nowrap!important;font-size:11px!important}
-  .jp-RenderedHTMLCommon img,.jp-OutputArea-output img,.jp-OutputArea-output svg{
-    max-width:100%!important;height:auto!important}
-  .jp-RenderedHTMLCommon{font-size:14px!important;padding-left:10px!important;
-    padding-right:10px!important}
-  .jp-RenderedHTMLCommon h1{font-size:22px!important}
-  .jp-RenderedHTMLCommon h2{font-size:19px!important}
-  .jp-RenderedHTMLCommon h3{font-size:17px!important}
-}
-"""
-
 # ── ปรับความสูง iframe ให้เท่าเนื้อหาจริง (สำคัญมากบนมือถือ ที่เนื้อหายืดยาวกว่าเดิม) ──
 st.html("""
 <style>
@@ -842,84 +912,6 @@ with TAB_DATA:
 with TAB_MODEL:
     components.html(content.doc(content.MODEL), height=content.HEIGHT['MODEL'], scrolling=True)
     tab_nav(prev=(2, "ที่มาของข้อมูล"), next=(4, "Colab Notebook"))
-
-def load_notebook_html(fname):
-    """อ่านสดทุกครั้ง — ห้าม cache ไม่งั้นได้ไฟล์เก่าหลัง deploy ใหม่"""
-    with open("static/" + fname, encoding="utf-8") as f:
-        html = f.read()
-    return html.replace("</head>", "<style>" + NB_MOBILE_CSS + "</style></head>", 1)
-
-
-# ปุ่มขยายเต็มจอของโน้ตบุ๊ก — ต้องเป็น components.html เพราะ st.markdown ตัด <script> ทิ้ง
-_NB_FS_BTN = """
-<style>
-  html,body{margin:0;background:transparent}
-  .bar{display:flex;justify-content:flex-end;padding:0 2px}
-  button{
-    display:flex;align-items:center;gap:7px;cursor:pointer;
-    background:linear-gradient(180deg,#2A3646 0%,#171F29 100%);
-    color:#EAF1FA;border:1px solid #6EA8FF;border-radius:9px;
-    font:700 14px/1 'Sarabun',system-ui,-apple-system,sans-serif;padding:11px 17px;
-  }
-  button:hover{border-color:#9CC4FF;background:linear-gradient(180deg,#33506F 0%,#1D2A3A 100%)}
-  button:active{transform:translateY(1px)}
-</style>
-<div class="bar"><button id="fsb" type="button"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H3v6M15 3h6v6M21 15v6h-6M3 15v6h6"/></svg> ขยายเต็มจอ</button></div>
-<script>
-(function(){
-  var SRC = "__SRC__", TITLE = "__TITLE__";
-  document.getElementById("fsb").addEventListener("click", function(){
-    try { parent.postMessage({qe830Nb:{src:SRC, title:TITLE}}, "*"); }
-    catch (e) { window.open(SRC, "_blank"); }
-  });
-  // ตอนแท็บยังซ่อนอยู่ offsetHeight = 0 จึงต้องวัดซ้ำเรื่อย ๆ จนกว่าแท็บจะถูกเปิด
-  var last = 0;
-  function report(){
-    var b = document.querySelector(".bar");
-    if (!b) return;
-    var h = Math.ceil(b.offsetHeight + 8);
-    if (h < 24 || h === last) return;
-    last = h;
-    try{ parent.postMessage({isStreamlitMessage:true, type:"streamlit:setFrameHeight", height:h}, "*"); }catch(e){}
-    try{ parent.postMessage({qe830Height:h}, "*"); }catch(e){}
-  }
-  [60,300,900].forEach(function(t){ setTimeout(report, t); });
-  setInterval(report, 400);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(report);
-})();
-</script>
-"""
-
-
-def nb_fullscreen_button(nb):
-    """ปุ่มเปิดโน้ตบุ๊กเต็มหน้าจอ (ชั้นทับของหน้าแม่ ไม่ใช่ Fullscreen API จึงใช้ได้บน iOS)"""
-    src = "app/static/" + nb["file"]
-    components.html(
-        _NB_FS_BTN.replace("__SRC__", src).replace("__TITLE__", nb["name"]),
-        height=56,
-    )
-
-
-NOTEBOOKS = [
-    {
-        "key": "screening",
-        "file": "screening.html",
-        "name": "QE830_Dataset_Screening_Tool.ipynb",
-        "desc": ("**Dataset Screening Tool** ตรวจก่อนลงมือว่าชุดข้อมูลมีสัญญาณจริงไหม — "
-                 "lookup-table · leakage · chi-square · baseline vs model · "
-                 "single-feature dominance → GO/NO-GO"),
-    },
-    {
-        "key": "main",
-        "file": "notebook.html",
-        "name": "QE830_Project1_CFPB_Complaint_Routing.ipynb",
-        "desc": ("**CRISP-DM ฉบับเต็ม** งานหลัก §0–§10 กรอง 17.5 ล้าน → 150,000 · "
-                 "EDA 13 กราฟ · เทรน 5 โมเดล · เลือกโมเดล · สร้างไฟล์ deploy · "
-                 "**+ §9.3 งานต่อยอด 5 ข้อ ลงมือทำจริงแล้ว** (Issue-model · GridSearchCV · "
-                 "fairness audit · urgency flag · โค้ด BERT พร้อมรัน)"),
-    },
-]
-
 
 with TAB_NB:
     st.markdown(
