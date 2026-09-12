@@ -9,8 +9,8 @@ import streamlit.components.v1 as components
 st.set_page_config(page_title="Complaint Router", page_icon="📮", layout="wide")
 
 # ── เวอร์ชันของแอป (ใช้เช็คว่ามือถือโหลดตัวใหม่แล้วหรือยัง) ──
-APP_VERSION = "v1.7.2"
-APP_BUILD   = "2026-09-05"
+APP_VERSION = "v1.7.3"
+APP_BUILD   = "2026-09-12"
 
 
 
@@ -228,10 +228,10 @@ def render_cfpb_app():
 
     # ปุ่มกลับหน้าหลัก — หน้านี้เปิดในแท็บใหม่ ผู้ใช้จึงไม่มีทางกลับถ้าไม่มีปุ่มนี้
     st.markdown(
-        '<a href="./" target="_self" '
+        '<a href="./?tab=6" target="_self" '
         'style="display:inline-block;background:#1E2836;color:#EAF1FA;font-weight:700;'
         'border:1px solid #46596F;padding:9px 18px;border-radius:8px;text-decoration:none;'
-        'font-size:15px;margin:0 0 14px">&#10229;&nbsp; กลับหน้าหลัก</a>',
+        'font-size:15px;margin:0 0 14px">&#10229;&nbsp; กลับไปหน้า CFPB Application</a>',
         unsafe_allow_html=True,
     )
     st.markdown(
@@ -404,7 +404,7 @@ def render_notebook_page():
         st.error("ไม่พบโน้ตบุ๊ก: " + str(key))
         st.stop()
     st.markdown(FULLSCREEN_CSS, unsafe_allow_html=True)
-    st.link_button("← กลับหน้าหลัก", "./")
+    st.link_button("← กลับไปหน้า Colab Notebook", "./?tab=4")
     with st.spinner("กำลังโหลดโน้ตบุ๊ก ..."):
         components.html(load_notebook_html(nb["file"]), height=1500, scrolling=True)
     st.stop()
@@ -649,10 +649,35 @@ _NAV = """
 </style>
 <div class="bar">__LEFT____RIGHT__</div>
 <script>
+// พาหน้าแม่กลับขึ้นบนสุด
+//   Streamlit ไม่ได้เลื่อนที่ window แต่เลื่อนที่ div ภายใน (section.main / stMain)
+//   window.scrollTo จึงไม่มีผล ต้องไล่หา element ที่เลื่อนอยู่จริงแล้วรีเซ็ตเอง
+function toTop(){
+  try{
+    var W = window.parent, D = W.document;
+    W.scrollTo(0, 0);
+    D.documentElement.scrollTop = 0;
+    D.body.scrollTop = 0;
+    var els = D.querySelectorAll(
+      'section.main,[data-testid="stMain"],[data-testid="stAppViewContainer"] section,.stMain,.main');
+    for (var k = 0; k < els.length; k++){ try{ els[k].scrollTop = 0; }catch(e){} }
+    var all = D.querySelectorAll('div,section');   // เผื่อ Streamlit เปลี่ยนชื่อคลาส
+    for (var j = 0; j < all.length; j++){
+      var el = all[j];
+      if (el.scrollTop > 0 && el.scrollHeight > el.clientHeight + 8) el.scrollTop = 0;
+    }
+  }catch(e){}
+}
+
 function jump(i){
   try{
     var t = window.parent.document.querySelectorAll('[role="tab"]');
-    if(t[i]){ t[i].click(); window.parent.scrollTo({top:0, behavior:'smooth'}); }
+    if(t[i]){
+      t[i].click();
+      toTop();                                    // เลื่อนทันที
+      // เรียกซ้ำ เพราะ Streamlit วาดเนื้อหาแท็บใหม่หลังคลิก ถ้าเลื่อนครั้งเดียวจะโดนวาดทับ
+      [60, 180, 400, 800].forEach(function(d){ setTimeout(toTop, d); });
+    }
   }catch(e){}
 }
 
@@ -850,6 +875,23 @@ components.html("""
         ? "background:linear-gradient(180deg,#33506F 0%,#1D2A3A 100%);color:#EAF1FA;border:1px solid #6EA8FF;"
         : "background:linear-gradient(180deg,#2A3646 0%,#171F29 100%);color:#C6D2E0;border:1px solid #46596F;");
   }
+  // พากลับขึ้นบนสุด — ตัวเลื่อนจริงของ Streamlit เป็น div ภายใน ไม่ใช่ window
+  function navToTop(){
+    try{
+      W.scrollTo(0, 0);
+      doc.documentElement.scrollTop = 0;
+      doc.body.scrollTop = 0;
+      var els = doc.querySelectorAll(
+        'section.main,[data-testid="stMain"],[data-testid="stAppViewContainer"] section,.stMain,.main');
+      for (var k = 0; k < els.length; k++){ try{ els[k].scrollTop = 0; }catch(e){} }
+      var all = doc.querySelectorAll('div,section');
+      for (var j = 0; j < all.length; j++){
+        var el = all[j];
+        if (el.scrollTop > 0 && el.scrollHeight > el.clientHeight + 8) el.scrollTop = 0;
+      }
+    }catch(e){}
+  }
+
   function buildStickyNav(){
     var bar = doc.getElementById("qe830-stickynav");
     if (W.innerWidth > 640){ if (bar) bar.remove(); return; }
@@ -882,7 +924,10 @@ components.html("""
       el.textContent = (isNext ? label + "  \u279e" : "\u27f5  " + label);
       el.addEventListener("click", function(){
         var t = doc.querySelectorAll('[role="tab"]');
-        if (t[idx]) { t[idx].click(); W.scrollTo({top: 0, behavior: "smooth"}); }
+        if (!t[idx]) return;
+        t[idx].click();
+        navToTop();
+        [60, 180, 400, 800].forEach(function(d){ setTimeout(navToTop, d); });
       });
       bar.appendChild(el);
     }
@@ -890,6 +935,27 @@ components.html("""
     if (cur < tabs.length - 1) mk(cur + 1, tabs[cur + 1].innerText.trim(), true);
     if (!bar.childNodes.length) bar.remove();
   }
+  // ── เปิดแท็บตามพารามิเตอร์ ?tab= (ใช้โดยปุ่มกลับของหน้าเต็มจอ) ──────
+  //   ต้องรอจนแท็บถูกวาดก่อน จึงเรียกซ้ำใน interval เดียวกับแถบลอย
+  function applyTabParam(){
+    if (doc.__qe830TabDone) return;
+    var m = /[?&]tab=(\d+)/.exec(W.location.search);
+    if (!m) { doc.__qe830TabDone = true; return; }
+    var tabs = doc.querySelectorAll('[role="tab"]');
+    if (!tabs.length) return;                       // ยังวาดไม่เสร็จ เดี๋ยวรอบหน้าค่อยลองใหม่
+    doc.__qe830TabDone = true;
+    var idx = parseInt(m[1], 10);
+    if (tabs[idx]) {
+      tabs[idx].click();
+      navToTop();
+      [60, 180, 400, 800].forEach(function(d){ setTimeout(navToTop, d); });
+    }
+    // ล้าง ?tab= ออกจาก URL กันค้างตอนผู้ใช้กดรีเฟรชหรือบุ๊กมาร์ก
+    try { W.history.replaceState({}, "", W.location.pathname); } catch (e) {}
+  }
+  applyTabParam();
+  setInterval(applyTabParam, 250);
+
   buildStickyNav();
   setInterval(buildStickyNav, 500);
   W.addEventListener("resize", buildStickyNav);
